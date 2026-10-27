@@ -5,7 +5,6 @@ import { AstroContent } from '../persistence/AstroContent.ts';
 
 const committee = await AstroContent.loadCommittee();
 const now = VermontTime.now();
-const overdueDuties = committee.overdueDuties({ now });
 ---
 
 <BaseLayout
@@ -24,22 +23,6 @@ const overdueDuties = committee.overdueDuties({ now });
     <br />
     <a href="/participate/">How to attend, speak, or ask for phone, video, or in-person access</a>
   </p>
-
-  {
-    overdueDuties.length > 0 && (
-      <section class="notice" aria-labelledby="past-due">
-        <h2 id="past-due">Past due</h2>
-        <p>The Open Meeting Law set these deadlines. They have passed, and the record is not on this website yet.</p>
-        <ul>
-          {overdueDuties.map((overdueDuty) => (
-            <li>
-              <a href={overdueDuty.meeting.path()}>{overdueDuty.overdueMessage()}</a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
 
   {
     committee
