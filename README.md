@@ -203,11 +203,12 @@ Routes: English at `/`, other languages at `/<language code>/` (for example `/ne
 
 ## Accessibility testing
 
-Automated checks catch some problems, not all. `.github/workflows/checks.yml` runs on every pull request, on every push to `main`, and every hour:
+Automated checks catch some problems, not all. `.github/workflows/checks.yml` runs on every pull request and on every push to `main`:
 
 - `pnpm check` (`astro check`). The pre-commit hook runs this same command.
 - `pnpm build`
-- `pnpm check:deadlines`: loads every `Meeting` and fails if an agenda or minutes are past their deadline. It also prints how many hours are left for upcoming agendas.
+
+`pnpm check:deadlines` loads every `Meeting`, prints how many hours are left for upcoming agendas, and exits with an error if an agenda or minutes are past their deadline. It is a local reminder. A missed deadline is a breach of the law, not a failed build, so continuous integration does not run it.
 
 Planned: HTML validation (`html-validate`), axe-core on every built page with zero violations, an internal link check, and a reading level report for English pages.
 
