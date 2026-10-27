@@ -1,0 +1,101 @@
+---
+import type { Meeting } from '../domain/Meeting.ts';
+
+interface Props {
+  meetings: Meeting[];
+  caption: string;
+  emptyMessage: string;
+  showMinutesAndRecording: boolean;
+}
+
+const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props;
+---
+
+<div class="table-scroll">
+  <table class:list={['meeting-table', showMinutesAndRecording ? 'meeting-table-past' : 'meeting-table-upcoming']}>
+    <caption class="visually-hidden">{caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">When</th>
+        <th scope="col">Where</th>
+        <th scope="col">Agenda</th>
+        {
+          showMinutesAndRecording && (
+            <>
+              <th scope="col">Minutes</th>
+              <th scope="col">Recording</th>
+            </>
+          )
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        meetings.length === 0 ? (
+          <tr>
+            <td colspan={showMinutesAndRecording ? 5 : 3}>{emptyMessage}</td>
+          </tr>
+        ) : (
+          meetings.map((meeting) => (
+            <tr>
+              <th scope="row">
+                <a href={meeting.path()}>{meeting.day().longDate()}</a>
+                <br />
+                {meeting.timeRange()}
+                {meeting.kind !== 'regular' && (
+                  <>
+                    <br />
+                    <span class="muted">{meeting.kindName()}</span>
+                  </>
+                )}
+              </th>
+              <td>
+                {meeting.physicalLocation.name}, {meeting.physicalLocation.city}
+                {meeting.electronicAccess && (
+                  <>
+                    <br />
+                    On {meeting.electronicAccess.platform}
+                  </>
+                )}
+              </td>
+              <td>
+                {meeting.hasPostedAgenda() ? (
+                  <a href={`${meeting.path()}#agenda`} aria-label="Posted agenda">
+                    Posted
+                  </a>
+                ) : (
+                  <>Not posted</>
+                )}
+              </td>
+              {showMinutesAndRecording && (
+                <>
+                  <td>
+                    {meeting.minutes ? (
+                      <a
+                        href={`${meeting.path()}#minutes`}
+                        aria-label={meeting.minutes.isDraft() ? 'Draft minutes' : 'Approved minutes'}
+                      >
+                        {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
+                      </a>
+                    ) : (
+                      <>Not posted yet</>
+                    )}
+                  </td>
+                  <td>
+                    {meeting.recording ? (
+                      <a href={meeting.recording.url} aria-label={`Recording on ${meeting.recording.host}`}>
+                        {meeting.recording.host}
+                      </a>
+                    ) : (
+                      <>Not posted yet</>
+                    )}
+                  </td>
+                </>
+              )}
+            </tr>
+          ))
+        )
+      }
+    </tbody>
+  </table>
+</div>

@@ -1,13 +1,13 @@
 ---
 import BaseLayout from '../../components/BaseLayout.astro';
-import MeetingSummary from '../../components/MeetingSummary.astro';
+import MeetingTable from '../../components/MeetingTable.astro';
 import { VermontTime } from '../../domain/VermontTime.ts';
 import { AstroContent } from '../../persistence/AstroContent.ts';
 
 const committee = await AstroContent.loadCommittee();
 const now = VermontTime.now();
 const upcomingMeetings = committee.upcomingMeetings({ now });
-const pastMonths = committee.pastMeetingsByMonth({ now });
+const pastMeetings = committee.pastMeetings({ now });
 ---
 
 <BaseLayout
@@ -22,37 +22,18 @@ const pastMonths = committee.pastMeetingsByMonth({ now });
   <p><a href="/participate/">How to attend and speak</a></p>
 
   <h2>Upcoming meetings</h2>
-  {
-    upcomingMeetings.length > 0 ? (
-      <ul class="plain-list">
-        {upcomingMeetings.map((meeting) => (
-          <li>
-            <MeetingSummary meeting={meeting} now={now} headingLevel="h3" />
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No meetings are scheduled yet.</p>
-    )
-  }
+  <MeetingTable
+    meetings={upcomingMeetings}
+    caption="Upcoming meetings"
+    emptyMessage="No meetings are scheduled yet."
+    showMinutesAndRecording={false}
+  />
 
   <h2>Past meetings</h2>
-  {
-    pastMonths.length > 0 ? (
-      pastMonths.map((month) => (
-        <section aria-label={month.label}>
-          <h3>{month.label}</h3>
-          <ul class="plain-list">
-            {month.meetings.map((meeting) => (
-              <li>
-                <MeetingSummary meeting={meeting} now={now} headingLevel="h4" />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))
-    ) : (
-      <p>The committee has not met yet.</p>
-    )
-  }
+  <MeetingTable
+    meetings={pastMeetings}
+    caption="Past meetings"
+    emptyMessage="The committee has not met yet."
+    showMinutesAndRecording={true}
+  />
 </BaseLayout>

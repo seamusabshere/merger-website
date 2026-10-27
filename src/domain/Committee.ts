@@ -6,16 +6,6 @@ import { Facilitator, Member } from './Member.ts';
 import type { CommitteeData, DistrictData, DocumentData, MeetingData, MemberData } from './schemas.ts';
 import { VermontCalendarDay, type VermontTime } from './VermontTime.ts';
 
-export class MeetingMonth {
-  readonly label: string;
-  readonly meetings: Meeting[];
-
-  constructor({ label, meetings }: { label: string; meetings: Meeting[] }) {
-    this.label = label;
-    this.meetings = meetings;
-  }
-}
-
 export class DistrictVotes {
   readonly district: District;
   readonly count: number;
@@ -216,13 +206,8 @@ export class Committee {
     return this.upcomingMeetings({ now })[0];
   }
 
-  pastMeetingsByMonth({ now }: { now: VermontTime }): MeetingMonth[] {
-    const months = new Map<string, Meeting[]>();
-    for (const meeting of [...this.meetings].reverse().filter((meeting) => meeting.hasStarted({ now }))) {
-      const key = meeting.day().monthKey();
-      months.set(key, [...(months.get(key) ?? []), meeting]);
-    }
-    return [...months.values()].map((meetings) => new MeetingMonth({ label: meetings[0]!.day().monthAndYear(), meetings }));
+  pastMeetings({ now }: { now: VermontTime }): Meeting[] {
+    return this.meetings.filter((meeting) => meeting.hasStarted({ now })).reverse();
   }
 
   meetingsUsing({ document }: { document: Document }): Meeting[] {
@@ -235,8 +220,17 @@ export class Committee {
   }
 
   records(): Document[] {
-    const agendaAndMinutes = new Set(this.meetings.flatMap((meeting) => meeting.agendaAndMinutes()));
+    const agendaAndMinutes = this.agendaAndMinutes();
     return this.documents.filter((document) => document.createdByTheCommittee && !agendaAndMinutes.has(document));
+  }
+
+  recordsFromOtherSources(): Document[] {
+    const agendaAndMinutes = this.agendaAndMinutes();
+    return this.documents.filter((document) => !document.createdByTheCommittee && !agendaAndMinutes.has(document));
+  }
+
+  private agendaAndMinutes(): Set<Document> {
+    return new Set(this.meetings.flatMap((meeting) => meeting.agendaAndMinutes()));
   }
 
   overdueDuties({ now }: { now: VermontTime }): OverdueDuty[] {

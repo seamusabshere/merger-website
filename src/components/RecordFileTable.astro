@@ -1,0 +1,52 @@
+---
+import type { Document } from '../domain/Document.ts';
+
+interface Props {
+  documents: Document[];
+  caption: string;
+  emptyMessage: string;
+}
+
+const { documents, caption, emptyMessage } = Astro.props;
+---
+
+<table>
+  <caption class="visually-hidden">{caption}</caption>
+  <thead>
+    <tr>
+      <th scope="col">File</th>
+      <th scope="col">From</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      documents.length === 0 ? (
+        <tr>
+          <td colspan="3">{emptyMessage}</td>
+        </tr>
+      ) : (
+        documents.flatMap((document) =>
+          document.files.map((file) => (
+            <tr>
+              <th scope="row">
+                <a href={file.url} hreflang={file.language}>
+                  {document.fileName({ file })}
+                </a>{' '}
+                <span class="file-type">({file.typeAndSize()})</span>
+                {file.accessibilityNote() && (
+                  <>
+                    <br />
+                    <span class="muted">{file.accessibilityNote()}</span>
+                  </>
+                )}
+              </th>
+              <td>{document.publisher}</td>
+              <td>{document.publishedDescription()}</td>
+            </tr>
+          )),
+        )
+      )
+    }
+  </tbody>
+</table>

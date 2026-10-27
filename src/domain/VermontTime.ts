@@ -145,10 +145,6 @@ export class VermontCalendarDay {
     return `${this.year}-${String(this.month).padStart(2, '0')}-${String(this.day).padStart(2, '0')}`;
   }
 
-  monthKey(): string {
-    return this.isoDate().slice(0, 7);
-  }
-
   private asUtcNoon(): Date {
     return new Date(Date.UTC(this.year, this.month - 1, this.day, 12));
   }
@@ -167,9 +163,5 @@ export class VermontCalendarDay {
     return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric' }).format(
       this.asUtcNoon(),
     );
-  }
-
-  monthAndYear(): string {
-    return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', year: 'numeric', month: 'long' }).format(this.asUtcNoon());
   }
 }

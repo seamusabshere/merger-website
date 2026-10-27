@@ -1,53 +1,60 @@
 ---
 import BaseLayout from '../../components/BaseLayout.astro';
+import RecordFileTable from '../../components/RecordFileTable.astro';
 import { AstroContent } from '../../persistence/AstroContent.ts';
 
 const committee = await AstroContent.loadCommittee();
 const records = committee.records();
+const recordsFromOtherSources = committee.recordsFromOtherSources();
 ---
 
 <BaseLayout
   title="Public records"
-  description="Files written by the Burlington, South Burlington, and Winooski merger committee. Agendas and minutes are on each meeting page."
+  description="Files for the Burlington, South Burlington, and Winooski merger study. Committee files are listed first. Agendas and minutes are on each meeting page."
   updatedOn={committee.documentsUpdatedOn()}
 >
   <h1>Public records</h1>
   <p class="lede">
-    Files the committee wrote, newest first. Agendas and minutes are on each <a href="/meetings/">meeting's page</a>.
-    Files from state agencies, the Legislature, and the school districts are linked from the pages that cite them.
+    Files for this study, newest first. Agendas and minutes are on each <a href="/meetings/">meeting's page</a>.
   </p>
   <p>
     If you cannot read a file, <a href="/contact/">ask us for another format</a>.
   </p>
 
-  {
-    records.length === 0 ? (
-      <p>The committee has not posted any other files yet.</p>
-    ) : (
-      <table>
-        <caption class="visually-hidden">Files the committee wrote</caption>
-        <thead>
-          <tr>
-            <th scope="col">File</th>
-            <th scope="col">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {records.flatMap((document) =>
-            document.files.map((file) => (
-              <tr>
-                <th scope="row">
-                  <a href={file.url} hreflang={file.language}>
-                    {document.fileName({ file })}
-                  </a>{' '}
-                  <span class="file-type">({file.typeAndSize()})</span>
-                </th>
-                <td>{document.publishedDescription()}</td>
-              </tr>
-            )),
-          )}
-        </tbody>
-      </table>
-    )
-  }
+  <fieldset class="record-tabs">
+    <legend class="visually-hidden">Which records to show</legend>
+    <div class="record-tablist">
+      <input
+        class="record-tab-input"
+        type="radio"
+        name="record-source"
+        id="created-by-the-committee"
+        checked
+      />
+      <label for="created-by-the-committee">Created by the committee</label>
+      <input class="record-tab-input" type="radio" name="record-source" id="other-sources" />
+      <label for="other-sources">Other sources</label>
+    </div>
+
+    <div class="record-panel" id="created-by-the-committee-panel">
+      <h2 class="visually-hidden">Created by the committee</h2>
+      <RecordFileTable
+        documents={records}
+        caption="Files the committee wrote"
+        emptyMessage="The committee has not posted any files yet."
+      />
+    </div>
+
+    <div class="record-panel" id="other-sources-panel">
+      <h2 class="visually-hidden">Other sources</h2>
+      <p>
+        Laws, reports, and memos from state agencies, the Legislature, and the school districts.
+      </p>
+      <RecordFileTable
+        documents={recordsFromOtherSources}
+        caption="Useful public records from other sources"
+        emptyMessage="No files from other sources are posted yet."
+      />
+    </div>
+  </fieldset>
 </BaseLayout>

@@ -49,7 +49,7 @@ If you need a document in another format, such as large print, plain text, or au
 
 ## Ask for a public record
 
-The committee's records are public. Agendas, minutes, and recordings are on each [meeting page](/meetings/). Other files the committee writes are on the [Public Records](/records/) page. To ask for something that is not posted, write to the [contacts](/contact/). Vermont's Public Records Act gives you the right to look at or get copies of public records.
+The committee's records are public. Agendas, minutes, and recordings are on each [meeting page](/meetings/). Other files are on the [Public Records](/records/) page. To ask for something that is not posted, write to the [contacts](/contact/). Vermont's Public Records Act gives you the right to look at or get copies of public records.
 
 Source: [1 V.S.A. chapter 5, subchapter 3](https://legislature.vermont.gov/statutes/fullchapter/01/005)
 
