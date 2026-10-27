@@ -142,7 +142,7 @@ src/
     members.yaml
     meetings/2026-11-02.yaml     # one file per meeting, named by date
     documents/<slug>.yaml        # one file per record: summary and files
-    pages/en/<slug>.md           # prose pages: Act 170, history, participate, accessibility
+    pages/en/<slug>.md           # prose pages: Act 170, CESA, history, participate, accessibility
     questions/<slug>.md          # planned
   domain/                        # classes listed above, and schemas.ts
   persistence/                   # loaders from content files to domain objects
@@ -165,6 +165,7 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
 - **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.
 - **Act 170 of 2026** (`/act-170/`): what the law asks of the committee, what the report must contain, the timeline, how a vote works, and what the law does not do.
+- **Difference from the CESA** (`/cesa/`): why the committee's official name includes "Chittenden Central CESA", and how the committee differs from the CESA in members, votes, job, and lifespan.
 - **Committee members** (`/members/`): members and alternates by district, who appointed them and when, with sources, and the facilitator.
 - **Accessibility** (`/accessibility/`): our target, known gaps, and how to report a problem.
 - **Contact us** (`/contact/`): the facilitator and one contact per district. Use only official work addresses that the person has agreed to publish.
