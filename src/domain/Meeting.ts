@@ -40,7 +40,7 @@ export class Meeting {
   readonly startsAt: VermontTime;
   readonly endsAt: VermontTime | undefined;
   readonly updatedOn: VermontCalendarDay;
-  readonly physicalLocation: PhysicalLocation;
+  readonly physicalLocation: PhysicalLocation | undefined;
   readonly electronicAccess: ElectronicAccess | undefined;
   readonly agenda: Agenda | undefined;
   readonly minutes: Minutes | undefined;
@@ -64,7 +64,7 @@ export class Meeting {
     this.startsAt = VermontTime.parse({ isoInstant: data.startsAt });
     this.endsAt = data.endsAt ? VermontTime.parse({ isoInstant: data.endsAt }) : undefined;
     this.updatedOn = VermontCalendarDay.parse({ isoDate: data.updatedOn });
-    this.physicalLocation = new PhysicalLocation({ data: data.physicalLocation });
+    this.physicalLocation = data.physicalLocation ? new PhysicalLocation({ data: data.physicalLocation }) : undefined;
     this.electronicAccess = data.electronicAccess ? new ElectronicAccess({ data: data.electronicAccess }) : undefined;
     this.agenda = data.agenda ? new Agenda({ data: data.agenda, documentsById }) : undefined;
     this.minutes = data.minutes ? new Minutes({ data: data.minutes, membersById, documentsById }) : undefined;
@@ -137,7 +137,7 @@ export class Meeting {
 
   schemaOrgEvent({ siteUrl, committee }: { siteUrl: string; committee: Committee }): Record<string, unknown> {
     const pageUrl = new URL(this.path(), siteUrl).toString();
-    const place = {
+    const place = this.physicalLocation && {
       '@type': 'Place',
       name: this.physicalLocation.name,
       address: {
@@ -149,6 +149,12 @@ export class Meeting {
         addressCountry: 'US',
       },
     };
+    const virtualLocation = this.electronicAccess && {
+      '@type': 'VirtualLocation',
+      // Google rejects a VirtualLocation without a url, so the meeting page stands in until the join link is known.
+      url: this.electronicAccess.url ?? pageUrl,
+    };
+    const locations = [place, virtualLocation].filter((location) => location);
     return {
       '@context': 'https://schema.org',
       '@type': 'Event',
@@ -157,13 +163,13 @@ export class Meeting {
       startDate: this.startsAt.isoStringWithOffset(),
       ...(this.endsAt && { endDate: this.endsAt.isoStringWithOffset() }),
       eventStatus: 'https://schema.org/EventScheduled',
-      eventAttendanceMode: this.electronicAccess
-        ? 'https://schema.org/MixedEventAttendanceMode'
-        : 'https://schema.org/OfflineEventAttendanceMode',
-      // Google rejects a VirtualLocation without a url, so the meeting page stands in until the join link is known.
-      location: this.electronicAccess
-        ? [place, { '@type': 'VirtualLocation', url: this.electronicAccess.url ?? pageUrl }]
-        : place,
+      ...(this.physicalLocation &&
+        this.electronicAccess && { eventAttendanceMode: 'https://schema.org/MixedEventAttendanceMode' }),
+      ...(this.physicalLocation &&
+        !this.electronicAccess && { eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode' }),
+      ...(!this.physicalLocation &&
+        this.electronicAccess && { eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode' }),
+      ...(locations.length > 0 && { location: locations.length === 1 ? locations[0] : locations }),
       isAccessibleForFree: true,
       organizer: committee.schemaOrgOrganization({ siteUrl }),
       url: pageUrl,
@@ -194,7 +200,7 @@ export class Meeting {
       `DTSTART:${this.startsAt.iCalendarUtc()}`,
       this.endsAt ? `DTEND:${this.endsAt.iCalendarUtc()}` : undefined,
       `SUMMARY:${escapeCalendarText({ text: 'Merger study committee meeting' })}`,
-      `LOCATION:${escapeCalendarText({ text: this.physicalLocation.singleLine() })}`,
+      this.physicalLocation ? `LOCATION:${escapeCalendarText({ text: this.physicalLocation.singleLine() })}` : undefined,
       `DESCRIPTION:${escapeCalendarText({ text: description })}`,
       `URL:${pageUrl}`,
       'END:VEVENT',

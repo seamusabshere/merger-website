@@ -153,7 +153,7 @@ export const meetingSchema = z.object({
   startsAt: isoInstant,
   endsAt: isoInstant.optional(),
   updatedOn: calendarDay,
-  physicalLocation: physicalLocationSchema,
+  physicalLocation: physicalLocationSchema.optional(),
   electronicAccess: electronicAccessSchema.optional(),
   agenda: agendaSchema.optional(),
   minutes: minutesSchema.optional(),

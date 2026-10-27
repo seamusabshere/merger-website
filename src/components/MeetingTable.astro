@@ -50,7 +50,13 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                 )}
               </th>
               <td>
-                {meeting.physicalLocation.name}, {meeting.physicalLocation.city}
+                {meeting.physicalLocation ? (
+                  <>
+                    {meeting.physicalLocation.name}, {meeting.physicalLocation.city}
+                  </>
+                ) : (
+                  <>To be determined</>
+                )}
                 {meeting.electronicAccess && (
                   <>
                     <br />

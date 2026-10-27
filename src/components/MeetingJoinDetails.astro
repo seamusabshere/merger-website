@@ -19,18 +19,32 @@ const access = meeting.electronicAccess;
 
   <dt>In person</dt>
   <dd>
-    {location.name}
-    {location.room && <><br />{location.room}</>}
-    <br />{location.streetAddress}
-    <br />{location.cityLine()}
-    <br /><a href={location.mapUrl()}>Map of {location.streetAddress}</a>
     {
-      location.accessNotes.length > 0 && (
-        <ul>
-          {location.accessNotes.map((note) => (
-            <li>{note}</li>
-          ))}
-        </ul>
+      location ? (
+        <>
+          {location.name}
+          {location.room && (
+            <>
+              <br />
+              {location.room}
+            </>
+          )}
+          <br />
+          {location.streetAddress}
+          <br />
+          {location.cityLine()}
+          <br />
+          <a href={location.mapUrl()}>Map of {location.streetAddress}</a>
+          {location.accessNotes.length > 0 && (
+            <ul>
+              {location.accessNotes.map((note) => (
+                <li>{note}</li>
+              ))}
+            </ul>
+          )}
+        </>
+      ) : (
+        <>To be determined.</>
       )
     }
   </dd>
