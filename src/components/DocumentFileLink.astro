@@ -1,0 +1,13 @@
+---
+import type { DocumentFile } from '../domain/Document.ts';
+
+interface Props {
+  file: DocumentFile;
+}
+
+const { file } = Astro.props;
+const accessibilityNote = file.accessibilityNote();
+---
+
+<a href={file.url} hreflang={file.language}>{file.label}</a>{' '}<span class="file-type">({file.typeAndSize()})</span>
+{accessibilityNote && <><br /><span class="muted">{accessibilityNote}</span></>}

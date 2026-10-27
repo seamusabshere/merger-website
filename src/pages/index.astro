@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import MeetingJoinDetails from '../components/MeetingJoinDetails.astro';
+import { VermontTime } from '../domain/VermontTime.ts';
+import { AstroContent } from '../persistence/AstroContent.ts';
+
+const committee = await AstroContent.loadCommittee();
+const now = VermontTime.now();
+const nextMeeting = committee.nextMeeting({ now });
+const agendaDeadline = nextMeeting?.agendaDeadline();
+---
+
+<BaseLayout
+  title="Home"
+  description="The Burlington, South Burlington, and Winooski school districts are studying whether to merge under Vermont's Act 170. Meetings, records, and how to take part."
+  updatedOn={committee.updatedOn()}
+>
+  <h1>Should our three school districts become one?</h1>
+  <p class="lede">
+    A Vermont law, Act 170, requires the Burlington, South Burlington, and Winooski school districts to study that
+    question together. A committee of school board members from all three districts is doing the study.{' '}
+    <strong>The committee has not decided anything.</strong>
+  </p>
+
+  <section aria-labelledby="next-meeting">
+    <div class="panel">
+      <h2 id="next-meeting">Next meeting</h2>
+      {
+        nextMeeting ? (
+          <>
+            <MeetingJoinDetails meeting={nextMeeting} />
+            <p>
+              {nextMeeting.hasPostedAgenda() ? (
+                <a href={`${nextMeeting.path()}#agenda`}>Read the agenda</a>
+              ) : agendaDeadline ? (
+                <>The agenda will be posted by {agendaDeadline.dateAndTime()}.</>
+              ) : null}
+            </p>
+            <p>
+              <a class="button" href={nextMeeting.path()}>
+                Meeting details
+              </a>{' '}
+              <a class="button" href={nextMeeting.calendarFilePath()}>
+                Add to calendar
+              </a>
+            </p>
+          </>
+        ) : (
+          <p>No meeting is scheduled yet. See <a href="/meetings/">past meetings</a>.</p>
+        )
+      }
+    </div>
+  </section>
+
+  <section aria-labelledby="take-part">
+    <h2 id="take-part">Take part</h2>
+    <p>
+      Anyone may attend, in person, by video, or by phone. Each meeting has time for public input, and you may send a
+      written comment to be read aloud. <a href="/participate/">How to participate</a>.
+    </p>
+  </section>
+
+  <section aria-labelledby="the-study">
+    <h2 id="the-study">What the committee is studying</h2>
+    <p>
+      The committee will recommend whether it is "advisable" for the three districts to form one district with one
+      school board. Its report must look at the strengths and challenges of each district today, how students would
+      get access to career and technical education, and whether a new district would give every student an equal
+      chance at an excellent education at a cost voters value.
+    </p>
+    <ul>
+      <li><strong>By September 1, 2027:</strong> the committee sends its report to the three school boards and the state.</li>
+      <li><strong>By December 15, 2027:</strong> the State Board of Education reviews any proposed merger.</li>
+      <li>
+        <strong>March 7, 2028:</strong> if the committee proposes a merger, voters in each district vote on it.
+      </li>
+    </ul>
+    <p><a href="/act-170/">What Act 170 says</a> · <a href="/history/">History of school mergers in Vermont</a></p>
+  </section>
+
+  <section aria-labelledby="latest-records">
+    <h2 id="latest-records">Latest records</h2>
+    <ul class="plain-list">
+      {
+        committee.latestDocuments({ count: 3 }).map((document) => (
+          <li>
+            <a href={document.path()}>{document.title}</a>
+            <br />
+            <span class="muted">
+              {document.publisher}, {document.publishedDescription()}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+    <p><a href="/records/">All public records</a></p>
+  </section>
+</BaseLayout>

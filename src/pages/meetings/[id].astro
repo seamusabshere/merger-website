@@ -1,0 +1,219 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import DocumentFileLink from '../../components/DocumentFileLink.astro';
+import MeetingJoinDetails from '../../components/MeetingJoinDetails.astro';
+import { VermontTime } from '../../domain/VermontTime.ts';
+import { AstroContent } from '../../persistence/AstroContent.ts';
+
+export async function getStaticPaths() {
+  const committee = await AstroContent.loadCommittee();
+  return committee.meetings.map((meeting) => ({ params: { id: meeting.id }, props: { meetingId: meeting.id } }));
+}
+
+const committee = await AstroContent.loadCommittee();
+const meeting = committee.meetingById({ id: Astro.props.meetingId });
+const now = VermontTime.now();
+const hasStarted = meeting.hasStarted({ now });
+const agendaDeadline = meeting.agendaDeadline();
+const agenda = meeting.agenda;
+const minutes = meeting.minutes;
+const recording = meeting.recording;
+---
+
+<BaseLayout
+  title={meeting.title()}
+  description={`Agenda, join details, minutes, and recording for the merger committee meeting on ${meeting.day().longDate()}.`}
+  updatedOn={meeting.updatedOn}
+>
+  <p class="muted"><a href="/meetings/">Public meetings</a></p>
+  <h1>{meeting.title()}</h1>
+  <p>{meeting.kindName()} of the Burlington, South Burlington, and Winooski merger committee.</p>
+
+  <section aria-labelledby="join">
+    <div class="panel">
+      <h2 id="join">{hasStarted ? 'When and where it met' : 'How to attend'}</h2>
+      <MeetingJoinDetails meeting={meeting} />
+      {!hasStarted && <p><a class="button" href={meeting.calendarFilePath()}>Add to calendar</a></p>}
+    </div>
+    {meeting.notes.map((note) => <p>{note}</p>)}
+    {!hasStarted && <p><a href="/participate/">How to speak or send a written comment</a></p>}
+  </section>
+
+  <section aria-labelledby="agenda">
+    <h2 id="agenda">Agenda</h2>
+    {
+      agenda && agenda.isPosted() ? (
+        <>
+          {agenda.postedAt && <p class="muted">Posted {agenda.postedAt.dateAndTime()}.</p>}
+          <ol class="agenda">
+            {agenda.items.map((item) => (
+              <li>
+                <strong>{item.heading()}</strong>
+                {item.description && <><br />{item.description}</>}
+                {item.subitems.length > 0 && (
+                  <ul>
+                    {item.subitems.map((subitem) => (
+                      <li>{subitem}</li>
+                    ))}
+                  </ul>
+                )}
+                {item.documents.length > 0 && (
+                  <ul>
+                    {item.documents.map((document) => (
+                      <li>
+                        Record: <a href={document.path()}>{document.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ol>
+          {agenda.sourceUrl && (
+            <p>
+              <a href={agenda.sourceUrl}>Original meeting notice</a>
+            </p>
+          )}
+        </>
+      ) : agendaDeadline && !hasStarted ? (
+        <p>
+          Not posted yet. The law requires it here by <strong>{agendaDeadline.dateAndTime()}</strong>.
+        </p>
+      ) : (
+        <p>Not posted on this site.</p>
+      )
+    }
+  </section>
+
+  {
+    hasStarted && (
+      <section aria-labelledby="minutes">
+        <h2 id="minutes">Minutes</h2>
+        {minutes ? (
+          <>
+            <p class={minutes.isDraft() ? 'notice' : 'muted'}>{minutes.statusNote()}</p>
+            <p class="muted">Posted {minutes.postedAt.dateAndTime()}.</p>
+            <h3>Members present</h3>
+            <ul>
+              {minutes.membersPresent.map((member) => (
+                <li>
+                  {member.name}, {member.district.name}
+                </li>
+              ))}
+            </ul>
+            {minutes.otherParticipants.length > 0 && (
+              <>
+                <h3>Others who took part</h3>
+                <ul>
+                  {minutes.otherParticipants.map((participant) => (
+                    <li>{participant}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {minutes.discussion.length > 0 && (
+              <>
+                <h3>Discussion</h3>
+                {minutes.discussion.map((topic) => (
+                  <>
+                    <h4>{topic.topic}</h4>
+                    <p>{topic.summary}</p>
+                  </>
+                ))}
+              </>
+            )}
+            <h3>Motions and votes</h3>
+            {minutes.motions.length > 0 ? (
+              <ol>
+                {minutes.motions.map((motion) => (
+                  <li>
+                    <p>
+                      {motion.text}
+                      <br />
+                      <strong>{motion.resultWord()}.</strong>
+                      {motion.movedBy && <> Moved by {motion.movedBy.name}.</>}
+                      {motion.secondedBy && <> Seconded by {motion.secondedBy.name}.</>}
+                      {motion.vote && <> {motion.vote.describe()}.</>}
+                    </p>
+                    {motion.vote?.isRollCall() && (
+                      <table>
+                        <caption class="muted">Roll call</caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">Member</th>
+                            <th scope="col">District</th>
+                            <th scope="col">Vote</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {motion.vote.rollCall.map((entry) => (
+                            <tr>
+                              <td>{entry.member.name}</td>
+                              <td>{entry.member.district.name}</td>
+                              <td>{entry.voteWord()}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p>No motions.</p>
+            )}
+            {minutes.sourceUrl && (
+              <p>
+                <a href={minutes.sourceUrl}>Original minutes</a>
+              </p>
+            )}
+          </>
+        ) : (
+          <p>
+            Not posted yet. The law requires minutes here by <strong>{meeting.minutesDeadline().dateAndTime()}</strong>.
+          </p>
+        )}
+      </section>
+    )
+  }
+
+  {
+    hasStarted && (
+      <section aria-labelledby="recording">
+        <h2 id="recording">Recording</h2>
+        {recording ? (
+          <>
+            <p>
+              <a href={recording.url}>Watch the recording on {recording.host}</a>
+            </p>
+            <p class="muted">{recording.captionNote()}</p>
+          </>
+        ) : (
+          <p>Not posted yet.</p>
+        )}
+      </section>
+    )
+  }
+
+  {
+    meeting.documents.length > 0 && (
+      <section aria-labelledby="records">
+        <h2 id="records">Records for this meeting</h2>
+        <ul class="plain-list">
+          {meeting.documents.map((document) => (
+            <li>
+              <a href={document.path()}>{document.title}</a>
+              <ul>
+                {document.files.map((file) => (
+                  <li>
+                    <DocumentFileLink file={file} />
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+title: How to participate
+description: How to attend a merger committee meeting in person, by video, or by phone, how to speak or send a comment, and how to ask for records.
+updatedOn: "2026-10-27"
+---
+
+Every committee meeting is open to the public. You do not need to sign up, and you do not need to live in any of the three cities.
+
+## Attend a meeting
+
+Each meeting has a place you can go in person and a way to join by video or phone. The details are on each [meeting's page](/meetings/). Each meeting page also has a calendar file you can add to your phone or computer.
+
+- **In person.** Go to the address on the meeting page.
+- **By video.** Use the link on the meeting page.
+- **By phone.** Call the number on the meeting page and enter the PIN. You can listen and speak by phone without a computer or the internet.
+
+The committee records every meeting. Recordings are linked from each meeting page.
+
+## Speak at a meeting
+
+Each meeting has one time set aside for public input. At the October 20, 2026 meeting, these were the rules:
+
+- You may speak in person or online.
+- Start by giving your full name and the town where you live.
+- You have 2 minutes.
+- Speak about items on that meeting's agenda.
+- The committee listens but does not debate with speakers. It may answer briefly when a quick answer is needed.
+- Personal attacks, ridicule, and profane language are not allowed.
+
+The rules for each meeting are in its notice, linked from the meeting page.
+
+## Send a written comment
+
+If you cannot attend, you may send a written comment to be read aloud during public input. Send it to the facilitator or to your district's contact on our [contact page](/contact/) before the meeting. Include your name and town, and the meeting date.
+
+## Ask for in-person, phone, or video access
+
+If you live in Burlington, South Burlington, or Winooski, or you are a reporter, Vermont's Open Meeting Law lets you ask the committee to offer a physical place to attend, or a way to join by phone or video, for a regular meeting.
+
+- Ask in writing at least 2 business days before the meeting. Use our [contact page](/contact/).
+- You do not have to say why.
+- Each request covers one meeting.
+
+Source: [1 V.S.A. § 312(j)](https://legislature.vermont.gov/statutes/section/01/005/00312)
+
+## Ask for another format or language
+
+If you need a document in another format, such as large print, plain text, or audio, or you need help in another language, ask us on the [contact page](/contact/). The Burlington School District also has [multilingual liaisons](https://www.bsdvt.org/district/department-of-multilingual-learners/) who help families in many languages.
+
+## Ask for a public record
+
+The committee's records are public. Most are on our [Public Records](/records/) page or on a meeting page. To ask for something that is not posted, write to the [contacts](/contact/). Vermont's Public Records Act gives you the right to look at or get copies of public records.
+
+Source: [1 V.S.A. chapter 5, subchapter 3](https://legislature.vermont.gov/statutes/fullchapter/01/005)
+
+## Follow your own school board
+
+Each school board talks about the study at its own meetings, and some take public input there too.
+
+- [Burlington School Board meetings](https://bsdvt.community.highbond.com/Portal/MeetingTypeList.aspx)
+- [South Burlington School Board meetings](https://www.sbschools.net/page/school-board-recordings)
+- [Winooski School Board meetings](https://www.wsdvt.org/school-board/board-agenda/). Winooski also has a residents' group, the Merger Study Buddies, that meets during regular board meetings on the second Wednesday of each month at 6:00 p.m.

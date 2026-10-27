@@ -1,0 +1,8 @@
+---
+import ProsePage from '../components/ProsePage.astro';
+import { AstroContent } from '../persistence/AstroContent.ts';
+
+const page = await AstroContent.loadPage({ locale: 'en', slug: 'accessibility' });
+---
+
+<ProsePage page={page} />

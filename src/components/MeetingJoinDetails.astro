@@ -1,0 +1,82 @@
+---
+import type { Meeting } from '../domain/Meeting.ts';
+
+interface Props {
+  meeting: Meeting;
+}
+
+const { meeting } = Astro.props;
+const location = meeting.physicalLocation;
+const access = meeting.electronicAccess;
+---
+
+<dl class="facts">
+  <dt>When</dt>
+  <dd>
+    {meeting.day().longDate()}<br />
+    {meeting.timeRange()}
+  </dd>
+
+  <dt>In person</dt>
+  <dd>
+    {location.name}
+    {location.room && <><br />{location.room}</>}
+    <br />{location.streetAddress}
+    <br />{location.cityLine()}
+    <br /><a href={location.mapUrl()}>Map of {location.streetAddress}</a>
+    {
+      location.accessNotes.length > 0 && (
+        <ul>
+          {location.accessNotes.map((note) => (
+            <li>{note}</li>
+          ))}
+        </ul>
+      )
+    }
+  </dd>
+
+  {
+    access && (
+      <>
+        <dt>By video</dt>
+        <dd>
+          {access.url ? (
+            <>
+              <a href={access.url}>Join on {access.platform}</a>
+              {access.meetingId && (
+                <>
+                  <br />
+                  Meeting ID: {access.meetingId}
+                </>
+              )}
+              {access.passcode && (
+                <>
+                  <br />
+                  Passcode: {access.passcode}
+                </>
+              )}
+            </>
+          ) : (
+            <>The {access.platform} link is not posted yet. We will add it here before the meeting.</>
+          )}
+        </dd>
+        <dt>By phone</dt>
+        <dd>
+          {access.phoneNumber ? (
+            <>
+              Call <a href={access.telephoneHref()}>{access.phoneNumber}</a>
+              {access.phonePin && (
+                <>
+                  <br />
+                  PIN: {access.phonePin}
+                </>
+              )}
+            </>
+          ) : (
+            <>The phone number is not posted yet. We will add it here before the meeting.</>
+          )}
+        </dd>
+      </>
+    )
+  }
+</dl>

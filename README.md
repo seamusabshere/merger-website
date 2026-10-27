@@ -1,0 +1,241 @@
+# Burlington, South Burlington, and Winooski Merger Study
+
+Source for <https://burlington-south-burlington-winooski-merger-study.org>.
+
+This README is the plan for how the site works. Read it before changing anything. If you change how the site works, update this file in the same commit. It describes the current design, not the history of how we got here.
+
+Sections marked **planned** describe what is not built yet.
+
+## What the site is
+
+Act 170 of 2026 (H.955, signed June 18, 2026) put the Burlington, South Burlington, and Winooski school districts in one merger committee (Chittenden Central, Group 18). The committee studies whether forming one unified union school district is advisable and makes a recommendation. It does not decide. Key dates, from Act 170 Sec. 13:
+
+- October 20, 2026: the committee's first meeting.
+- By September 1, 2027: the final report goes to the three school boards, the Secretary of Education, and the State Board of Education.
+- By December 1, 2027: the Secretary recommends on any proposed merger. By December 15, 2027: the State Board issues findings.
+- March 7, 2028 (Town Meeting Day), if a merger is proposed: voters in each district the plan names "necessary" or "advisable" vote. The new district forms only if every "necessary" district votes yes; an "advisable" district joins only if its own voters say yes (16 V.S.A. § 713(b)).
+- By July 1, 2029, if voters approve: the new district takes over for the 2029 to 2030 school year.
+
+The law is new and dates may move. Check the [Agency of Education's page](https://education.vermont.gov/schools/school-governance/education-transformation) before changing them.
+
+The site has three jobs, in this order:
+
+1. Tell people how to take part: when the next meeting is, how to attend in person or by phone or video, and how to comment.
+2. Keep the public record: agendas, minutes, recordings, and documents.
+3. Explain the study in plain language.
+
+## Status: the committee's official website
+
+This is the official website of the Act 170 merger study committee for Burlington, South Burlington, and Winooski. Every page says so in the footer.
+
+Vermont's Open Meeting Law (1 V.S.A. § 312) attaches posting duties to "a website, if one exists, that the public body maintains or designates as the official website of the body." So this site carries legal deadlines:
+
+- Agendas must be on this site at least 48 hours before a regular meeting and 24 hours before a special meeting.
+- Minutes must be on this site within 5 calendar days of the meeting.
+- Minutes must stay on this site for at least 1 year. Approved minutes may replace drafts.
+
+A missed deadline here is a breach of the law, not a website bug. Treat it that way.
+
+## Who it is for
+
+- Parents and guardians in three districts, many reading on a phone.
+- Families who read English as a second language or not at all. Burlington's district employs liaisons for Nepali, Somali and Maay Maay, Swahili, Kirundi, Kinyarwanda, French, Arabic, Vietnamese, Karen, Burmese, Bosnian, and Spanish.
+- Voters in March 2028 who want the facts in one place.
+- Reporters and committee members looking for a specific record.
+- People using screen readers, magnifiers, keyboards, or voice control.
+
+## Rules, in priority order
+
+1. **Accurate and current.** A wrong meeting time is worse than no site. Every date carries its time zone (America/New_York).
+2. **Accessible.** WCAG 2.1 AA is the legal floor (ADA Title II). Meet WCAG 2.2 AA where it costs little.
+3. **Neutral.** The committee has not decided, and the site does not argue for or against a merger. Show the evidence and the arguments on each side, with the source of each.
+4. **Plain language.** Aim for an 8th-grade reading level. Define terms like "union school district" when they first appear.
+5. **On the page, not in a PDF.** The public needs to read agendas, minutes, and summaries in HTML. A PDF is a copy, not the main version.
+6. **Attractive.** Get there through type, spacing, and layout. Never trade accessibility for looks.
+
+## Legal duties the site must support
+
+From 1 V.S.A. § 312, as amended through 2026. Read the statute when in doubt; it changes.
+
+| Item | Rule |
+| --- | --- |
+| Agenda, regular meeting | Posted at least 48 hours before |
+| Agenda, special meeting | Posted at least 24 hours before |
+| Executive session on an agenda | Listed as "proposed executive session" with the nature of the business |
+| Remote or phone access | The agenda or notice includes what someone needs to join, including by phone |
+| Minutes | Posted within 5 calendar days; kept at least 1 year |
+| Minutes content | Members present, other active participants, every motion and its result, vote results, and each member's vote on a roll call |
+| Recording | Every meeting is recorded. Link the recording from the meeting page and keep it up at least 30 days after the minutes are posted. We keep them up indefinitely. |
+| Public comment | A reasonable chance to speak at each meeting |
+| Request for access | A resident, member, or reporter may ask in writing, 2 business days ahead, for a physical location or phone or video access to one regular meeting (§ 312(j)) |
+
+The committee records every meeting. The statute requires a local public body to record only if it is not an "advisory body," meaning a body with no supervision, control, or jurisdiction over legislative, quasi-judicial, tax, or budgetary matters (1 V.S.A. § 310). Whether this committee counts as advisory does not change what the site does, because it records either way. It does decide whether the committee may meet remote-only, so `Committee` holds it as a fact rather than templates assuming it.
+
+The ADA web rule (28 CFR 35.200) requires WCAG 2.1 AA. A school district is not a "special district government" under the rule. It uses its city's population. Burlington, South Burlington, and Winooski each have fewer than 50,000 people, so the deadline is April 26, 2028. Build to the standard now regardless.
+
+## Stack
+
+- **Astro**, static output only. No server, no client framework. Ship HTML and CSS. Add JavaScript only for a feature that works without it first.
+- **Content collections** with Zod schemas hold the content in `src/content/`.
+- **GitHub Pages**, deployed by GitHub Actions with `withastro/action` (`.github/workflows/deploy.yml`). Pages say "upcoming" or "past" as of build time, so the workflow also rebuilds every hour.
+- **No CMS** to start. Someone posts an agenda by opening a pull request. Add a CMS only when a person who does not use git must post on deadline.
+- **No analytics, cookies, or third-party scripts.** Link to video hosts; do not embed their players.
+- **Pagefind** for search, added once the archive is big enough to need it.
+
+### Domain and deploy
+
+Set `site` in `astro.config.mjs` to `https://burlington-south-burlington-winooski-merger-study.org`. Do not set `base`; the custom domain serves the site from `/`.
+
+When the site deploys through GitHub Actions, GitHub ignores the `CNAME` file in the repo. The custom domain lives in repository Settings, then Pages. The root `CNAME` file serves branch publishing, which is in use while HTTPS is set up. To switch, set the Pages source to "GitHub Actions" in repository settings, then remove `CNAME`.
+
+Do not commit video or large binaries. GitHub rejects files over 100 MB and limits a Pages site to 1 GB. Recordings live on a video host; the site links to them.
+
+## Domain model
+
+Content files are storage. `src/persistence/AstroContent.ts` loads them at build time into domain classes in `src/domain/`; `src/persistence/FileContent.ts` does the same outside Astro, for scripts. Pages and components work only with these classes, never with raw collection entries. Each class holds its data and the rules about it. Schemas live in `src/domain/schemas.ts` and are shared by both loaders.
+
+Times are `VermontTime` (an instant, shown in America/New_York) and dates are `VermontCalendarDay`. Write times in content files with their UTC offset: `-04:00` in summer, `-05:00` in winter. Deadlines count real hours, so the agenda deadline for a meeting just after the November clock change lands an hour later on the clock.
+
+| Class | Holds | Knows how to |
+| --- | --- | --- |
+| `Committee` | Name, whether it is an advisory body (`null` until settled), `Facilitator`, districts, members, meetings, documents | Find the next meeting, group past meetings by month, list overdue duties, say whether it may meet online only |
+| `District` | Name, city, website, phone, student count with source | Sort alphabetically |
+| `DistrictDelegation` | A `District` and its members and alternates | Name the district's contact |
+| `Member` | Name, appointing `District`, member or alternate, board role, appointment date and source | Show name and role |
+| `Facilitator` | Name, title, organization, email, phone, source | Give a phone link |
+| `Meeting` | Kind (regular, special, emergency), start time, `PhysicalLocation`, `ElectronicAccess`, `Agenda`, `Minutes`, `Recording` | Compute `agendaDeadline`, `minutesDeadline`, `minutesKeepUntil`; report what is overdue |
+| `PhysicalLocation` | Name, address, access notes (entrance, parking, elevator) | Render an address |
+| `ElectronicAccess` | Meeting link, phone number, meeting ID, passcode | Render join instructions that work without the link |
+| `Agenda` | Ordered `AgendaItem`s, posted time | Label executive session items as the law requires |
+| `AgendaItem` | Title, description, whether it is a proposed executive session, linked `Document`s | Render itself |
+| `Minutes` | Status (draft or approved), members present, other participants, `Motion`s, posted time | Show draft status plainly |
+| `Motion` | Text, mover, seconder, result, `Vote` | Render itself |
+| `Vote` | Result, and each member's vote if by roll call | Render a roll call table |
+| `Recording` | URL, host, posted time, captions available | Say how long it must stay up |
+| `Document` | Title, summary, date, `DocumentFile`s | Give the page that describes the file |
+| `DocumentFile` | Language, format, size, whether accessible, URL | Label the link with type and size |
+| `Page` | Title, description, last updated date, rendered body | Plain prose pages |
+| `Question` (planned) | Question, answer, date answered, date revised | Show when the answer last changed |
+| `Translation` (planned) | Language, translator (person or machine), date, source version | Tell the reader if it is out of date |
+
+Function arguments use named options objects, not positional arguments. A function whose main argument is one of these classes belongs on that class as a method.
+
+## Content layout
+
+```text
+src/
+  content/
+    committee.yaml               # the committee and its facilitator
+    districts.yaml
+    members.yaml
+    meetings/2026-11-02.yaml     # one file per meeting, named by date
+    documents/<slug>.yaml        # one file per record: summary and files
+    pages/en/<slug>.md           # prose pages: Act 170, history, participate, accessibility
+    questions/<slug>.md          # planned
+  domain/                        # classes listed above, and schemas.ts
+  persistence/                   # loaders from content files to domain objects
+  pages/                         # thin Astro routes that load domain objects
+  components/
+scripts/
+  check-deadlines.ts             # fails if an agenda or minutes is past its legal deadline
+public/
+  documents/                     # small PDFs and slides only
+```
+
+Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a different type.
+
+## Pages
+
+- **Home** (`/`): the next meeting with join details, a note that the committee has not decided, what it studies, the key dates, and the latest records.
+- **Public meetings** (`/meetings/`): upcoming meetings, then past meetings by month. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`). A missing agenda or minutes shows its legal deadline.
+- **Public records** (`/records/`): one page per record, with our plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format.
+- **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
+- **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.
+- **Act 170 of 2026** (`/act-170/`): what the law asks of the committee, what the report must contain, the timeline, how a vote works, and what the law does not do.
+- **Committee members** (`/members/`): members and alternates by district, who appointed them and when, with sources, and the facilitator.
+- **Accessibility** (`/accessibility/`): our target, known gaps, and how to report a problem.
+- **Contact us** (`/contact/`): the facilitator and one contact per district. Use only official work addresses that the person has agreed to publish.
+- **Questions** (planned): answers in HTML, dated, revised in place with the revision date shown.
+
+Do not describe Winooski's "four questions" (educational opportunity, governance, money and operations, long-term sustainability) as words from the law. They are Winooski's summary. The law's required report contents are in Act 170 Sec. 13(b)(4).
+
+Every page shows a "last updated" date.
+
+## Languages (planned)
+
+English is the source. Translate in this order:
+
+1. How to take part, the next meeting, and the one-page summary of the study. People translate these, not machines.
+2. Question answers and document summaries, as the committee is able.
+3. Agendas and minutes stay in English unless the committee provides translations. Each meeting page says, in each supported language, how to get help.
+
+Choose the first languages with the districts' multilingual liaisons, not from census tables. Arabic is right-to-left. Use logical CSS properties (`margin-inline-start`, not `margin-left`) everywhere, and set `lang` and `dir` on every page. A translated page names its translator and the English version it came from, and says so when the English has changed since.
+
+Routes: English at `/`, other languages at `/<language code>/` (for example `/ne/`, `/so/`, `/sw/`, `/ar/`).
+
+## Design
+
+- One column for reading, about 65 characters wide. Body text at least 18px. Sizes in `rem` so user zoom works.
+- Type: Atkinson Hyperlegible Next for body text, self-hosted. It keeps easily confused letters distinct. Check that each planned language's script is covered; use a fallback that covers it if not.
+- Color: one strong accent, contrast at least 4.5:1 for text and 3:1 for controls. Color is never the only signal. Treat the three districts the same: same size, same weight, alphabetical order.
+- Links look like links: underlined in body text.
+- Visible focus on every control. Targets at least 24 by 24 CSS pixels.
+- No carousels, autoplay, parallax, or motion that ignores `prefers-reduced-motion`.
+- Navigation wraps on small screens. No hamburger menu unless the links stop fitting.
+- Do not use the USWDS "official website of the United States government" banner. This is not a federal site. Borrowing USWDS patterns (skip link, landmarks, form patterns) is fine.
+- The home page reads like a public notice: the next meeting first, then the question under study, then the latest records.
+
+## Accessibility testing
+
+Automated checks catch some problems, not all. `.github/workflows/checks.yml` runs on every pull request, on every push to `main`, and every hour:
+
+- `npm run check` (`astro check`)
+- `npm run build`
+- `npm run check:deadlines`: loads every `Meeting` and fails if an agenda or minutes are past their deadline. It also prints how many hours are left for upcoming agendas.
+
+Planned: HTML validation (`html-validate`), axe-core on every built page with zero violations, an internal link check, and a reading level report for English pages.
+
+By hand, before any change to layout or components:
+
+- Use the page with only a keyboard. Focus is visible and in order.
+- Read it with VoiceOver (macOS, iOS) and NVDA (Windows). Headings and landmarks make sense.
+- Zoom to 200% and to a 320px-wide window. Nothing is cut off or scrolls sideways.
+- Check an Arabic page if one exists.
+
+## Common updates
+
+**Add a meeting.** Copy a file in `src/content/meetings/`, name it by the meeting date, and fill in the time with its UTC offset, the place, and the video and phone details. Leave out what you do not know; the page says it is coming.
+
+**Post an agenda.** Fill in `agenda` in the meeting file, set `postedAt`, and merge before the deadline. `npm run check:deadlines` says how much time is left.
+
+**Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. Never delete posted minutes within one year of the meeting.
+
+**Post a recording.** Add `recording` to the meeting file with its host and caption status.
+
+**Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Add each file with its type, size in bytes, and whether we checked it for accessibility. Link it from a meeting with `documentIds`.
+
+**Change members.** Edit `members.yaml`, cite the board minutes that made the appointment, and update `membersUpdatedOn` in `committee.yaml`.
+
+**Correct a mistake.** Fix it and add a dated note to the page that says what changed. Do not erase errors in the public record silently.
+
+## Open questions
+
+- Is the committee an advisory body under 1 V.S.A. § 310? This decides only whether it may meet remote-only.
+- The October 20, 2026 notice says agendas, minutes, and recordings "will be housed on the websites of participating districts." The committee should vote to designate this site as its official website, so it is clear which site carries the posting deadlines.
+- Who receives written comments, access requests, and records requests? The contact page sends them to the facilitator or a district contact until the committee decides.
+- Who posts agendas and minutes, and who backs them up when that person is away?
+- Which languages first, and who translates?
+- Where are recordings hosted, and do they have captions?
+
+## Sources
+
+- [1 V.S.A. § 312, Vermont Open Meeting Law](https://legislature.vermont.gov/statutes/section/01/005/00312)
+- [Agency of Education: Open Meeting Law and Public Records Act](https://education.vermont.gov/sites/aoe/files/edu-the-open-meeting-law-and-public-records-act.pdf)
+- [ADA.gov: Title II web accessibility rule](https://www.ada.gov/resources/2024-03-08-web-rule/)
+- [Winooski: Merger Study Committee background and timeline](https://www.winooskivt.gov/AgendaCenter/ViewFile/Item/13619?fileID=19366)
+- [Winooski School District: Act 170](https://www.wsdvt.org/project/act170/)
+- [Burlington School District: Department of Multilingual Learners](https://www.bsdvt.org/district/department-of-multilingual-learners/)
+- [Astro: Deploy to GitHub Pages](https://docs.astro.build/en/guides/deploy/github/)
+- [GitHub: Managing a custom domain for Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)
+- [Minneapolis: document gateway pages](https://www.minneapolismn.gov/website-guidelines-branch/website-guidelines/content-types/gateway-content-types/gateway---document/)
+- [Center for Civic Design: Designing Election Websites](https://electionexcellence.org/wp-content/uploads/2025/08/Designing-Election-Websites.pdf)

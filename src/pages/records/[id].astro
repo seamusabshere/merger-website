@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import DocumentFileLink from '../../components/DocumentFileLink.astro';
+import { AstroContent } from '../../persistence/AstroContent.ts';
+
+export async function getStaticPaths() {
+  const committee = await AstroContent.loadCommittee();
+  return committee.documents.map((document) => ({ params: { id: document.id }, props: { documentId: document.id } }));
+}
+
+const committee = await AstroContent.loadCommittee();
+const document = committee.documentById({ id: Astro.props.documentId });
+const meetings = committee.meetingsUsing({ document });
+---
+
+<BaseLayout title={document.title} description={document.summaryParagraphs[0]!} updatedOn={document.updatedOn}>
+  <p class="muted"><a href="/records/">Public records</a></p>
+  <h1>{document.title}</h1>
+  <dl class="facts">
+    <dt>From</dt>
+    <dd>{document.publisher}</dd>
+    <dt>Date</dt>
+    <dd>{document.publishedDescription()}</dd>
+  </dl>
+
+  <h2>Summary</h2>
+  {document.summaryParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+  <p class="muted">We wrote this summary. The original is the official version.</p>
+
+  <h2>Read the original</h2>
+  <ul class="plain-list">
+    {
+      document.files.map((file) => (
+        <li>
+          <DocumentFileLink file={file} />
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    document.hasFileNeedingAnotherFormat() && (
+      <p>
+        Need this in another format, such as plain text or large print? <a href="/contact/">Ask us</a> and we will
+        send it.
+      </p>
+    )
+  }
+
+  {
+    meetings.length > 0 && (
+      <>
+        <h2>Meetings that used this record</h2>
+        <ul>
+          {meetings.map((meeting) => (
+            <li>
+              <a href={meeting.path()}>{meeting.title()}</a>
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+</BaseLayout>

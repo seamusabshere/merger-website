@@ -1,0 +1,84 @@
+---
+import '../styles/site.css';
+import type { VermontCalendarDay } from '../domain/VermontTime.ts';
+
+interface Props {
+  title: string;
+  description: string;
+  updatedOn: VermontCalendarDay;
+}
+
+const { title, description, updatedOn } = Astro.props;
+const currentPath = Astro.url.pathname;
+const siteName = 'Burlington, South Burlington, and Winooski Merger Study';
+
+const navigation = [
+  { href: '/', label: 'Home' },
+  { href: '/meetings/', label: 'Public meetings' },
+  { href: '/records/', label: 'Public records' },
+  { href: '/participate/', label: 'How to participate' },
+  { href: '/history/', label: 'History of school mergers' },
+  { href: '/act-170/', label: 'Act 170 of 2026' },
+  { href: '/members/', label: 'Committee members' },
+  { href: '/accessibility/', label: 'Accessibility' },
+  { href: '/contact/', label: 'Contact us' },
+];
+
+const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : currentPath.startsWith(href));
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{currentPath === '/' ? siteName : `${title} | ${siteName}`}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(currentPath, Astro.site)} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="site-name" href="/">
+          {siteName}
+          <small>Act 170 merger committee</small>
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <ul>
+            {
+              navigation.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="wrap">
+        <slot />
+        <p class="updated">Last updated {updatedOn.shortDate()}.</p>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>
+          This is the official website of the Act 170 merger committee for the Burlington, South Burlington, and
+          Winooski school districts. The committee studies whether to merge. It has not decided.
+        </p>
+        <ul aria-label="School district websites">
+          <li><a href="https://www.bsdvt.org/">Burlington School District</a></li>
+          <li><a href="https://www.sbschools.net/">South Burlington School District</a></li>
+          <li><a href="https://www.wsdvt.org/">Winooski School District</a></li>
+        </ul>
+        <p><a href="/accessibility/">Accessibility</a> · <a href="/contact/">Contact us</a></p>
+      </div>
+    </footer>
+  </body>
+</html>

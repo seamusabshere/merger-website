@@ -1,0 +1,75 @@
+- id: lucia-campriello
+  name: Lucia Campriello
+  districtId: burlington
+  seat: member
+  appointedOn: "2026-09-01"
+  appointmentSource: &burlington-2026-09-01
+    title: Burlington School Board draft minutes, September 1, 2026
+    url: https://bsdvt.community.highbond.com/document/16657#page=2
+
+- id: gary-golden
+  name: Gary Golden
+  districtId: burlington
+  seat: member
+  appointedOn: "2026-09-01"
+  appointmentSource: *burlington-2026-09-01
+
+- id: kendra-sowers
+  name: Kendra Sowers
+  districtId: burlington
+  seat: member
+  appointedOn: "2026-09-01"
+  appointmentSource: *burlington-2026-09-01
+
+- id: jean-waltz
+  name: Jean Waltz
+  districtId: burlington
+  seat: member
+  appointedOn: "2026-09-01"
+  appointmentSource: *burlington-2026-09-01
+
+- id: clare-wool
+  name: Clare Wool
+  districtId: burlington
+  seat: member
+  boardRole: Chair of the Burlington School Board
+  email: cwool@bsdvt.org
+  appointedOn: "2026-09-01"
+  appointmentSource: *burlington-2026-09-01
+
+- id: seamus-abshere
+  name: Seamus Abshere
+  districtId: south-burlington
+  seat: member
+  email: sabshere@sbschools.net
+
+- id: dan-boyer
+  name: Dan Boyer
+  districtId: south-burlington
+  seat: member
+
+- id: michelle-boyer
+  name: Michelle Boyer
+  districtId: south-burlington
+  seat: member
+  appointedOn: "2026-10-07"
+  appointmentSource: &south-burlington-2026-10-07
+    title: South Burlington School Board meeting, October 7, 2026 (summary on Govly)
+    url: https://app.govly.com/public/meetings/101313
+
+- id: elissa-galvez
+  name: Elissa Galvez
+  districtId: south-burlington
+  seat: alternate
+  appointedOn: "2026-10-07"
+  appointmentSource: *south-burlington-2026-10-07
+
+- id: nicole-mace
+  name: Nicole Mace
+  districtId: winooski
+  seat: member
+  boardRole: Chair of the Winooski School Board
+  email: nimace@wsdvt.org
+  appointmentSource:
+    title: "City of Winooski: Merger Study Buddies update, October 14, 2026"
+    url: https://www.winooskivt.gov/AgendaCenter/ViewFile/Item/13619?fileID=19366

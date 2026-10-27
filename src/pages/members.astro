@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import { AstroContent } from '../persistence/AstroContent.ts';
+
+const committee = await AstroContent.loadCommittee();
+const facilitator = committee.facilitator;
+---
+
+<BaseLayout
+  title="Committee members"
+  description="The school board members from Burlington, South Burlington, and Winooski who serve on the Act 170 merger committee."
+  updatedOn={committee.membersUpdatedOn}
+>
+  <h1>Committee members</h1>
+  <p class="lede">
+    Every member is a sitting school board member, named by their own board. Act 170 requires at least one member
+    from each district.
+  </p>
+  <p>
+    The committee has not yet settled how many votes each district has. That was on the agenda for its first meeting,
+    on <a href="/meetings/2026-10-20/">October 20, 2026</a>.
+  </p>
+
+  {
+    committee.delegations().map((delegation) => (
+      <section aria-labelledby={`district-${delegation.district.id}`}>
+        <h2 id={`district-${delegation.district.id}`}>{delegation.district.name}</h2>
+        <ul class="plain-list">
+          {delegation.members.map((member) => (
+            <li>
+              <span class="item-title">{member.name}</span>
+              <br />
+              {member.roleDescription()}
+              {member.appointedOn && <> Appointed {member.appointedOn.shortDate()}.</>}
+              {member.appointmentSourceUrl && (
+                <>
+                  {' '}
+                  <a href={member.appointmentSourceUrl}>
+                        Source<span class="visually-hidden"> for {member.name}'s appointment</span>
+                      </a>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+        {delegation.alternates.length > 0 && (
+          <>
+            <h3>Alternates</h3>
+            <ul class="plain-list">
+              {delegation.alternates.map((member) => (
+                <li>
+                  <span class="item-title">{member.name}</span>
+                  <br />
+                  {member.roleDescription()}
+                  {member.appointedOn && <> Appointed {member.appointedOn.shortDate()}.</>}
+                  {member.appointmentSourceUrl && (
+                    <>
+                      {' '}
+                      <a href={member.appointmentSourceUrl}>
+                        Source<span class="visually-hidden"> for {member.name}'s appointment</span>
+                      </a>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <p class="muted">
+          {delegation.district.averageDailyMembership.describe()}.{' '}
+          <a href={delegation.district.averageDailyMembership.sourceUrl}>
+            Source<span class="visually-hidden"> for the {delegation.district.name} student count</span>
+          </a>
+        </p>
+      </section>
+    ))
+  }
+
+  <h2>Facilitator</h2>
+  <p>
+    <span class="item-title">{facilitator.name}</span><br />
+    {facilitator.title}, <a href={facilitator.organizationUrl}>{facilitator.organization}</a>. The facilitator runs
+    the meetings and stays neutral on whether to merge. The facilitator is not a member and does not vote.{' '}
+    <a href={facilitator.sourceUrl}>Source<span class="visually-hidden"> for the facilitator's role</span></a>
+  </p>
+
+  <p><a href="/contact/">How to reach the committee</a></p>
+</BaseLayout>

@@ -1,0 +1,17 @@
+- id: chittenden-central-group-18
+  name: Burlington, South Burlington, and Winooski Merger Committee
+  officialName: Chittenden Central CESA Merger Committee (Group 18)
+  stateGroup: Group 18
+  # Decides only whether the committee may meet online only. See README, "Open questions".
+  isAdvisoryBody: null
+  membersUpdatedOn: "2026-10-27"
+  facilitator:
+    name: Craig Aarons-Martin
+    title: Regional facilitator, Chittenden Central region
+    organization: Vermont Learning Collaborative
+    organizationUrl: https://vtlc.org/
+    email: caaronsmartin@vtlc.org
+    phone: 802-428-6789
+    source:
+      title: "Manchester Journal: Regional facilitators tapped to lead Vermont school merger talks"
+      url: https://www.manchesterjournal.com/local-news/regional-facilitators-tapped-to-lead-vermont-school-merger-talks/2590545

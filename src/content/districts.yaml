@@ -1,0 +1,42 @@
+- id: burlington
+  name: Burlington School District
+  legalName: Burlington School District
+  city: Burlington
+  website: https://www.bsdvt.org/
+  boardMeetingsPage: https://bsdvt.community.highbond.com/Portal/MeetingTypeList.aspx
+  phone: 802-865-5332
+  averageDailyMembership:
+    students: 3385
+    fiscalYear: fiscal year 2025
+    source:
+      title: "Vermont Learning Collaborative: Finalized merger committee groupings, September 25, 2026"
+      url: https://img1.wsimg.com/blobby/go/b7b25bf1-1b43-4027-a5c4-bba582a01a30/downloads/0d11ffb4-8e07-44c6-825b-b41ba4f03eec/VTLC%20Act%20170%20Sept%2025%20Press%20Release%20(1).pdf?ver=1793042583535
+
+- id: south-burlington
+  name: South Burlington School District
+  legalName: South Burlington School District
+  city: South Burlington
+  website: https://www.sbschools.net/
+  boardMeetingsPage: https://www.sbschools.net/page/school-board-recordings
+  phone: 802-652-7250
+  averageDailyMembership:
+    students: 2512
+    fiscalYear: fiscal year 2025
+    source:
+      title: "Vermont Learning Collaborative: Finalized merger committee groupings, September 25, 2026"
+      url: https://img1.wsimg.com/blobby/go/b7b25bf1-1b43-4027-a5c4-bba582a01a30/downloads/0d11ffb4-8e07-44c6-825b-b41ba4f03eec/VTLC%20Act%20170%20Sept%2025%20Press%20Release%20(1).pdf?ver=1793042583535
+
+- id: winooski
+  name: Winooski School District
+  legalName: Winooski Incorporated School District (Winooski ID)
+  city: Winooski
+  website: https://www.wsdvt.org/
+  act170Page: https://www.wsdvt.org/project/act170/
+  boardMeetingsPage: https://www.wsdvt.org/school-board/board-agenda/
+  phone: 802-655-0485
+  averageDailyMembership:
+    students: 785
+    fiscalYear: fiscal year 2025
+    source:
+      title: "Vermont Learning Collaborative: Finalized merger committee groupings, September 25, 2026"
+      url: https://img1.wsimg.com/blobby/go/b7b25bf1-1b43-4027-a5c4-bba582a01a30/downloads/0d11ffb4-8e07-44c6-825b-b41ba4f03eec/VTLC%20Act%20170%20Sept%2025%20Press%20Release%20(1).pdf?ver=1793042583535

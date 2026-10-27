@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import { VermontCalendarDay } from '../domain/VermontTime.ts';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="We could not find that page."
+  updatedOn={VermontCalendarDay.parse({ isoDate: '2026-10-27' })}
+>
+  <h1>Page not found</h1>
+  <p>We could not find that page. Try the <a href="/">home page</a> or the list of <a href="/meetings/">meetings</a>.</p>
+</BaseLayout>

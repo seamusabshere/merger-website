@@ -1,0 +1,73 @@
+kind: regular
+startsAt: "2026-10-20T16:00:00-04:00"
+endsAt: "2026-10-20T17:30:00-04:00"
+updatedOn: "2026-10-27"
+
+physicalLocation:
+  name: Winooski School District campus
+  streetAddress: 60 Normand Street
+  city: Winooski
+  state: VT
+  postalCode: "05404"
+
+electronicAccess:
+  platform: Google Meet
+  url: https://meet.google.com/hzm-txux-uxn
+  phoneNumber: "+1 413-659-6193"
+  phonePin: "697 457 832#"
+
+agenda:
+  # Set postedAt to when the agenda first went up, for example "2026-10-16T12:00:00-04:00".
+  sourceUrl: https://docs.google.com/document/d/1lmoz5EdfemoFOyBL-yQFYSw6VeKp4Gfa7POL10EOZes/edit
+  items:
+    - title: Facilitator call to order
+    - title: Welcome and introductions
+    - title: Overview of committee roles
+      subitems:
+        - Regional facilitator
+        - Committee chair
+    - title: Merger committee organization
+      subitems:
+        - Adoption of Robert's Rules of Order
+        - Election of chair
+        - Establishment of committee norms
+        - Future meeting locations and how often to meet
+    - title: Good faith standard review
+      documentIds: [act-170-good-faith-participation-standard]
+    - title: Public input
+    - title: Act 170 overview presentation
+      documentIds: [act-170-overview-presentation]
+    - title: Proportional representation determination
+      description: How many votes each district has on the committee.
+    - title: Areas of committee interest and next steps
+      subitems:
+        - "November meeting: regional assets discussion"
+        - Other
+    - title: Agenda building
+    - title: Adjourn
+
+documentIds:
+  - october-20-2026-meeting-notice
+
+# Minutes are due within 5 calendar days (by October 25, 2026). Fill in and uncomment:
+# minutes:
+#   status: draft
+#   postedAt: "2026-10-25T12:00:00-04:00"
+#   sourceUrl: https://...
+#   membersPresentIds: [clare-wool, nicole-mace, seamus-abshere]
+#   otherParticipants: [Craig Aarons-Martin, regional facilitator]
+#   discussion:
+#     - topic: Election of chair
+#       summary: ...
+#   motions:
+#     - text: To adopt Robert's Rules of Order as modified by the facilitator.
+#       result: passed
+#       vote:
+#         method: unanimous-consent
+
+# Fill in and uncomment once the recording is up:
+# recording:
+#   url: https://...
+#   host: YouTube
+#   postedAt: "2026-10-22T12:00:00-04:00"
+#   captions: automatic

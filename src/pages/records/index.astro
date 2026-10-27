@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import { AstroContent } from '../../persistence/AstroContent.ts';
+
+const committee = await AstroContent.loadCommittee();
+---
+
+<BaseLayout
+  title="Public records"
+  description="Reports, laws, memos, and other documents for the Burlington, South Burlington, and Winooski merger study, each with a plain-language summary."
+  updatedOn={committee.documentsUpdatedOn()}
+>
+  <h1>Public records</h1>
+  <p class="lede">
+    Laws, reports, memos, and other documents for this study, newest first. Each has a short summary in plain
+    language. Agendas and minutes are on each <a href="/meetings/">meeting's page</a>.
+  </p>
+  <p>
+    Many of these files come from state agencies and school districts. If you cannot read one, <a href="/contact/"
+      >ask us for another format</a
+    >.
+  </p>
+
+  <ul class="plain-list">
+    {
+      committee.documents.map((document) => (
+        <li>
+          <h2 class="item-title">
+            <a href={document.path()}>{document.title}</a>
+          </h2>
+          <p class="muted">
+            {document.publisher}, {document.publishedDescription()}
+          </p>
+          <p>{document.summaryParagraphs[0]}</p>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
