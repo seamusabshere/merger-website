@@ -15,7 +15,6 @@ const meeting = committee.meetingById({ id: Astro.props.meetingId });
 const now = VermontTime.now();
 const hasStarted = meeting.hasStarted({ now });
 const hasEnded = meeting.hasEnded({ now });
-const agendaDeadline = meeting.agendaDeadline();
 const agenda = meeting.agenda;
 const minutes = meeting.minutes;
 const recording = meeting.recording;
@@ -89,12 +88,8 @@ const recording = meeting.recording;
             </ol>
           )}
         </>
-      ) : agendaDeadline && !hasStarted ? (
-        <p>
-          Not posted yet.
-        </p>
       ) : (
-        <p>Not posted on this site.</p>
+        <p>TBD</p>
       )
     }
   </section>
@@ -183,9 +178,7 @@ const recording = meeting.recording;
             )}
           </>
         ) : (
-          <p>
-            Not posted yet.
-          </p>
+          <p>TBD</p>
         )}
       </section>
     )
@@ -203,7 +196,7 @@ const recording = meeting.recording;
             <p class="muted">{recording.captionNote()}</p>
           </>
         ) : (
-          <p>Not posted yet.</p>
+          <p>TBD</p>
         )}
       </section>
     )

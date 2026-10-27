@@ -55,7 +55,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                     {meeting.physicalLocation.name}, {meeting.physicalLocation.city}
                   </>
                 ) : (
-                  <>To be determined</>
+                  <>TBD</>
                 )}
                 {meeting.electronicAccess && (
                   <>
@@ -70,7 +70,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                     Posted<span class="visually-hidden"> agenda for {meeting.day().longDate()}</span>
                   </a>
                 ) : (
-                  <>Not posted</>
+                  <>TBD</>
                 )}
               </td>
               {showMinutesAndRecording && (
@@ -82,7 +82,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                         <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
                       </a>
                     ) : (
-                      <>Not posted yet</>
+                      <>TBD</>
                     )}
                   </td>
                   <td>
@@ -92,7 +92,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                         <span class="visually-hidden"> recording of {meeting.day().longDate()}</span>
                       </a>
                     ) : (
-                      <>Not posted yet</>
+                      <>TBD</>
                     )}
                   </td>
                 </>

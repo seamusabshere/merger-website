@@ -47,7 +47,7 @@ const hasEnded = meeting.hasEnded({ now });
           )}
         </>
       ) : (
-        <>To be determined.</>
+        <>TBD</>
       )
     }
   </dd>
@@ -58,7 +58,7 @@ const hasEnded = meeting.hasEnded({ now });
         <dt>By video</dt>
         <dd>
           {hasEnded ? (
-            <>It met on {access.platform}.</>
+            access.platform
           ) : access.url ? (
             <>
               <a href={access.url}>Join on {access.platform}</a>
@@ -76,17 +76,13 @@ const hasEnded = meeting.hasEnded({ now });
               )}
             </>
           ) : (
-            <>The {access.platform} link is not posted yet.</>
+            <>TBD</>
           )}
         </dd>
         <dt>By phone</dt>
         <dd>
           {hasEnded ? (
-            access.phoneNumber ? (
-              <>The number was {access.phoneNumber}{access.phonePin ? `, PIN ${access.phonePin}` : ''}.</>
-            ) : (
-              <>No phone number was posted.</>
-            )
+            access.platform
           ) : access.phoneNumber ? (
             <>
               Call <a href={access.telephoneHref()}>{access.phoneNumber}</a>
@@ -98,7 +94,7 @@ const hasEnded = meeting.hasEnded({ now });
               )}
             </>
           ) : (
-            <>The phone number is not posted yet.</>
+            <>TBD</>
           )}
         </dd>
       </>

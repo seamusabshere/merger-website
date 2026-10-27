@@ -433,6 +433,7 @@ a:hover {
 }
 
 main {
+  container-type: inline-size;
   padding-block: var(--space-5) var(--space-6);
 }
 
@@ -601,45 +602,26 @@ main {
 
 .table-scroll {
   position: relative;
-  max-inline-size: 100%;
+  inline-size: max-content;
+  min-inline-size: 100%;
+  max-inline-size: calc(100cqi - max(var(--space-4), (100cqi - var(--measure)) / 2) - var(--space-4));
   overflow-x: auto;
 }
 
-.meeting-table-past {
-  table-layout: fixed;
-  min-inline-size: 40rem;
+.meeting-table th,
+.meeting-table td {
+  white-space: nowrap;
+}
+
+.meeting-table :is(th, td):last-child {
+  padding-inline-end: 0;
 }
 
 .meeting-table-past th:first-child {
   position: sticky;
   inset-inline-start: 0;
+  z-index: 1;
   background: var(--color-background);
-}
-
-.meeting-table-past th:nth-child(1) {
-  width: 30%;
-}
-
-.meeting-table-past th:nth-child(2) {
-  width: 26%;
-}
-
-.meeting-table-past th:nth-child(3),
-.meeting-table-past th:nth-child(4) {
-  width: 13%;
-}
-
-.meeting-table-past th:nth-child(5) {
-  width: 18%;
-}
-
-.meeting-table-past th:nth-child(n + 3),
-.meeting-table-past td:nth-child(n + 3) {
-  overflow-wrap: break-word;
-}
-
-.meeting-table-upcoming td:last-child {
-  white-space: nowrap;
 }
 
 table {
