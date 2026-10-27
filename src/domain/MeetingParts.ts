@@ -213,16 +213,26 @@ export class Minutes {
   readonly status: 'draft' | 'approved';
   readonly postedAt: VermontTime;
   readonly approvedOn: VermontCalendarDay | undefined;
+  readonly document: Document | undefined;
   readonly sourceUrl: string | undefined;
   readonly membersPresent: Member[];
   readonly otherParticipants: string[];
   readonly discussion: { topic: string; summary: string }[];
   readonly motions: Motion[];
 
-  constructor({ data, membersById }: { data: MinutesData; membersById: Map<string, Member> }) {
+  constructor({
+    data,
+    membersById,
+    documentsById,
+  }: {
+    data: MinutesData;
+    membersById: Map<string, Member>;
+    documentsById: Map<string, Document>;
+  }) {
     this.status = data.status;
     this.postedAt = VermontTime.parse({ isoInstant: data.postedAt });
     this.approvedOn = data.approvedOn ? VermontCalendarDay.parse({ isoDate: data.approvedOn }) : undefined;
+    this.document = data.documentId ? lookUp({ map: documentsById, id: data.documentId, kind: 'document' }) : undefined;
     this.sourceUrl = data.sourceUrl;
     this.membersPresent = data.membersPresentIds.map((memberId) => lookUp({ map: membersById, id: memberId, kind: 'member' }));
     this.otherParticipants = data.otherParticipants;

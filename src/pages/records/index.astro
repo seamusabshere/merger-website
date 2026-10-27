@@ -3,37 +3,51 @@ import BaseLayout from '../../components/BaseLayout.astro';
 import { AstroContent } from '../../persistence/AstroContent.ts';
 
 const committee = await AstroContent.loadCommittee();
+const records = committee.records();
 ---
 
 <BaseLayout
   title="Public records"
-  description="Reports, laws, memos, and other documents for the Burlington, South Burlington, and Winooski merger study, each with a plain-language summary."
+  description="Files written by the Burlington, South Burlington, and Winooski merger committee. Agendas and minutes are on each meeting page."
   updatedOn={committee.documentsUpdatedOn()}
 >
   <h1>Public records</h1>
   <p class="lede">
-    Laws, reports, memos, and other documents for this study, newest first. Each has a short summary in plain
-    language. Agendas and minutes are on each <a href="/meetings/">meeting's page</a>.
+    Files the committee wrote, newest first. Agendas and minutes are on each <a href="/meetings/">meeting's page</a>.
+    Files from state agencies, the Legislature, and the school districts are linked from the pages that cite them.
   </p>
   <p>
-    Many of these files come from state agencies and school districts. If you cannot read one, <a href="/contact/"
-      >ask us for another format</a
-    >.
+    If you cannot read a file, <a href="/contact/">ask us for another format</a>.
   </p>
 
-  <ul class="plain-list">
-    {
-      committee.documents.map((document) => (
-        <li>
-          <h2 class="item-title">
-            <a href={document.path()}>{document.title}</a>
-          </h2>
-          <p class="muted">
-            {document.publisher}, {document.publishedDescription()}
-          </p>
-          <p>{document.summaryParagraphs[0]}</p>
-        </li>
-      ))
-    }
-  </ul>
+  {
+    records.length === 0 ? (
+      <p>The committee has not posted any other files yet.</p>
+    ) : (
+      <table>
+        <caption class="visually-hidden">Files the committee wrote</caption>
+        <thead>
+          <tr>
+            <th scope="col">File</th>
+            <th scope="col">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {records.flatMap((document) =>
+            document.files.map((file) => (
+              <tr>
+                <th scope="row">
+                  <a href={file.url} hreflang={file.language}>
+                    {document.fileName({ file })}
+                  </a>{' '}
+                  <span class="file-type">({file.typeAndSize()})</span>
+                </th>
+                <td>{document.publishedDescription()}</td>
+              </tr>
+            )),
+          )}
+        </tbody>
+      </table>
+    )
+  }
 </BaseLayout>

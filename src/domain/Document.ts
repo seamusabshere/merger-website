@@ -51,6 +51,7 @@ export class Document {
   readonly id: string;
   readonly title: string;
   readonly publisher: string;
+  readonly createdByTheCommittee: boolean;
   readonly publishedOn: VermontCalendarDay | undefined;
   readonly updatedOn: VermontCalendarDay;
   readonly summaryParagraphs: string[];
@@ -60,6 +61,7 @@ export class Document {
     this.id = id;
     this.title = data.title;
     this.publisher = data.publisher;
+    this.createdByTheCommittee = data.createdByTheCommittee;
     this.publishedOn = data.publishedOn ? VermontCalendarDay.parse({ isoDate: data.publishedOn }) : undefined;
     this.updatedOn = VermontCalendarDay.parse({ isoDate: data.updatedOn });
     this.summaryParagraphs = data.summary
@@ -79,6 +81,11 @@ export class Document {
 
   publishedDescription(): string {
     return this.publishedOn ? this.publishedOn.shortDate() : 'Date not given';
+  }
+
+  fileName({ file }: { file: DocumentFile }): string {
+    if (this.files.length === 1) return this.title;
+    return `${this.title} (${file.label})`;
   }
 
   compareNewestFirst({ other }: { other: Document }): number {

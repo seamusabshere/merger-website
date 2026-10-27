@@ -133,6 +133,7 @@ const minutesSchema = z.object({
   status: z.enum(['draft', 'approved']),
   postedAt: isoInstant,
   approvedOn: calendarDay.optional(),
+  documentId: z.string().optional(),
   sourceUrl: z.url().optional(),
   membersPresentIds: z.array(z.string()),
   otherParticipants: z.array(z.string()).default([]),
@@ -175,6 +176,7 @@ const documentFileSchema = z.object({
 export const documentSchema = z.object({
   title: z.string(),
   publisher: z.string(),
+  createdByTheCommittee: z.boolean(),
   publishedOn: calendarDay.optional(),
   updatedOn: calendarDay,
   summary: z.string(),

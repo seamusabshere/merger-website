@@ -159,9 +159,9 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 
 ## Pages
 
-- **Home** (`/`): the next meeting with join details, a note that the committee has not decided, what it studies, the key dates, and the latest records.
+- **Home** (`/`): the next meeting with join details, a note that the committee has not decided, what it studies, and the key dates.
 - **Public meetings** (`/meetings/`): upcoming meetings, then past meetings by month. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`). A missing agenda or minutes shows its legal deadline.
-- **Public records** (`/records/`): one page per record, with our plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format.
+- **Public records** (`/records/`): a table of files the committee wrote, newest first. Agendas and minutes are not listed here. They are on the meeting page. Each file still has its own page, with a plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format. Files from other agencies stay on the pages that cite them.
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
 - **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.
 - **Act 170 of 2026** (`/act-170/`): what the law asks of the committee, what the report must contain, the timeline, how a vote works, and what the law does not do.
@@ -197,7 +197,7 @@ Routes: English at `/`, other languages at `/<language code>/` (for example `/ne
 - No carousels, autoplay, parallax, or motion that ignores `prefers-reduced-motion`.
 - Navigation wraps on small screens. No hamburger menu unless the links stop fitting.
 - Every page opens with a banner: the three district logos, small, then "Official website of the Act 170 Merger Committee" for the three districts, then "Here's how you know." Opening that shows the logos again, larger, and a link to the page on each district site that links back here. Those links live on `pageThatLinksHere` in `districts.yaml`. While `published` is false, the link text says it is a placeholder. When a district publishes the page, set `url` to that page and `published` to true. This is not the federal ".gov" banner. The proof is the three district websites. Borrowing other USWDS patterns (skip link, landmarks, form patterns) is fine.
-- The home page reads like a public notice: the next meeting first, then the question under study, then the latest records.
+- The home page reads like a public notice: the next meeting first, then how to take part, then the question under study.
 
 ## Accessibility testing
 
@@ -220,15 +220,15 @@ By hand, before any change to layout or components:
 
 **Add a meeting.** Copy a file in `src/content/meetings/`, name it by the meeting date, and fill in the time with its UTC offset, the place, and the video and phone details. Leave out what you do not know; the page says it is coming.
 
-**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/2026-10-20-agenda.pdf`) and its size. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
+**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/2026-10-20-agenda.pdf`) and its size. Set `createdByTheCommittee` to `true`. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Do not also put it in `documentIds`. The records page leaves agendas off. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
 
 **Do not say a file is unchecked.** Do not write "We have not checked this file for accessibility," or anything like it, on a page, in a summary, or in a commit message. If nobody has checked a file, set `accessibility` to `not-checked` and leave the page quiet. Write a note only when you know a file does not work (`not-accessible`).
 
-**Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. Never delete posted minutes within one year of the meeting.
+**Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. If the minutes are also a file under `src/content/documents/`, set `createdByTheCommittee` to `true` and set `minutes.documentId` to that record. The records page leaves minutes off. Never delete posted minutes within one year of the meeting.
 
 **Post a recording.** Add `recording` to the meeting file with its host and caption status.
 
-**Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Add each file with its type and size in bytes. Link it from a meeting with `documentIds`.
+**Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Set `createdByTheCommittee` to `true` only when the committee wrote it. Add each file with its type and size in bytes. Link it from a meeting with `documentIds`. The public records page lists committee files, and skips agendas and minutes.
 
 **Change members.** Edit `members.yaml` and update `membersUpdatedOn` in `committee.yaml`. The committee's chair is `chairMemberId` in `committee.yaml`, and it must be one member's id.
 

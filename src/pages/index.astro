@@ -74,22 +74,4 @@ const nextMeeting = committee.nextMeeting({ now });
     </ul>
     <p><a href="/act-170/">What Act 170 says</a> · <a href="/history/">History of school mergers in Vermont</a></p>
   </section>
-
-  <section aria-labelledby="latest-records">
-    <h2 id="latest-records">Latest records</h2>
-    <ul class="plain-list">
-      {
-        committee.latestDocuments({ count: 3 }).map((document) => (
-          <li>
-            <a href={document.path()}>{document.title}</a>
-            <br />
-            <span class="muted">
-              {document.publisher}, {document.publishedDescription()}
-            </span>
-          </li>
-        ))
-      }
-    </ul>
-    <p><a href="/records/">All public records</a></p>
-  </section>
 </BaseLayout>

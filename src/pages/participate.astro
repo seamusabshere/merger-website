@@ -1,24 +1,8 @@
 ---
-import MeetingJoinDetails from '../components/MeetingJoinDetails.astro';
 import ProsePage from '../components/ProsePage.astro';
-import { VermontTime } from '../domain/VermontTime.ts';
 import { AstroContent } from '../persistence/AstroContent.ts';
 
 const page = await AstroContent.loadPage({ locale: 'en', slug: 'participate' });
-const committee = await AstroContent.loadCommittee();
-const nextMeeting = committee.nextMeeting({ now: VermontTime.now() });
 ---
 
-<ProsePage page={page}>
-  {
-    nextMeeting && (
-      <div class="panel" slot="before">
-        <h2>Next meeting</h2>
-        <MeetingJoinDetails meeting={nextMeeting} />
-        <p>
-          <a href={nextMeeting.path()}>Meeting details and agenda</a>
-        </p>
-      </div>
-    )
-  }
-</ProsePage>
+<ProsePage page={page} />

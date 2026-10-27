@@ -66,7 +66,7 @@ export class Meeting {
     this.physicalLocation = new PhysicalLocation({ data: data.physicalLocation });
     this.electronicAccess = data.electronicAccess ? new ElectronicAccess({ data: data.electronicAccess }) : undefined;
     this.agenda = data.agenda ? new Agenda({ data: data.agenda, documentsById }) : undefined;
-    this.minutes = data.minutes ? new Minutes({ data: data.minutes, membersById }) : undefined;
+    this.minutes = data.minutes ? new Minutes({ data: data.minutes, membersById, documentsById }) : undefined;
     this.recording = data.recording ? new Recording({ data: data.recording }) : undefined;
     this.documents = data.documentIds.map((documentId) => lookUp({ map: documentsById, id: documentId, kind: 'document' }));
     this.notes = data.notes;
@@ -116,6 +116,10 @@ export class Meeting {
 
   hasPostedAgenda(): boolean {
     return this.agenda !== undefined;
+  }
+
+  agendaAndMinutes(): Document[] {
+    return [this.agenda?.document, this.minutes?.document].filter((document): document is Document => document !== undefined);
   }
 
   overdueDuties({ now }: { now: VermontTime }): OverdueDuty[] {

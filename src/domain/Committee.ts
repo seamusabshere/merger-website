@@ -234,8 +234,9 @@ export class Committee {
     );
   }
 
-  latestDocuments({ count }: { count: number }): Document[] {
-    return this.documents.slice(0, count);
+  records(): Document[] {
+    const agendaAndMinutes = new Set(this.meetings.flatMap((meeting) => meeting.agendaAndMinutes()));
+    return this.documents.filter((document) => document.createdByTheCommittee && !agendaAndMinutes.has(document));
   }
 
   overdueDuties({ now }: { now: VermontTime }): OverdueDuty[] {
