@@ -15,11 +15,10 @@ electronicAccess:
 
 # The agenda is due 48 hours before the meeting: by Saturday, October 31, 2026, 5:00 p.m. EDT.
 # (Daylight saving time ends November 1, so 48 hours before 4:00 p.m. EST is 5:00 p.m. EDT.)
+# Export the Google Doc to PDF, add it under src/content/documents/, then:
 # agenda:
 #   postedAt: "2026-10-30T12:00:00-04:00"
-#   sourceUrl: https://...
-#   items:
-#     - title: Call to order
+#   documentId: 2026-11-02-agenda
 
 notes:
   - The October 20 agenda named "regional assets" as the topic for the November meeting.

@@ -8,18 +8,24 @@ export class Member {
   readonly seat: 'member' | 'alternate';
   readonly boardRole: string | undefined;
   readonly email: string | undefined;
+  readonly chairsTheCommittee: boolean;
 
-  constructor({ data, district }: { data: MemberData; district: District }) {
+  constructor({ data, district, chairsTheCommittee }: { data: MemberData; district: District; chairsTheCommittee: boolean }) {
     this.id = data.id;
     this.name = data.name;
     this.district = district;
     this.seat = data.seat;
     this.boardRole = data.boardRole;
     this.email = data.email;
+    this.chairsTheCommittee = chairsTheCommittee;
   }
 
   isAlternate(): boolean {
     return this.seat === 'alternate';
+  }
+
+  isChair(): boolean {
+    return this.chairsTheCommittee;
   }
 
   surname(): string {
@@ -30,9 +36,21 @@ export class Member {
     return this.surname().localeCompare(other.surname()) || this.name.localeCompare(other.name);
   }
 
+  roleOnCommittee(): string {
+    if (this.isChair()) return 'Chair of the merger committee';
+    if (this.isAlternate()) return 'Alternate';
+    return 'Member';
+  }
+
   roleDescription(): string {
-    const seat = this.isAlternate() ? 'Alternate' : 'Member';
-    return this.boardRole ? `${seat}. ${this.boardRole}.` : `${seat}.`;
+    return [this.roleOnCommittee(), this.boardRole]
+      .filter((role) => role !== undefined)
+      .map((role) => `${role}.`)
+      .join(' ');
+  }
+
+  contactRole(): string {
+    return this.isChair() ? 'chair of the merger committee' : 'committee member';
   }
 }
 

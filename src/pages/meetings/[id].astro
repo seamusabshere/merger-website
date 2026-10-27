@@ -47,37 +47,41 @@ const recording = meeting.recording;
   <section aria-labelledby="agenda">
     <h2 id="agenda">Agenda</h2>
     {
-      agenda && agenda.isPosted() ? (
+      agenda ? (
         <>
           {agenda.postedAt && <p class="muted">Posted {agenda.postedAt.dateAndTime()}.</p>}
-          <ol class="agenda">
-            {agenda.items.map((item) => (
+          <ul class="plain-list">
+            {agenda.document.files.map((file) => (
               <li>
-                <strong>{item.heading()}</strong>
-                {item.description && <><br />{item.description}</>}
-                {item.subitems.length > 0 && (
-                  <ul>
-                    {item.subitems.map((subitem) => (
-                      <li>{subitem}</li>
-                    ))}
-                  </ul>
-                )}
-                {item.documents.length > 0 && (
-                  <ul>
-                    {item.documents.map((document) => (
-                      <li>
-                        Record: <a href={document.path()}>{document.title}</a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <DocumentFileLink file={file} />
               </li>
             ))}
-          </ol>
-          {agenda.sourceUrl && (
-            <p>
-              <a href={agenda.sourceUrl}>Original meeting notice</a>
-            </p>
+          </ul>
+          {agenda.items.length > 0 && (
+            <ol class="agenda">
+              {agenda.items.map((item) => (
+                <li>
+                  <strong>{item.heading()}</strong>
+                  {item.description && <><br />{item.description}</>}
+                  {item.subitems.length > 0 && (
+                    <ul>
+                      {item.subitems.map((subitem) => (
+                        <li>{subitem}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {item.documents.length > 0 && (
+                    <ul>
+                      {item.documents.map((document) => (
+                        <li>
+                          Record: <a href={document.path()}>{document.title}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ol>
           )}
         </>
       ) : agendaDeadline && !hasStarted ? (

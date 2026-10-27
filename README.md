@@ -50,7 +50,7 @@ A missed deadline here is a breach of the law, not a website bug. Treat it that 
 2. **Accessible.** WCAG 2.1 AA is the legal floor (ADA Title II). Meet WCAG 2.2 AA where it costs little.
 3. **Neutral.** The committee has not decided, and the site does not argue for or against a merger. Show the evidence and the arguments on each side, with the source of each.
 4. **Plain language.** Aim for an 8th-grade reading level. Define terms like "union school district" when they first appear.
-5. **On the page, not in a PDF.** The public needs to read agendas, minutes, and summaries in HTML. A PDF is a copy, not the main version.
+5. **Minutes and summaries on the page.** Minutes and document summaries are HTML. An agenda is the file the committee posts, usually a Google Doc exported to PDF. The meeting page links to that file. Writing the agenda out as HTML is optional, and not every agenda will be.
 6. **Attractive.** Get there through type, spacing, and layout. Never trade accessibility for looks.
 
 ## Legal duties the site must support
@@ -108,18 +108,18 @@ Times are `VermontTime` (an instant, shown in America/New_York) and dates are `V
 
 | Class | Holds | Knows how to |
 | --- | --- | --- |
-| `Committee` | Name, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation` | Find the next meeting, group past meetings by month, list overdue duties |
+| `Committee` | Name, chair, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation` | Find the next meeting, group past meetings by month, list overdue duties, name its chair |
 | `ProportionalRepresentation` | The meeting that set each district's votes, and a `DistrictVotes` for each district | Say how many votes each district has |
 | `DistrictVotes` | A `District` and its vote count | Say "3 votes" or "1 vote" |
 | `District` | Name, city, website, phone, logo, the page on the district site that links here, student count with source | Sort alphabetically |
 | `DistrictDelegation` | A `District`, its votes, and its members and alternates | Name the district's contact |
-| `Member` | Name, appointing `District`, member or alternate, board role | Show name and role |
+| `Member` | Name, appointing `District`, member or alternate, whether they chair the committee, board role | Show name and role |
 | `Facilitator` | Name, title, organization, email, phone, source | Give a phone link |
 | `Meeting` | Kind (regular, special, emergency), start time, `PhysicalLocation`, `ElectronicAccess`, `Agenda`, `Minutes`, `Recording` | Compute `agendaDeadline`, `minutesDeadline`, `minutesKeepUntil`; report what is overdue |
 | `PhysicalLocation` | Name, address, access notes (entrance, parking, elevator) | Render an address |
 | `ElectronicAccess` | Meeting link, phone number, meeting ID, passcode | Render join instructions that work without the link |
-| `Agenda` | Ordered `AgendaItem`s, posted time | Label executive session items as the law requires |
-| `AgendaItem` | Title, description, whether it is a proposed executive session, linked `Document`s | Render itself |
+| `Agenda` | The posted file (a `Document`, usually a PDF), the time it was posted, and `AgendaItem`s only when someone has also written the agenda on the page | Point to the posted file |
+| `AgendaItem` | Title, description, whether it is a proposed executive session, linked `Document`s | Name a proposed executive session the way the law requires |
 | `Minutes` | Status (draft or approved), members present, other participants, `Motion`s, posted time | Show draft status plainly |
 | `Motion` | Text, mover, seconder, result, `Vote` | Render itself |
 | `Vote` | Result, and each member's vote if by roll call | Render a roll call table |
@@ -220,7 +220,7 @@ By hand, before any change to layout or components:
 
 **Add a meeting.** Copy a file in `src/content/meetings/`, name it by the meeting date, and fill in the time with its UTC offset, the place, and the video and phone details. Leave out what you do not know; the page says it is coming.
 
-**Post an agenda.** Fill in `agenda` in the meeting file, set `postedAt`, and merge before the deadline. `pnpm check:deadlines` says how much time is left.
+**Post an agenda.** Export the Google Doc to PDF. Add that PDF as a record in `src/content/documents/`, with its size and whether you checked it for accessibility. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
 
 **Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. Never delete posted minutes within one year of the meeting.
 
@@ -228,7 +228,7 @@ By hand, before any change to layout or components:
 
 **Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Add each file with its type, size in bytes, and whether we checked it for accessibility. Link it from a meeting with `documentIds`.
 
-**Change members.** Edit `members.yaml` and update `membersUpdatedOn` in `committee.yaml`.
+**Change members.** Edit `members.yaml` and update `membersUpdatedOn` in `committee.yaml`. The committee's chair is `chairMemberId` in `committee.yaml`, and it must be one member's id.
 
 **When a district page links here.** In `districts.yaml`, set that district's `pageThatLinksHere.url` to the page and `published` to `true`.
 

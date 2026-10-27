@@ -100,12 +100,12 @@ export class AgendaItem {
 
 export class Agenda {
   readonly postedAt: VermontTime | undefined;
-  readonly sourceUrl: string | undefined;
+  readonly document: Document;
   readonly items: AgendaItem[];
 
   constructor({ data, documentsById }: { data: AgendaData; documentsById: Map<string, Document> }) {
     this.postedAt = data.postedAt ? VermontTime.parse({ isoInstant: data.postedAt }) : undefined;
-    this.sourceUrl = data.sourceUrl;
+    this.document = lookUp({ map: documentsById, id: data.documentId, kind: 'document' });
     this.items = data.items.map(
       (item, index) =>
         new AgendaItem({
@@ -114,10 +114,6 @@ export class Agenda {
           documents: item.documentIds.map((documentId) => lookUp({ map: documentsById, id: documentId, kind: 'document' })),
         }),
     );
-  }
-
-  isPosted(): boolean {
-    return this.items.length > 0;
   }
 
   hasPublicComment(): boolean {

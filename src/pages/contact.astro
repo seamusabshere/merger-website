@@ -40,7 +40,7 @@ const facilitator = committee.facilitator;
               <h3 class="item-title">{delegation.district.name}</h3>
               {contactMember?.email && (
                 <p>
-                  {contactMember.name}, committee member
+                  {contactMember.name}, {contactMember.contactRole()}
                   <br />
                   Email: <a href={`mailto:${contactMember.email}`}>{contactMember.email}</a>
                 </p>

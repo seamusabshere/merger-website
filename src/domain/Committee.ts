@@ -103,6 +103,7 @@ export class Committee {
   readonly membersUpdatedOn: VermontCalendarDay;
   readonly proportionalRepresentation: ProportionalRepresentation;
   readonly facilitator: Facilitator;
+  readonly chair: Member;
   readonly districts: District[];
   readonly members: Member[];
   readonly meetings: Meeting[];
@@ -142,8 +143,22 @@ export class Committee {
     const districtsById = new Map(this.districts.map((district) => [district.id, district]));
 
     this.members = membersData
-      .map((data) => new Member({ data, district: lookUp({ map: districtsById, id: data.districtId, kind: 'district' }) }))
+      .map(
+        (data) =>
+          new Member({
+            data,
+            district: lookUp({ map: districtsById, id: data.districtId, kind: 'district' }),
+            chairsTheCommittee: data.id === committeeData.chairMemberId,
+          }),
+      )
       .sort((a, b) => a.compareBySurname({ other: b }));
+    const chairs = this.members.filter((member) => member.isChair());
+    if (chairs.length !== 1) {
+      throw new Error(
+        `The committee's chair must be exactly one member. chairMemberId is "${committeeData.chairMemberId}" and ${chairs.length} members match.`,
+      );
+    }
+    this.chair = chairs[0]!;
     const membersById = new Map(this.members.map((member) => [member.id, member]));
 
     this.documents = documentsData
@@ -213,7 +228,9 @@ export class Committee {
   meetingsUsing({ document }: { document: Document }): Meeting[] {
     return this.meetings.filter(
       (meeting) =>
-        meeting.documents.includes(document) || (meeting.agenda?.items.some((item) => item.documents.includes(document)) ?? false),
+        meeting.documents.includes(document) ||
+        meeting.agenda?.document === document ||
+        (meeting.agenda?.items.some((item) => item.documents.includes(document)) ?? false),
     );
   }
 

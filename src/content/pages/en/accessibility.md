@@ -12,7 +12,7 @@ We build this site to meet the Web Content Accessibility Guidelines (WCAG) 2.1, 
 
 What that means on this site:
 
-- Agendas, minutes, and document summaries are on the page, not only in PDF files.
+- Minutes and document summaries are written on the page. An agenda is usually a PDF exported from a Google Doc, and the meeting page links to that file.
 - Text is at least 18 pixels and grows when you zoom.
 - Every link and button works with a keyboard and shows where you are.
 - Colors have strong contrast, and color is never the only way we show something.

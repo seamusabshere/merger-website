@@ -115,7 +115,7 @@ export class Meeting {
   }
 
   hasPostedAgenda(): boolean {
-    return this.agenda?.isPosted() ?? false;
+    return this.agenda !== undefined;
   }
 
   overdueDuties({ now }: { now: VermontTime }): OverdueDuty[] {

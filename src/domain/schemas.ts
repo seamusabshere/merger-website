@@ -20,6 +20,7 @@ export const committeeSchema = z.object({
   officialName: z.string(),
   stateGroup: z.string(),
   membersUpdatedOn: calendarDay,
+  chairMemberId: z.string(),
   proportionalRepresentation: z.object({
     decidedAtMeetingId: z.string(),
     votes: z.array(
@@ -103,8 +104,8 @@ const agendaItemSchema = z.object({
 
 const agendaSchema = z.object({
   postedAt: isoInstant.optional(),
-  sourceUrl: z.url().optional(),
-  items: z.array(agendaItemSchema),
+  documentId: z.string(),
+  items: z.array(agendaItemSchema).default([]),
 });
 
 const rollCallEntrySchema = z.object({
