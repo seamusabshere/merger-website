@@ -220,13 +220,15 @@ By hand, before any change to layout or components:
 
 **Add a meeting.** Copy a file in `src/content/meetings/`, name it by the meeting date, and fill in the time with its UTC offset, the place, and the video and phone details. Leave out what you do not know; the page says it is coming.
 
-**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/2026-10-20-agenda.pdf`), its size, and whether you checked it for accessibility. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
+**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/2026-10-20-agenda.pdf`) and its size. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
+
+**Do not say a file is unchecked.** Do not write "We have not checked this file for accessibility," or anything like it, on a page, in a summary, or in a commit message. If nobody has checked a file, set `accessibility` to `not-checked` and leave the page quiet. Write a note only when you know a file does not work (`not-accessible`).
 
 **Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. Never delete posted minutes within one year of the meeting.
 
 **Post a recording.** Add `recording` to the meeting file with its host and caption status.
 
-**Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Add each file with its type, size in bytes, and whether we checked it for accessibility. Link it from a meeting with `documentIds`.
+**Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Add each file with its type and size in bytes. Link it from a meeting with `documentIds`.
 
 **Change members.** Edit `members.yaml` and update `membersUpdatedOn` in `committee.yaml`. The committee's chair is `chairMemberId` in `committee.yaml`, and it must be one member's id.
 

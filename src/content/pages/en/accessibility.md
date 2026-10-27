@@ -21,7 +21,7 @@ What that means on this site:
 
 ## What does not work yet
 
-- **Files from other agencies.** Many records on this site are PDFs that state agencies and school districts wrote. We have not checked them all, and some may not work well with screen readers. Each record's page says what we know. Ask us for another format and we will get you one.
+- **Files from other agencies.** Many records on this site are PDFs that state agencies and school districts wrote. Some may not work well with screen readers. Ask us for another format and we will get you one.
 - **Recordings.** We do not yet know whether every recording will have captions. Each meeting page says so once the recording is up. Ask us for a transcript if you need one.
 - **Other languages.** The site is in English only for now. We plan to translate the most important pages first, with help from the districts' language staff.
 

@@ -43,9 +43,6 @@ export class DocumentFile {
     if (this.accessibility === 'not-accessible') {
       return 'This file does not work well with screen readers.';
     }
-    if (this.accessibility === 'not-checked' && this.format === 'pdf') {
-      return 'We have not checked this file for accessibility.';
-    }
     return undefined;
   }
 }
