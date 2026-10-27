@@ -142,8 +142,20 @@ export class VermontCalendarDay {
     return new VermontCalendarDay({ year: this.year + years, month: this.month, day: this.day });
   }
 
+  startsAt(): VermontTime {
+    return VermontTime.fromWallClock({ year: this.year, month: this.month, day: this.day, hour: 0, minute: 0, second: 0 });
+  }
+
   endsAt(): VermontTime {
     return VermontTime.fromWallClock({ year: this.year, month: this.month, day: this.day, hour: 23, minute: 59, second: 59 });
+  }
+
+  calendarMonth(): VermontCalendarMonth {
+    return new VermontCalendarMonth({ year: this.year, month: this.month });
+  }
+
+  weekday(): Weekday {
+    return WEEKDAYS[this.asUtcNoon().getUTCDay()]!;
   }
 
   compare({ other }: { other: VermontCalendarDay }): number {
@@ -172,5 +184,82 @@ export class VermontCalendarDay {
     return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric' }).format(
       this.asUtcNoon(),
     );
+  }
+}
+
+export const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+export type Weekday = (typeof WEEKDAYS)[number];
+
+export class VermontCalendarMonth {
+  readonly year: number;
+  readonly month: number;
+
+  constructor({ year, month }: { year: number; month: number }) {
+    this.year = year;
+    this.month = month;
+  }
+
+  static parse({ isoMonth }: { isoMonth: string }): VermontCalendarMonth {
+    const match = /^(\d{4})-(\d{2})$/.exec(isoMonth);
+    if (!match) throw new Error(`Not a month like 2026-11: ${isoMonth}`);
+    return new VermontCalendarMonth({ year: Number(match[1]), month: Number(match[2]) });
+  }
+
+  next(): VermontCalendarMonth {
+    return this.month === 12
+      ? new VermontCalendarMonth({ year: this.year + 1, month: 1 })
+      : new VermontCalendarMonth({ year: this.year, month: this.month + 1 });
+  }
+
+  firstDay(): VermontCalendarDay {
+    return new VermontCalendarDay({ year: this.year, month: this.month, day: 1 });
+  }
+
+  // The first Monday is occurrence 1 of Monday; the third Tuesday is occurrence 3 of Tuesday.
+  nthWeekday({ weekday, occurrence }: { weekday: Weekday; occurrence: number }): VermontCalendarDay {
+    const daysUntilWeekday = (WEEKDAYS.indexOf(weekday) - WEEKDAYS.indexOf(this.firstDay().weekday()) + 7) % 7;
+    return this.firstDay().plusDays({ days: daysUntilWeekday + (occurrence - 1) * 7 });
+  }
+
+  includes({ day }: { day: VermontCalendarDay }): boolean {
+    return day.year === this.year && day.month === this.month;
+  }
+
+  compare({ other }: { other: VermontCalendarMonth }): number {
+    return this.isoMonth().localeCompare(other.isoMonth());
+  }
+
+  isoMonth(): string {
+    return `${this.year}-${String(this.month).padStart(2, '0')}`;
+  }
+
+  name(): string {
+    return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', year: 'numeric', month: 'long' }).format(
+      new Date(Date.UTC(this.year, this.month - 1, 1, 12)),
+    );
+  }
+}
+
+export class VermontClockTime {
+  readonly hour: number;
+  readonly minute: number;
+
+  constructor({ hour, minute }: { hour: number; minute: number }) {
+    this.hour = hour;
+    this.minute = minute;
+  }
+
+  static parse({ hoursAndMinutes }: { hoursAndMinutes: string }): VermontClockTime {
+    const match = /^(\d{2}):(\d{2})$/.exec(hoursAndMinutes);
+    if (!match) throw new Error(`Not a 24-hour clock time like 16:00: ${hoursAndMinutes}`);
+    return new VermontClockTime({ hour: Number(match[1]), minute: Number(match[2]) });
+  }
+
+  label(): string {
+    return `${this.hour % 12 === 0 ? 12 : this.hour % 12}:${String(this.minute).padStart(2, '0')} ${this.hour < 12 ? 'a.m.' : 'p.m.'}`;
+  }
+
+  on({ day }: { day: VermontCalendarDay }): VermontTime {
+    return VermontTime.fromWallClock({ year: day.year, month: day.month, day: day.day, hour: this.hour, minute: this.minute, second: 0 });
   }
 }

@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import { VermontTime } from '../domain/VermontTime.ts';
+import { AstroContent } from '../persistence/AstroContent.ts';
+
+const committee = await AstroContent.loadCommittee();
+const now = VermontTime.now();
+const overdueDuties = committee.overdueDuties({ now });
+---
+
+<BaseLayout
+  title="Calendar"
+  description="Upcoming meetings of the Burlington, South Burlington, and Winooski merger committee, and the deadlines set by state law."
+  updatedOn={committee.calendarUpdatedOn()}
+>
+  <h1>Calendar</h1>
+  <p class="lede">Upcoming meetings, and the deadlines that state law sets for the committee and the state.</p>
+  <p>
+    {committee.regularMeetingSchedule.sentence()} A meeting marked "expected" follows that schedule, but its notice is
+    not out yet. The committee can move or cancel a meeting. The notice is final. All times are Eastern Time.
+  </p>
+  <p>
+    <a href="/meetings/">Past meetings, with agendas, minutes, and recordings</a>
+    <br />
+    <a href="/participate/">How to attend, speak, or ask for phone, video, or in-person access</a>
+  </p>
+
+  {
+    overdueDuties.length > 0 && (
+      <section class="notice" aria-labelledby="past-due">
+        <h2 id="past-due">Past due</h2>
+        <p>The Open Meeting Law set these deadlines. They have passed, and the record is not on this website yet.</p>
+        <ul>
+          {overdueDuties.map((overdueDuty) => (
+            <li>
+              <a href={overdueDuty.meeting.path()}>{overdueDuty.overdueMessage()}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    committee
+      .calendar()
+      .upcoming({ now })
+      .months()
+      .map((monthOfEntries) => (
+        <section aria-labelledby={monthOfEntries.headingId()}>
+          <h2 id={monthOfEntries.headingId()}>{monthOfEntries.month.name()}</h2>
+          <ol class="calendar-entries">
+            {monthOfEntries.entries.map((entry) => (
+              <li class="calendar-entry">
+                <p class="calendar-entry-when">
+                  <time datetime={entry.day().isoDate()}>{entry.day().longDate()}</time>
+                  {entry.calendarTime() && <span class="muted">{entry.calendarTime()}</span>}
+                </p>
+                <h3>{entry.calendarTitle()}</h3>
+                <p class="calendar-entry-kind">{entry.calendarKind()}</p>
+                {entry.calendarDetails().map((detail) => (
+                  <p>{detail}</p>
+                ))}
+                {entry.calendarLink() && (
+                  <p>
+                    <a href={entry.calendarLink()!.href}>{entry.calendarLink()!.text}</a>
+                  </p>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+  }
+</BaseLayout>

@@ -1,9 +1,13 @@
+import { Calendar } from './Calendar.ts';
 import { District } from './District.ts';
 import { Document } from './Document.ts';
-import { Meeting, type OverdueDuty } from './Meeting.ts';
+import { Meeting } from './Meeting.ts';
 import { lookUp } from './MeetingParts.ts';
 import { Facilitator, Member } from './Member.ts';
-import type { CommitteeData, DistrictData, DocumentData, MeetingData, MemberData } from './schemas.ts';
+import type { PostingDeadline } from './PostingDeadline.ts';
+import { RegularMeetingSchedule, type ExpectedMeeting } from './RegularMeetingSchedule.ts';
+import type { CommitteeData, DistrictData, DocumentData, MeetingData, MemberData, StateDeadlineData } from './schemas.ts';
+import { StateDeadline } from './StateDeadline.ts';
 import { VermontCalendarDay, type VermontTime } from './VermontTime.ts';
 
 export class DistrictVotes {
@@ -94,6 +98,8 @@ export class Committee {
   readonly members: Member[];
   readonly meetings: Meeting[];
   readonly documents: Document[];
+  readonly regularMeetingSchedule: RegularMeetingSchedule;
+  readonly stateDeadlines: StateDeadline[];
 
   constructor({
     committeeData,
@@ -101,12 +107,14 @@ export class Committee {
     membersData,
     meetingsData,
     documentsData,
+    stateDeadlinesData,
   }: {
     committeeData: CommitteeData;
     districtsData: DistrictData[];
     membersData: MemberData[];
     meetingsData: { id: string; data: MeetingData }[];
     documentsData: { id: string; data: DocumentData }[];
+    stateDeadlinesData: StateDeadlineData[];
   }) {
     this.name = committeeData.name;
     this.officialName = committeeData.officialName;
@@ -172,6 +180,36 @@ export class Committee {
       ),
       districts: this.districts,
     });
+
+    this.regularMeetingSchedule = new RegularMeetingSchedule({ data: committeeData.regularMeetingSchedule });
+
+    this.stateDeadlines = stateDeadlinesData.map((data) => new StateDeadline({ data }));
+  }
+
+  stateDeadlineById({ id }: { id: string }): StateDeadline {
+    return lookUp({ map: new Map(this.stateDeadlines.map((stateDeadline) => [stateDeadline.id, stateDeadline])), id, kind: 'state deadline' });
+  }
+
+  expectedMeetings(): ExpectedMeeting[] {
+    return this.regularMeetingSchedule.expectedMeetings({ meetings: this.meetings });
+  }
+
+  // An expected meeting in the past means a meeting file is missing, or the month should be in cancelledMonths.
+  pastExpectedMeetings({ now }: { now: VermontTime }): ExpectedMeeting[] {
+    return this.expectedMeetings().filter((expectedMeeting) => expectedMeeting.isOver({ now }));
+  }
+
+  calendar(): Calendar {
+    const expectedMeetings = this.expectedMeetings();
+    return new Calendar({
+      entries: [
+        ...this.meetings,
+        ...this.meetings.flatMap((meeting) => meeting.postingDeadlines()),
+        ...expectedMeetings,
+        ...expectedMeetings.flatMap((expectedMeeting) => expectedMeeting.postingDeadlines()),
+        ...this.stateDeadlines,
+      ],
+    });
   }
 
   meetingById({ id }: { id: string }): Meeting {
@@ -229,7 +267,7 @@ export class Committee {
     return new Set(this.meetings.flatMap((meeting) => meeting.agendaAndMinutes()));
   }
 
-  overdueDuties({ now }: { now: VermontTime }): OverdueDuty[] {
+  overdueDuties({ now }: { now: VermontTime }): PostingDeadline<Meeting>[] {
     return this.meetings.flatMap((meeting) => meeting.overdueDuties({ now }));
   }
 
@@ -241,8 +279,18 @@ export class Committee {
     return latestDay({ days: this.documents.map((document) => document.updatedOn) });
   }
 
+  calendarUpdatedOn(): VermontCalendarDay {
+    return latestDay({
+      days: [
+        this.meetingsUpdatedOn(),
+        this.regularMeetingSchedule.updatedOn,
+        ...this.stateDeadlines.map((stateDeadline) => stateDeadline.updatedOn),
+      ],
+    });
+  }
+
   updatedOn(): VermontCalendarDay {
-    return latestDay({ days: [this.meetingsUpdatedOn(), this.documentsUpdatedOn(), this.membersUpdatedOn] });
+    return latestDay({ days: [this.calendarUpdatedOn(), this.documentsUpdatedOn(), this.membersUpdatedOn] });
   }
 
   cityList(): string {
@@ -263,17 +311,23 @@ export class Committee {
   }
 
   howYouKnow(): string {
-    if (this.districts.every((district) => district.pageThatLinksHere.published)) {
-      return "Each school district's website links to this page. That is how you know this is the committee's official website.";
+    const proof = "That is how you know this is the committee's official website.";
+    const linking = this.districts.filter((district) => district.pageThatLinksHere.published);
+    const pending = this.districts.filter((district) => !district.pageThatLinksHere.published);
+    if (pending.length === 0) {
+      return `Each school district's website links to this page. ${proof}`;
     }
-    return "Each school district's website will link to this page. That is how you know this is the committee's official website.";
+    if (linking.length === 0) {
+      return `Each school district's website will link to this page. ${proof}`;
+    }
+    return `${englishList({ items: linking.map((district) => `${district.name}'s website`) })} ${linking.length === 1 ? 'links' : 'link'} to this page. ${englishList({ items: pending.map((district) => `${district.name}'s website`) })} will too. ${proof}`;
   }
 }
 
 function englishList({ items }: { items: string[] }): string {
-  const lastItem = items.at(-1) ?? '';
-  const leadingItems = items.slice(0, -1);
-  return leadingItems.length === 0 ? lastItem : `${leadingItems.join(', ')}, and ${lastItem}`;
+  if (items.length <= 1) return items[0] ?? '';
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
 }
 
 function latestDay({ days }: { days: VermontCalendarDay[] }): VermontCalendarDay {

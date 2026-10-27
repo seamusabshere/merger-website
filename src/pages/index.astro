@@ -84,34 +84,24 @@ const nextMeeting = committee.nextMeeting({ now });
   </section>
 
   <section aria-labelledby="what-comes-next">
-    <h2 id="what-comes-next">Where we are and what comes next</h2>
+    <h2 id="what-comes-next">What comes next</h2>
+    <p>
+      {committee.regularMeetingSchedule.sentence()} The place rotates between the three districts. Anyone may attend.
+    </p>
     <ul>
-      <li>
-        <strong>October 20, 2026:</strong> The committee held its first meeting.
-      </li>
-      <li>
-        <strong>First Monday of each month, 4:00 p.m. Eastern Time:</strong> The committee meets in locations rotating
-        between the three districts. Anyone may attend.
-      </li>
-      <li>
-        <strong>By September 1, 2027:</strong> The committee shares its final report. If it recommends a merger, it also
-        shares a proposed plan for the new district, called the "articles of agreement."
-      </li>
-      <li>
-        <strong>By December 1, 2027:</strong> The Secretary of Education reviews any proposed merger and makes a
-        recommendation to the State Board of Education.
-      </li>
-      <li>
-        <strong>By December 15, 2027:</strong> The State Board of Education issues its findings.
-      </li>
-      <li>
-        <strong>March 7, 2028 (Town Meeting Day):</strong> If a merger is recommended, voters in each district vote on
-        it.
-      </li>
-      <li>
-        <strong>July 1, 2029:</strong> If voters approve, the new district would begin for the 2029 to 2030 school year.
-      </li>
+      {
+        [committee.stateDeadlineById({ id: 'final-report' }), committee.stateDeadlineById({ id: 'merger-vote' })].map(
+          (stateDeadline) => (
+            <li>
+              <strong>{stateDeadline.dateLabel()}:</strong> {stateDeadline.description}
+            </li>
+          ),
+        )
+      }
     </ul>
+    <p>
+      <a href="/calendar/">See the calendar</a> for every meeting and deadline.
+    </p>
   </section>
 
   <section aria-labelledby="necessary-and-advisable">

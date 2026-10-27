@@ -10,11 +10,12 @@ Sections marked **planned** describe what is not built yet.
 
 Act 170 of 2026 (H.955, signed June 18, 2026) put the Burlington, South Burlington, and Winooski school districts in one merger committee (Chittenden Central, Group 18). The committee studies whether forming one unified union school district is advisable and makes a recommendation. It does not decide. Key dates, from Act 170 Sec. 13:
 
-- October 20, 2026: the committee's first meeting.
+- By October 15, 2026: each merger committee holds its first meeting. Ours met on October 20, 2026.
 - By September 1, 2027: the final report goes to the three school boards, the Secretary of Education, and the State Board of Education.
 - By December 1, 2027: the Secretary recommends on any proposed merger. By December 15, 2027: the State Board issues findings.
 - March 7, 2028 (Town Meeting Day), if a merger is proposed: voters in each district the plan names "necessary" or "advisable" vote. The new district forms only if every "necessary" district votes yes; an "advisable" district joins only if its own voters say yes (16 V.S.A. § 713(b)).
-- By July 1, 2029, if voters approve: the new district takes over for the 2029 to 2030 school year.
+
+If voters approve, the articles of agreement set the date the new district takes over. Act 170 Sec. 13 sets no such date. The Act 170 page says July 1, 2029; find a source for that date or remove it.
 
 The law is new and dates may move. Check the [Agency of Education's page](https://education.vermont.gov/schools/school-governance/education-transformation) before changing them.
 
@@ -106,11 +107,17 @@ Open <http://localhost:4321>. Saving a page, a content file, or a component relo
 
 Content files are storage. `src/persistence/AstroContent.ts` loads them at build time into domain classes in `src/domain/`; `src/persistence/FileContent.ts` does the same outside Astro, for scripts. Pages and components work only with these classes, never with raw collection entries. Each class holds its data and the rules about it. Schemas live in `src/domain/schemas.ts` and are shared by both loaders.
 
-Times are `VermontTime` (an instant, shown in America/New_York) and dates are `VermontCalendarDay`. Write times in content files with their UTC offset: `-04:00` in summer, `-05:00` in winter. Deadlines count real hours, so the agenda deadline for a meeting just after the November clock change lands an hour later on the clock.
+Times are `VermontTime` (an instant, shown in America/New_York), dates are `VermontCalendarDay`, months are `VermontCalendarMonth`, and a time of day with no date (like 4:00 p.m.) is `VermontClockTime`. Write times in content files with their UTC offset: `-04:00` in summer, `-05:00` in winter. Deadlines count real hours, so the agenda deadline for a meeting just after the November clock change lands an hour later on the clock.
 
 | Class | Holds | Knows how to |
 | --- | --- | --- |
-| `Committee` | Name, chair, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation` | Find the next meeting, list past meetings, list overdue duties, name its chair |
+| `Committee` | Name, chair, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation`, `RegularMeetingSchedule`, `StateDeadline`s | Find the next meeting, list past meetings, list overdue duties, name its chair, build its `Calendar` |
+| `RegularMeetingSchedule` | The week and weekday (like the first Monday), the start time, the first and last month, cancelled months, the date it last changed | Describe itself, list an `ExpectedMeeting` for each month with no regular meeting on file |
+| `ExpectedMeeting` | A start time from the schedule | Give its `PostingDeadline`s; say it has no notice yet |
+| `OpenMeetingLaw` | The posting rules of 1 V.S.A. § 312 | Compute agenda and minutes deadlines for any meeting kind |
+| `PostingDeadline` | A `Meeting` or `ExpectedMeeting`, agenda or minutes, the deadline, the posted record if any | Say whether it is overdue |
+| `StateDeadline` | A date, whether it is "on" or "on or before", what happens, the section of Act 170, the date it last changed | Label its date ("By September 1, 2027"), link to its source |
+| `Calendar` | Meetings, expected meetings, posting deadlines, and state deadlines, in time order | Drop what is over, group by month |
 | `ProportionalRepresentation` | The meeting that set each district's votes, and a `DistrictVotes` for each district | Say how many votes each district has |
 | `DistrictVotes` | A `District` and its vote count | Say "3 votes" or "1 vote" |
 | `District` | Name, city, website, phone, logo, the page on the district site that links here, student count with source | Sort alphabetically |
@@ -139,8 +146,9 @@ Function arguments use named options objects, not positional arguments. A functi
 ```text
 src/
   content/
-    committee.yaml               # the committee and its facilitator
+    committee.yaml               # the committee, its facilitator, and its regular meeting schedule
     districts.yaml
+    state-deadlines.yaml         # upcoming dates set by Act 170 Sec. 13
     members.yaml
     meetings/2026-11-02.yaml     # one file per meeting, named by date
     documents/<slug>.yaml        # one file per record: summary and files
@@ -161,8 +169,9 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 
 ## Pages
 
-- **Home** (`/`): the next meeting with join details, then a plain account of the study. The state requires the study and voters decide. The page names the questions the committee is working through, what "necessary" and "advisable" mean, and the dates through July 1, 2029.
+- **Home** (`/`): the next meeting with join details, then a plain account of the study. The state requires the study and voters decide. The page names the questions the committee is working through, the meeting schedule, the final report deadline and the vote date (both from `state-deadlines.yaml`), and what "necessary" and "advisable" mean. It links to the calendar for every other date.
 - **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Once the meeting has ended, the video and phone rows both name the platform, such as Google Meet or Zoom, and leave off the link, the phone number, and the PIN. A meeting with no end time counts as ended at the end of that calendar day. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`) until it starts. Anything not yet known or posted, such as a location, link, agenda, minutes, or recording, shows "TBD".
+- **Calendar** (`/calendar/`): everything still to come, by month. It lists meetings on file, an "expected" meeting for each month of the regular schedule that has no meeting file yet, the agenda and minutes deadlines for each of those meetings, and the dates in `state-deadlines.yaml`. An entry leaves the page once it is over. An expected meeting never shows a place or a join link; it says the notice is not out yet. An agenda or minutes deadline that passed with nothing posted moves to a "Past due" box at the top and stays there until the record is posted. Only meetings on file carry these duties; an expected meeting's deadlines just drop off.
 - **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files the committee wrote. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with a plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format.
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
 - **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.
@@ -208,7 +217,7 @@ Automated checks catch some problems, not all. `.github/workflows/checks.yml` ru
 - `pnpm check` (`astro check`). The pre-commit hook runs this same command.
 - `pnpm build`
 
-`pnpm check:deadlines` loads every `Meeting`, prints how many hours are left for upcoming agendas, and exits with an error if an agenda or minutes are past their deadline. It is a local reminder. A missed deadline is a breach of the law, not a failed build, so continuous integration does not run it.
+`pnpm check:deadlines` loads every `Meeting`, prints how many hours are left for upcoming agendas, and exits with an error if an agenda or minutes are past their deadline, or if an expected meeting has passed with no meeting file (add the file, or add the month to `cancelledMonths`). It is a local reminder. A missed deadline is a breach of the law, not a failed build, so continuous integration does not run it.
 
 Planned: HTML validation (`html-validate`), axe-core on every built page with zero violations, an internal link check, and a reading level report for English pages.
 
@@ -222,6 +231,10 @@ By hand, before any change to layout or components:
 ## Common updates
 
 **Add a meeting.** Copy a file in `src/content/meetings/`, name it by the meeting date, and fill in the time with its UTC offset, the place, and the video and phone details. Leave out what you do not know; the page says it is coming.
+
+**Change the regular schedule.** Edit `regularMeetingSchedule` in `committee.yaml` and update its `updatedOn`. A regular meeting file in a month replaces that month's expected meeting, even on another day, so moving a meeting needs only the new meeting file. To cancel a month's meeting, add the month (like `"2027-07"`) to `cancelledMonths`.
+
+**Change a state deadline.** Edit `state-deadlines.yaml` and update that entry's `updatedOn`. The home page and calendar read from it. The Act 170 page and the key dates at the top of this file are written out by hand, so change them too.
 
 **Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/2026-10-20-agenda.pdf`) and its size. Set `createdByTheCommittee` to `true`. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Do not also put it in `documentIds`. The records page leaves agendas off. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
 

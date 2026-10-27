@@ -1,15 +1,12 @@
+import { CalendarLink, type CalendarEntry } from './Calendar.ts';
 import type { Committee } from './Committee.ts';
 import type { Document } from './Document.ts';
 import type { Member } from './Member.ts';
 import { Agenda, ElectronicAccess, lookUp, Minutes, PhysicalLocation, Recording } from './MeetingParts.ts';
+import { OpenMeetingLaw } from './OpenMeetingLaw.ts';
+import { PostedRecord, PostingDeadline } from './PostingDeadline.ts';
 import type { MeetingData } from './schemas.ts';
 import { VermontCalendarDay, VermontTime } from './VermontTime.ts';
-
-const AGENDA_NOTICE_HOURS: Record<MeetingData['kind'], number | undefined> = {
-  regular: 48,
-  special: 24,
-  emergency: undefined,
-};
 
 const KIND_NAMES: Record<MeetingData['kind'], string> = {
   regular: 'Regular meeting',
@@ -17,24 +14,7 @@ const KIND_NAMES: Record<MeetingData['kind'], string> = {
   emergency: 'Emergency meeting',
 };
 
-export class OverdueDuty {
-  readonly meeting: Meeting;
-  readonly duty: 'agenda' | 'minutes';
-  readonly deadline: VermontTime;
-
-  constructor({ meeting, duty, deadline }: { meeting: Meeting; duty: 'agenda' | 'minutes'; deadline: VermontTime }) {
-    this.meeting = meeting;
-    this.duty = duty;
-    this.deadline = deadline;
-  }
-
-  describe(): string {
-    const subject = this.duty === 'agenda' ? 'the agenda was' : 'the minutes were';
-    return `${this.meeting.title()}: ${subject} due by ${this.deadline.dateAndTime()} and not posted.`;
-  }
-}
-
-export class Meeting {
+export class Meeting implements CalendarEntry {
   readonly id: string;
   readonly kind: MeetingData['kind'];
   readonly startsAt: VermontTime;
@@ -108,16 +88,15 @@ export class Meeting {
   }
 
   agendaDeadline(): VermontTime | undefined {
-    const hours = AGENDA_NOTICE_HOURS[this.kind];
-    return hours === undefined ? undefined : this.startsAt.plusHours({ hours: -hours });
+    return OpenMeetingLaw.agendaDeadline({ kind: this.kind, startsAt: this.startsAt });
   }
 
   minutesDeadline(): VermontTime {
-    return this.day().plusDays({ days: 5 }).endsAt();
+    return OpenMeetingLaw.minutesDeadline({ meetingDay: this.day() });
   }
 
   minutesKeepUntil(): VermontCalendarDay {
-    return this.day().plusYears({ years: 1 });
+    return OpenMeetingLaw.minutesKeepUntil({ meetingDay: this.day() });
   }
 
   hasPostedAgenda(): boolean {
@@ -128,16 +107,60 @@ export class Meeting {
     return [this.agenda?.document, this.minutes?.document].filter((document): document is Document => document !== undefined);
   }
 
-  overdueDuties({ now }: { now: VermontTime }): OverdueDuty[] {
-    const overdue: OverdueDuty[] = [];
+  postingDeadlines(): PostingDeadline<Meeting>[] {
     const agendaDeadline = this.agendaDeadline();
-    if (agendaDeadline && !this.hasPostedAgenda() && agendaDeadline.isBefore({ other: now })) {
-      overdue.push(new OverdueDuty({ meeting: this, duty: 'agenda', deadline: agendaDeadline }));
-    }
-    if (!this.minutes && this.minutesDeadline().isBefore({ other: now })) {
-      overdue.push(new OverdueDuty({ meeting: this, duty: 'minutes', deadline: this.minutesDeadline() }));
-    }
-    return overdue;
+    return [
+      agendaDeadline &&
+        new PostingDeadline<Meeting>({
+          meeting: this,
+          duty: 'agenda',
+          deadline: agendaDeadline,
+          posted: this.agenda && new PostedRecord({ postedAt: this.agenda.postedAt, path: `${this.path()}#agenda` }),
+        }),
+      new PostingDeadline<Meeting>({
+        meeting: this,
+        duty: 'minutes',
+        deadline: this.minutesDeadline(),
+        posted: this.minutes && new PostedRecord({ postedAt: this.minutes.postedAt, path: `${this.path()}#minutes` }),
+      }),
+    ].filter((postingDeadline): postingDeadline is PostingDeadline<Meeting> => postingDeadline !== undefined);
+  }
+
+  overdueDuties({ now }: { now: VermontTime }): PostingDeadline<Meeting>[] {
+    return this.postingDeadlines().filter((postingDeadline) => postingDeadline.isOverdue({ now }));
+  }
+
+  sortsAt(): VermontTime {
+    return this.startsAt;
+  }
+
+  isOver({ now }: { now: VermontTime }): boolean {
+    return this.hasEnded({ now });
+  }
+
+  calendarKind(): string {
+    return this.kindName();
+  }
+
+  calendarTitle(): string {
+    return 'Committee meeting';
+  }
+
+  calendarTime(): string {
+    return this.timeRange();
+  }
+
+  calendarDetails(): string[] {
+    return [
+      this.physicalLocation
+        ? `${this.physicalLocation.name}, ${this.physicalLocation.city}`
+        : 'Place: TBD',
+      this.electronicAccess ? `Also on ${this.electronicAccess.platform}.` : undefined,
+    ].filter((detail): detail is string => detail !== undefined);
+  }
+
+  calendarLink(): CalendarLink {
+    return new CalendarLink({ href: this.path(), text: 'Meeting details' });
   }
 
   schemaOrgEvent({

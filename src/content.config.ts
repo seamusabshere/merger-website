@@ -7,6 +7,7 @@ import {
   meetingSchema,
   memberSchema,
   pageSchema,
+  stateDeadlineSchema,
 } from './domain/schemas.ts';
 
 const committee = defineCollection({
@@ -34,9 +35,14 @@ const documents = defineCollection({
   schema: documentSchema,
 });
 
+const stateDeadlines = defineCollection({
+  loader: file('src/content/state-deadlines.yaml'),
+  schema: stateDeadlineSchema,
+});
+
 const pages = defineCollection({
   loader: glob({ base: './src/content/pages', pattern: '**/*.md' }),
   schema: pageSchema,
 });
 
-export const collections = { committee, districts, members, meetings, documents, pages };
+export const collections = { committee, districts, members, meetings, documents, stateDeadlines, pages };

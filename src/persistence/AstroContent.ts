@@ -6,12 +6,13 @@ type PageBody = Awaited<ReturnType<typeof render>>['Content'];
 
 export class AstroContent {
   static async loadCommittee(): Promise<Committee> {
-    const [committeeEntries, districtEntries, memberEntries, meetingEntries, documentEntries] = await Promise.all([
+    const [committeeEntries, districtEntries, memberEntries, meetingEntries, documentEntries, stateDeadlineEntries] = await Promise.all([
       getCollection('committee'),
       getCollection('districts'),
       getCollection('members'),
       getCollection('meetings'),
       getCollection('documents'),
+      getCollection('stateDeadlines'),
     ]);
     if (committeeEntries.length !== 1) {
       throw new Error(`src/content/committee.yaml must hold exactly one committee; found ${committeeEntries.length}.`);
@@ -22,6 +23,7 @@ export class AstroContent {
       membersData: memberEntries.map((entry) => entry.data),
       meetingsData: meetingEntries.map((entry) => ({ id: entry.id, data: entry.data })),
       documentsData: documentEntries.map((entry) => ({ id: entry.id, data: entry.data })),
+      stateDeadlinesData: stateDeadlineEntries.map((entry) => entry.data),
     });
   }
 

@@ -1,0 +1,49 @@
+- id: legislature-status-report
+  on: "2027-02-01"
+  timing: on-or-before
+  updatedOn: "2026-10-27"
+  title: Status report to the Legislature
+  description: The state's lead facilitator reports to the Legislature on who serves on each merger committee and how far along it is.
+  citation:
+    title: Act 170, Sec. 13(f)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
+- id: final-report
+  on: "2027-09-01"
+  timing: on-or-before
+  updatedOn: "2026-10-27"
+  title: The committee's final report is due
+  description: The committee sends its final report to the school boards, the Secretary of Education, and the State Board of Education. If it recommends a merger, it also sends a proposed plan for the new district, called the "articles of agreement."
+  citation:
+    title: Act 170, Sec. 13(b)(5)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
+- id: secretary-recommendation
+  on: "2027-12-01"
+  timing: on-or-before
+  updatedOn: "2026-10-27"
+  title: Secretary of Education's recommendation
+  description: If the committee proposes a merger, the Secretary of Education reviews it and makes a recommendation to the State Board of Education. The Secretary has 30 days from getting the report, and no later than December 1, 2027.
+  citation:
+    title: Act 170, Sec. 13(c)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
+- id: state-board-findings
+  on: "2027-12-15"
+  timing: on-or-before
+  updatedOn: "2026-10-27"
+  title: State Board of Education's findings
+  description: The State Board of Education issues its findings on any proposed merger.
+  citation:
+    title: Act 170, Sec. 13(d)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
+- id: merger-vote
+  on: "2028-03-07"
+  timing: on
+  updatedOn: "2026-10-27"
+  title: Town Meeting Day vote, if a merger is proposed
+  description: If the committee proposes a merger, voters in each district the plan names "necessary" or "advisable" vote on it.
+  citation:
+    title: Act 170, Sec. 13(e)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf

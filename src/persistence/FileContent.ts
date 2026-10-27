@@ -1,7 +1,14 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { parse } from 'yaml';
 import { Committee } from '../domain/Committee.ts';
-import { committeeSchema, districtSchema, documentSchema, meetingSchema, memberSchema } from '../domain/schemas.ts';
+import {
+  committeeSchema,
+  districtSchema,
+  documentSchema,
+  meetingSchema,
+  memberSchema,
+  stateDeadlineSchema,
+} from '../domain/schemas.ts';
 
 export class FileContent {
   static async loadCommittee({ contentDirectory }: { contentDirectory: URL }): Promise<Committee> {
@@ -21,6 +28,7 @@ export class FileContent {
       membersData: memberSchema.array().parse(await readYaml('members.yaml')),
       meetingsData: (await readFolder('meetings')).map(({ id, raw }) => ({ id, data: meetingSchema.parse(raw) })),
       documentsData: (await readFolder('documents')).map(({ id, raw }) => ({ id, data: documentSchema.parse(raw) })),
+      stateDeadlinesData: stateDeadlineSchema.array().parse(await readYaml('state-deadlines.yaml')),
     });
   }
 }

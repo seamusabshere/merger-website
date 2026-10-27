@@ -1,4 +1,5 @@
 import { z } from 'astro/zod';
+import { WEEKDAYS } from './VermontTime.ts';
 
 const isoInstant = z
   .string()
@@ -9,9 +10,23 @@ const isoInstant = z
 
 const calendarDay = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Write a date like "2026-11-02".');
 
+const calendarMonth = z.string().regex(/^\d{4}-\d{2}$/, 'Write a month like "2026-11".');
+
+const clockTime = z.string().regex(/^\d{2}:\d{2}$/, 'Write a 24-hour time in Vermont, like "16:00" for 4:00 p.m.');
+
 const sourceLink = z.object({
   title: z.string(),
   url: z.url(),
+});
+
+const regularMeetingScheduleSchema = z.object({
+  updatedOn: calendarDay,
+  week: z.enum(['first', 'second', 'third', 'fourth']),
+  weekday: z.enum(WEEKDAYS),
+  startsAt: clockTime,
+  firstMonth: calendarMonth,
+  lastMonth: calendarMonth,
+  cancelledMonths: z.array(calendarMonth).default([]),
 });
 
 export const committeeSchema = z.object({
@@ -21,6 +36,7 @@ export const committeeSchema = z.object({
   stateGroup: z.string(),
   membersUpdatedOn: calendarDay,
   chairMemberId: z.string(),
+  regularMeetingSchedule: regularMeetingScheduleSchema,
   proportionalRepresentation: z.object({
     decidedAtMeetingId: z.string(),
     votes: z.array(
@@ -184,6 +200,16 @@ export const documentSchema = z.object({
   files: z.array(documentFileSchema).min(1),
 });
 
+export const stateDeadlineSchema = z.object({
+  id: z.string(),
+  on: calendarDay,
+  timing: z.enum(['on-or-before', 'on']),
+  updatedOn: calendarDay,
+  title: z.string(),
+  description: z.string(),
+  citation: sourceLink,
+});
+
 export const pageSchema = z.object({
   title: z.string(),
   description: z.string(),
@@ -191,6 +217,8 @@ export const pageSchema = z.object({
 });
 
 export type CommitteeData = z.infer<typeof committeeSchema>;
+export type RegularMeetingScheduleData = z.infer<typeof regularMeetingScheduleSchema>;
+export type StateDeadlineData = z.infer<typeof stateDeadlineSchema>;
 export type DistrictData = z.infer<typeof districtSchema>;
 export type MemberData = z.infer<typeof memberSchema>;
 export type MeetingData = z.infer<typeof meetingSchema>;
