@@ -85,7 +85,7 @@ The ADA web rule (28 CFR 35.200) requires WCAG 2.1 AA. A school district is not 
 
 Set `site` in `astro.config.mjs` to `https://burlington-south-burlington-winooski-merger-study.org`. Do not set `base`; the custom domain serves the site from `/`.
 
-When the site deploys through GitHub Actions, GitHub ignores the `CNAME` file in the repo. The custom domain lives in repository Settings, then Pages. The root `CNAME` file serves branch publishing, which is in use while HTTPS is set up. To switch, set the Pages source to "GitHub Actions" in repository settings, then remove `CNAME`.
+Pages publishes with the GitHub Actions workflow in `.github/workflows/deploy.yml`. The custom domain and HTTPS live in repository Settings, then Pages. Do not add a `CNAME` file, and do not set the Pages source back to a branch. A branch source makes GitHub run Jekyll on this repo, and Jekyll fails on the `---` lines in `.astro` files.
 
 Do not commit video or large binaries. GitHub rejects files over 100 MB and limits a Pages site to 1 GB. Recordings live on a video host; the site links to them.
 
@@ -99,6 +99,8 @@ pnpm dev
 ```
 
 Open <http://localhost:4321>. Saving a page, a content file, or a component reloads the browser.
+
+`pnpm install` installs a pre-commit hook that runs `pnpm check`. The hook uses the `pnpm` found at that time. If you move `pnpm`, run `pnpm run prepare` again.
 
 ## Domain model
 
@@ -203,7 +205,7 @@ Routes: English at `/`, other languages at `/<language code>/` (for example `/ne
 
 Automated checks catch some problems, not all. `.github/workflows/checks.yml` runs on every pull request, on every push to `main`, and every hour:
 
-- `pnpm check` (`astro check`)
+- `pnpm check` (`astro check`). The pre-commit hook runs this same command.
 - `pnpm build`
 - `pnpm check:deadlines`: loads every `Meeting` and fails if an agenda or minutes are past their deadline. It also prints how many hours are left for upcoming agendas.
 

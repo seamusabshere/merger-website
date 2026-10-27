@@ -13,6 +13,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "check:deadlines": "node scripts/check-deadlines.ts",
+    "prepare": "node scripts/install-pre-commit-hook.ts",
     "astro": "astro"
   },
   "dependencies": {
