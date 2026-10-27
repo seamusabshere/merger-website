@@ -1,7 +1,5 @@
 import type { CalendarEntry, CalendarLink } from './Calendar.ts';
 import type { Meeting } from './Meeting.ts';
-import { OpenMeetingLaw } from './OpenMeetingLaw.ts';
-import { PostingDeadline } from './PostingDeadline.ts';
 import type { RegularMeetingScheduleData } from './schemas.ts';
 import { VermontCalendarDay, VermontCalendarMonth, VermontClockTime, type VermontTime, type Weekday } from './VermontTime.ts';
 
@@ -91,23 +89,6 @@ export class ExpectedMeeting implements CalendarEntry {
 
   title(): string {
     return `Expected committee meeting, ${this.day().longDate()}`;
-  }
-
-  postingDeadlines(): PostingDeadline<ExpectedMeeting>[] {
-    return [
-      new PostingDeadline<ExpectedMeeting>({
-        meeting: this,
-        duty: 'agenda',
-        deadline: OpenMeetingLaw.agendaDeadline({ kind: this.kind, startsAt: this.startsAt })!,
-        posted: undefined,
-      }),
-      new PostingDeadline<ExpectedMeeting>({
-        meeting: this,
-        duty: 'minutes',
-        deadline: OpenMeetingLaw.minutesDeadline({ meetingDay: this.day() }),
-        posted: undefined,
-      }),
-    ];
   }
 
   sortsAt(): VermontTime {

@@ -107,26 +107,26 @@ export class Meeting implements CalendarEntry {
     return [this.agenda?.document, this.minutes?.document].filter((document): document is Document => document !== undefined);
   }
 
-  postingDeadlines(): PostingDeadline<Meeting>[] {
+  postingDeadlines(): PostingDeadline[] {
     const agendaDeadline = this.agendaDeadline();
     return [
       agendaDeadline &&
-        new PostingDeadline<Meeting>({
+        new PostingDeadline({
           meeting: this,
           duty: 'agenda',
           deadline: agendaDeadline,
           posted: this.agenda && new PostedRecord({ postedAt: this.agenda.postedAt, path: `${this.path()}#agenda` }),
         }),
-      new PostingDeadline<Meeting>({
+      new PostingDeadline({
         meeting: this,
         duty: 'minutes',
         deadline: this.minutesDeadline(),
         posted: this.minutes && new PostedRecord({ postedAt: this.minutes.postedAt, path: `${this.path()}#minutes` }),
       }),
-    ].filter((postingDeadline): postingDeadline is PostingDeadline<Meeting> => postingDeadline !== undefined);
+    ].filter((postingDeadline): postingDeadline is PostingDeadline => postingDeadline !== undefined);
   }
 
-  overdueDuties({ now }: { now: VermontTime }): PostingDeadline<Meeting>[] {
+  overdueDuties({ now }: { now: VermontTime }): PostingDeadline[] {
     return this.postingDeadlines().filter((postingDeadline) => postingDeadline.isOverdue({ now }));
   }
 

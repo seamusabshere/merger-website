@@ -200,15 +200,8 @@ export class Committee {
   }
 
   calendar(): Calendar {
-    const expectedMeetings = this.expectedMeetings();
     return new Calendar({
-      entries: [
-        ...this.meetings,
-        ...this.meetings.flatMap((meeting) => meeting.postingDeadlines()),
-        ...expectedMeetings,
-        ...expectedMeetings.flatMap((expectedMeeting) => expectedMeeting.postingDeadlines()),
-        ...this.stateDeadlines,
-      ],
+      entries: [...this.meetings, ...this.expectedMeetings(), ...this.stateDeadlines],
     });
   }
 
@@ -267,7 +260,7 @@ export class Committee {
     return new Set(this.meetings.flatMap((meeting) => meeting.agendaAndMinutes()));
   }
 
-  overdueDuties({ now }: { now: VermontTime }): PostingDeadline<Meeting>[] {
+  overdueDuties({ now }: { now: VermontTime }): PostingDeadline[] {
     return this.meetings.flatMap((meeting) => meeting.overdueDuties({ now }));
   }
 

@@ -113,11 +113,11 @@ Times are `VermontTime` (an instant, shown in America/New_York), dates are `Verm
 | --- | --- | --- |
 | `Committee` | Name, chair, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation`, `RegularMeetingSchedule`, `StateDeadline`s | Find the next meeting, list past meetings, list overdue duties, name its chair, build its `Calendar` |
 | `RegularMeetingSchedule` | The week and weekday (like the first Monday), the start time, the first and last month, cancelled months, the date it last changed | Describe itself, list an `ExpectedMeeting` for each month with no regular meeting on file |
-| `ExpectedMeeting` | A start time from the schedule | Give its `PostingDeadline`s; say it has no notice yet |
+| `ExpectedMeeting` | A start time from the schedule | Say it has no notice yet |
 | `OpenMeetingLaw` | The posting rules of 1 V.S.A. § 312 | Compute agenda and minutes deadlines for any meeting kind |
-| `PostingDeadline` | A `Meeting` or `ExpectedMeeting`, agenda or minutes, the deadline, the posted record if any | Say whether it is overdue |
+| `PostingDeadline` | A `Meeting`, agenda or minutes, the deadline, the posted record if any | Say whether it is overdue. Used by `pnpm check:deadlines`, not by the public calendar |
 | `StateDeadline` | A date, whether it is "on" or "on or before", what happens, the section of Act 170, the date it last changed | Label its date ("By September 1, 2027"), link to its source |
-| `Calendar` | Meetings, expected meetings, posting deadlines, and state deadlines, in time order | Drop what is over, group by month |
+| `Calendar` | Meetings, expected meetings, and state deadlines, in time order | Drop what is over, group by month |
 | `ProportionalRepresentation` | The meeting that set each district's votes, and a `DistrictVotes` for each district | Say how many votes each district has |
 | `DistrictVotes` | A `District` and its vote count | Say "3 votes" or "1 vote" |
 | `District` | Name, city, website, phone, logo, the page on the district site that links here, student count with source | Sort alphabetically |
@@ -171,7 +171,7 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 
 - **Home** (`/`): the next meeting with join details, then a plain account of the study. The state requires the study and voters decide. The page names the questions the committee is working through, the meeting schedule, the final report deadline and the vote date (both from `state-deadlines.yaml`), and what "necessary" and "advisable" mean. It links to the calendar for every other date.
 - **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Once the meeting has ended, the video and phone rows both name the platform, such as Google Meet or Zoom, and leave off the link, the phone number, and the PIN. A meeting with no end time counts as ended at the end of that calendar day. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`) until it starts. Anything not yet known or posted, such as a location, link, agenda, minutes, or recording, shows "TBD".
-- **Calendar** (`/calendar/`): everything still to come, by month. It lists meetings on file, an "expected" meeting for each month of the regular schedule that has no meeting file yet, the agenda and minutes deadlines for each of those meetings, and the dates in `state-deadlines.yaml`. An entry leaves the page once it is over. An expected meeting never shows a place or a join link; it says the notice is not out yet. A deadline that has passed leaves the page too, whether or not the record is posted. Only meetings on file carry these duties; an expected meeting's deadlines just drop off. Do not add a box that says a deadline was missed.
+- **Calendar** (`/calendar/`): everything still to come, by month. It lists meetings on file, an "expected" meeting for each month of the regular schedule that has no meeting file yet, and the dates in `state-deadlines.yaml`. An entry leaves the page once it is over. An expected meeting never shows a place or a join link; it says the notice is not out yet. The calendar is for the public. Do not list when an agenda or minutes are due.
 - **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files the committee wrote. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with a plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format.
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
 - **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.
@@ -240,7 +240,7 @@ By hand, before any change to layout or components:
 
 **Do not say a file is unchecked.** Do not write "We have not checked this file for accessibility," or anything like it, on a page, in a summary, or in a commit message. If nobody has checked a file, set `accessibility` to `not-checked` and leave the page quiet. Write a note only when you know a file does not work (`not-accessible`).
 
-**Do not put a late notice on the site.** Do not write "Past due," "overdue," "missed deadline," or anything like it on a page. People post agendas and minutes when they can. `pnpm check:deadlines` is a local reminder for them. It is not copy for the website. Agents do not write these notices. Humans handle the dates.
+**Do not put the committee's posting chores on the site.** The site is for the public, not a to-do list for the committee. Do not list when an agenda or minutes are due, and do not write "Past due," "overdue," or "missed deadline." People post when they can. `pnpm check:deadlines` is a local reminder for them. It is not copy for the website.
 
 **Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. If the minutes are also a file under `src/content/documents/`, set `createdByTheCommittee` to `true` and set `minutes.documentId` to that record. The records page leaves minutes off. Never delete posted minutes within one year of the meeting.
 

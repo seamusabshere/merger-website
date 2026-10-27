@@ -9,11 +9,11 @@ const now = VermontTime.now();
 
 <BaseLayout
   title="Calendar"
-  description="Upcoming meetings of the Burlington, South Burlington, and Winooski merger committee, and the deadlines set by state law."
+  description="Upcoming meetings of the Burlington, South Burlington, and Winooski merger committee, and the dates set by state law."
   updatedOn={committee.calendarUpdatedOn()}
 >
   <h1>Calendar</h1>
-  <p class="lede">Upcoming meetings, and the deadlines that state law sets for the committee and the state.</p>
+  <p class="lede">Upcoming meetings, and the dates state law sets for the study.</p>
   <p>
     {committee.regularMeetingSchedule.sentence()} A meeting marked "expected" follows that schedule, but its notice is
     not out yet. The committee can move or cancel a meeting. The notice is final. All times are Eastern Time.
