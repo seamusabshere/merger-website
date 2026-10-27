@@ -29,8 +29,8 @@
   phone: 802-652-7250
   logo:
     path: /logos/south-burlington.png
-    width: 512
-    height: 512
+    width: 216
+    height: 216
   pageThatLinksHere:
     url: https://www.sbschools.net/act-170-merger-committee
     published: false

@@ -98,6 +98,15 @@ export class VermontTime {
     return this.instant.toISOString();
   }
 
+  isoStringWithOffset(): string {
+    const offsetMinutes = VermontTime.offsetMinutesAt({ instant: this.instant });
+    const wallClock = new Date(this.instant.getTime() + offsetMinutes * 60_000).toISOString().replace(/\.\d{3}Z$/, '');
+    const sign = offsetMinutes < 0 ? '-' : '+';
+    const hours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(2, '0');
+    const minutes = String(Math.abs(offsetMinutes) % 60).padStart(2, '0');
+    return `${wallClock}${sign}${hours}:${minutes}`;
+  }
+
   iCalendarUtc(): string {
     return this.instant.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
   }

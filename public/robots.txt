@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://burlington-south-burlington-winooski-merger-study.org/sitemap-index.xml

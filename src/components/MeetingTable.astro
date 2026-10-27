@@ -60,8 +60,8 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
               </td>
               <td>
                 {meeting.hasPostedAgenda() ? (
-                  <a href={`${meeting.path()}#agenda`} aria-label="Posted agenda">
-                    Posted
+                  <a href={`${meeting.path()}#agenda`}>
+                    Posted<span class="visually-hidden"> agenda for {meeting.day().longDate()}</span>
                   </a>
                 ) : (
                   <>Not posted</>
@@ -71,11 +71,9 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                 <>
                   <td>
                     {meeting.minutes ? (
-                      <a
-                        href={`${meeting.path()}#minutes`}
-                        aria-label={meeting.minutes.isDraft() ? 'Draft minutes' : 'Approved minutes'}
-                      >
+                      <a href={`${meeting.path()}#minutes`}>
                         {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
+                        <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
                       </a>
                     ) : (
                       <>Not posted yet</>
@@ -83,8 +81,9 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                   </td>
                   <td>
                     {meeting.recording ? (
-                      <a href={meeting.recording.url} aria-label={`Recording on ${meeting.recording.host}`}>
+                      <a href={meeting.recording.url}>
                         {meeting.recording.host}
+                        <span class="visually-hidden"> recording of {meeting.day().longDate()}</span>
                       </a>
                     ) : (
                       <>Not posted yet</>

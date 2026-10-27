@@ -1,3 +1,4 @@
+import type { Committee } from './Committee.ts';
 import type { Document } from './Document.ts';
 import type { Member } from './Member.ts';
 import { Agenda, ElectronicAccess, lookUp, Minutes, PhysicalLocation, Recording } from './MeetingParts.ts';
@@ -132,6 +133,41 @@ export class Meeting {
       overdue.push(new OverdueDuty({ meeting: this, duty: 'minutes', deadline: this.minutesDeadline() }));
     }
     return overdue;
+  }
+
+  schemaOrgEvent({ siteUrl, committee }: { siteUrl: string; committee: Committee }): Record<string, unknown> {
+    const pageUrl = new URL(this.path(), siteUrl).toString();
+    const place = {
+      '@type': 'Place',
+      name: this.physicalLocation.name,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: this.physicalLocation.streetAddress,
+        addressLocality: this.physicalLocation.city,
+        addressRegion: this.physicalLocation.state,
+        postalCode: this.physicalLocation.postalCode,
+        addressCountry: 'US',
+      },
+    };
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: `${committee.name}: ${this.kindName()}`,
+      description: `${this.kindName()} of the ${committee.name}. Open to the public.`,
+      startDate: this.startsAt.isoStringWithOffset(),
+      ...(this.endsAt && { endDate: this.endsAt.isoStringWithOffset() }),
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: this.electronicAccess
+        ? 'https://schema.org/MixedEventAttendanceMode'
+        : 'https://schema.org/OfflineEventAttendanceMode',
+      // Google rejects a VirtualLocation without a url, so the meeting page stands in until the join link is known.
+      location: this.electronicAccess
+        ? [place, { '@type': 'VirtualLocation', url: this.electronicAccess.url ?? pageUrl }]
+        : place,
+      isAccessibleForFree: true,
+      organizer: committee.schemaOrgOrganization({ siteUrl }),
+      url: pageUrl,
+    };
   }
 
   calendarEvent({ siteUrl }: { siteUrl: string }): string {

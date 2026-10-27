@@ -25,6 +25,11 @@ const recording = meeting.recording;
   description={`Agenda, join details, minutes, and recording for the merger committee meeting on ${meeting.day().longDate()}.`}
   updatedOn={meeting.updatedOn}
 >
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(meeting.schemaOrgEvent({ siteUrl: Astro.site!.toString(), committee })).replace(/</g, '\\u003c')}
+  />
   <p class="muted"><a href="/meetings/">Public meetings</a></p>
   <h1>{meeting.title()}</h1>
   <p>{meeting.kindName()} of the Burlington, South Burlington, and Winooski merger committee.</p>

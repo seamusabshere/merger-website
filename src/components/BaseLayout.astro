@@ -1,5 +1,6 @@
 ---
 import '../styles/site.css';
+import latinFontUrl from '@fontsource-variable/libre-franklin/files/libre-franklin-latin-wght-normal.woff2?url';
 import OfficialBanner from './OfficialBanner.astro';
 import type { VermontCalendarDay } from '../domain/VermontTime.ts';
 import { AstroContent } from '../persistence/AstroContent.ts';
@@ -39,12 +40,21 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
     <title>{currentPath === '/' ? siteName : `${title} | ${siteName}`}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(currentPath, Astro.site)} />
+    <link rel="preload" href={latinFontUrl} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={currentPath === '/' ? siteName : title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={new URL(currentPath, Astro.site)} />
+    <meta property="og:locale" content="en_US" />
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
     <OfficialBanner
-      statement={committee.officialWebsiteStatement()}
+      cityList={committee.cityList()}
       howYouKnow={committee.howYouKnow()}
       districts={committee.districts}
     />
@@ -55,17 +65,20 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
           <small>Act 170 merger committee</small>
         </a>
         <nav class="site-nav" aria-label="Main">
-          <ul>
-            {
-              navigation.map((item) => (
-                <li>
-                  <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
-                    {item.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
+          <details class="site-menu">
+            <summary>Menu</summary>
+            <ul>
+              {
+                navigation.map((item) => (
+                  <li>
+                    <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </details>
         </nav>
       </div>
     </header>

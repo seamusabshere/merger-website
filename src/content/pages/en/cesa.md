@@ -32,7 +32,7 @@ The committee sends its report by September 1, 2027. If it recommends a merger, 
 
 ## Side by side
 
-| | This committee | The CESA |
+| Topic | This committee | The CESA |
 | --- | --- | --- |
 | Created by | Act 170, Section 13 | Act 170, Section 2 |
 | School districts | Burlington, South Burlington, Winooski | Those three, plus Colchester and Essex Westford |

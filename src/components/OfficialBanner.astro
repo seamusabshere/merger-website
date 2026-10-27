@@ -2,12 +2,12 @@
 import type { District } from '../domain/District.ts';
 
 interface Props {
-  statement: string;
+  cityList: string;
   howYouKnow: string;
   districts: District[];
 }
 
-const { statement, howYouKnow, districts } = Astro.props;
+const { cityList, howYouKnow, districts } = Astro.props;
 ---
 
 <section class="official-banner" aria-label="Official website">
@@ -26,7 +26,7 @@ const { statement, howYouKnow, districts } = Astro.props;
           ))
         }
       </span>
-      {statement}
+      Official website of the Act 170 Merger Committee<span class="official-banner-cities"> for {cityList}</span>
     </p>
     <details class="how-you-know">
       <summary>Here's how you know</summary>

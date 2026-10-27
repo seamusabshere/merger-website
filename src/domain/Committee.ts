@@ -249,12 +249,20 @@ export class Committee {
     return latestDay({ days: [this.meetingsUpdatedOn(), this.documentsUpdatedOn(), this.membersUpdatedOn] });
   }
 
-  officialWebsiteStatement(): string {
+  cityList(): string {
     const cities = this.districts.map((district) => district.city);
     const lastCity = cities.at(-1) ?? '';
     const leadingCities = cities.slice(0, -1);
-    const cityList = leadingCities.length === 0 ? lastCity : `${leadingCities.join(', ')}, and ${lastCity}`;
-    return `Official website of the Act 170 Merger Committee for ${cityList}`;
+    return leadingCities.length === 0 ? lastCity : `${leadingCities.join(', ')}, and ${lastCity}`;
+  }
+
+  schemaOrgOrganization({ siteUrl }: { siteUrl: string }): Record<string, unknown> {
+    return {
+      '@type': 'Organization',
+      name: this.name,
+      alternateName: this.officialName,
+      url: siteUrl,
+    };
   }
 
   howYouKnow(): string {
