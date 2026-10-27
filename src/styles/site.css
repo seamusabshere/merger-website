@@ -176,6 +176,10 @@ a:hover {
   line-height: 1.4;
 }
 
+.official-banner-district-abbreviations {
+  display: none;
+}
+
 .official-banner-logos {
   display: inline-flex;
   align-items: center;
@@ -735,6 +739,10 @@ a[href^='mailto:'] {
 
   .official-banner-cities {
     display: none;
+  }
+
+  .official-banner-district-abbreviations {
+    display: inline;
   }
 }
 

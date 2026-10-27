@@ -117,7 +117,7 @@ Times are `VermontTime` (an instant, shown in America/New_York) and dates are `V
 | `DistrictDelegation` | A `District`, its votes, and its members and alternates | Name the district's contact |
 | `Member` | Name, appointing `District`, member or alternate, whether they chair the committee, board role | Show name and role |
 | `Facilitator` | Name, title, organization, email, phone, source | Give a phone link |
-| `Meeting` | Kind (regular, special, emergency), start time, `PhysicalLocation`, `ElectronicAccess`, `Agenda`, `Minutes`, `Recording` | Compute `agendaDeadline`, `minutesDeadline`, `minutesKeepUntil`; report what is overdue |
+| `Meeting` | Kind (regular, special, emergency), start time, `PhysicalLocation`, `ElectronicAccess`, `Agenda`, `Minutes`, `Recording` | Compute `agendaDeadline`, `minutesDeadline`, `minutesKeepUntil`; say whether it has ended; report what is overdue |
 | `PhysicalLocation` | Name, address, access notes (entrance, parking, elevator) | Render an address |
 | `ElectronicAccess` | Meeting link, phone number, meeting ID, passcode | Render join instructions that work without the link |
 | `Agenda` | The posted file (a `Document`, usually a PDF), the time it was posted, and `AgendaItem`s only when someone has also written the agenda on the page | Point to the posted file |
@@ -162,7 +162,7 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 ## Pages
 
 - **Home** (`/`): the next meeting with join details, a note that the committee has not decided, what it studies, and the key dates.
-- **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`). A missing agenda or minutes shows its legal deadline.
+- **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Once the meeting has ended, that page says where it met and does not link to the video meeting or the phone number. A meeting with no end time counts as ended at the end of that calendar day. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`) until it starts. A missing agenda or minutes shows its legal deadline.
 - **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files the committee wrote. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with a plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format.
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
 - **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.

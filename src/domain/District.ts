@@ -54,6 +54,7 @@ export class District {
   readonly id: string;
   readonly name: string;
   readonly legalName: string;
+  readonly abbreviation: string;
   readonly city: string;
   readonly website: string;
   readonly act170Page: string | undefined;
@@ -67,6 +68,7 @@ export class District {
     this.id = data.id;
     this.name = data.name;
     this.legalName = data.legalName;
+    this.abbreviation = data.abbreviation;
     this.city = data.city;
     this.website = data.website;
     this.act170Page = data.act170Page;

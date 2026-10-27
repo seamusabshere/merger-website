@@ -45,6 +45,7 @@ export const districtSchema = z.object({
   id: z.string(),
   name: z.string(),
   legalName: z.string(),
+  abbreviation: z.string(),
   city: z.string(),
   website: z.url(),
   act170Page: z.url().optional(),

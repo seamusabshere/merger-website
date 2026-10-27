@@ -45,10 +45,6 @@ export class ProportionalRepresentation {
     return districtVotes;
   }
 
-  wasDecidedAt({ meeting }: { meeting: Meeting }): boolean {
-    return this.decidedAt === meeting;
-  }
-
   summary(): string {
     const clauses = this.districtVotes.map((districtVotes) => districtVotes.clause());
     const lastClause = clauses.at(-1) ?? '';
@@ -250,10 +246,11 @@ export class Committee {
   }
 
   cityList(): string {
-    const cities = this.districts.map((district) => district.city);
-    const lastCity = cities.at(-1) ?? '';
-    const leadingCities = cities.slice(0, -1);
-    return leadingCities.length === 0 ? lastCity : `${leadingCities.join(', ')}, and ${lastCity}`;
+    return englishList({ items: this.districts.map((district) => district.city) });
+  }
+
+  districtAbbreviationList(): string {
+    return englishList({ items: this.districts.map((district) => district.abbreviation) });
   }
 
   schemaOrgOrganization({ siteUrl }: { siteUrl: string }): Record<string, unknown> {
@@ -271,6 +268,12 @@ export class Committee {
     }
     return "Each school district's website will link to this page. That is how you know this is the committee's official website.";
   }
+}
+
+function englishList({ items }: { items: string[] }): string {
+  const lastItem = items.at(-1) ?? '';
+  const leadingItems = items.slice(0, -1);
+  return leadingItems.length === 0 ? lastItem : `${leadingItems.join(', ')}, and ${lastItem}`;
 }
 
 function latestDay({ days }: { days: VermontCalendarDay[] }): VermontCalendarDay {

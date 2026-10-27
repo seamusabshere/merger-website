@@ -27,7 +27,7 @@ const nextMeeting = committee.nextMeeting({ now });
       {
         nextMeeting ? (
           <>
-            <MeetingJoinDetails meeting={nextMeeting} />
+            <MeetingJoinDetails meeting={nextMeeting} now={now} />
             {nextMeeting.hasPostedAgenda() && (
               <p>
                 <a href={`${nextMeeting.path()}#agenda`}>Read the agenda</a>

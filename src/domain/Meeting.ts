@@ -102,6 +102,11 @@ export class Meeting {
     return !now.isBefore({ other: this.startsAt });
   }
 
+  // A meeting with no stated end stays open to join through the end of that calendar day.
+  hasEnded({ now }: { now: VermontTime }): boolean {
+    return !now.isBefore({ other: this.endsAt ?? this.day().endsAt() });
+  }
+
   agendaDeadline(): VermontTime | undefined {
     const hours = AGENDA_NOTICE_HOURS[this.kind];
     return hours === undefined ? undefined : this.startsAt.plusHours({ hours: -hours });
@@ -135,7 +140,15 @@ export class Meeting {
     return overdue;
   }
 
-  schemaOrgEvent({ siteUrl, committee }: { siteUrl: string; committee: Committee }): Record<string, unknown> {
+  schemaOrgEvent({
+    siteUrl,
+    committee,
+    now,
+  }: {
+    siteUrl: string;
+    committee: Committee;
+    now: VermontTime;
+  }): Record<string, unknown> {
     const pageUrl = new URL(this.path(), siteUrl).toString();
     const place = this.physicalLocation && {
       '@type': 'Place',
@@ -149,10 +162,12 @@ export class Meeting {
         addressCountry: 'US',
       },
     };
+    const joinUrl = this.hasEnded({ now }) ? undefined : this.electronicAccess?.url;
     const virtualLocation = this.electronicAccess && {
       '@type': 'VirtualLocation',
       // Google rejects a VirtualLocation without a url, so the meeting page stands in until the join link is known.
-      url: this.electronicAccess.url ?? pageUrl,
+      // After the meeting, the page stands in again so the old video link is not offered as a way to join.
+      url: joinUrl ?? pageUrl,
     };
     const locations = [place, virtualLocation].filter((location) => location);
     return {

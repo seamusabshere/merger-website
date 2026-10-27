@@ -1,13 +1,16 @@
 ---
 import type { Meeting } from '../domain/Meeting.ts';
+import type { VermontTime } from '../domain/VermontTime.ts';
 
 interface Props {
   meeting: Meeting;
+  now: VermontTime;
 }
 
-const { meeting } = Astro.props;
+const { meeting, now } = Astro.props;
 const location = meeting.physicalLocation;
 const access = meeting.electronicAccess;
+const hasEnded = meeting.hasEnded({ now });
 ---
 
 <dl class="facts">
@@ -54,7 +57,9 @@ const access = meeting.electronicAccess;
       <>
         <dt>By video</dt>
         <dd>
-          {access.url ? (
+          {hasEnded ? (
+            <>It met on {access.platform}.</>
+          ) : access.url ? (
             <>
               <a href={access.url}>Join on {access.platform}</a>
               {access.meetingId && (
@@ -76,7 +81,13 @@ const access = meeting.electronicAccess;
         </dd>
         <dt>By phone</dt>
         <dd>
-          {access.phoneNumber ? (
+          {hasEnded ? (
+            access.phoneNumber ? (
+              <>The number was {access.phoneNumber}{access.phonePin ? `, PIN ${access.phonePin}` : ''}.</>
+            ) : (
+              <>No phone number was posted.</>
+            )
+          ) : access.phoneNumber ? (
             <>
               Call <a href={access.telephoneHref()}>{access.phoneNumber}</a>
               {access.phonePin && (

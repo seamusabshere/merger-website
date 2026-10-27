@@ -14,6 +14,7 @@ const committee = await AstroContent.loadCommittee();
 const meeting = committee.meetingById({ id: Astro.props.meetingId });
 const now = VermontTime.now();
 const hasStarted = meeting.hasStarted({ now });
+const hasEnded = meeting.hasEnded({ now });
 const agendaDeadline = meeting.agendaDeadline();
 const agenda = meeting.agenda;
 const minutes = meeting.minutes;
@@ -22,27 +23,26 @@ const recording = meeting.recording;
 
 <BaseLayout
   title={meeting.title()}
-  description={`Agenda, join details, minutes, and recording for the merger committee meeting on ${meeting.day().longDate()}.`}
+  description={
+    hasEnded
+      ? `Where the merger committee met on ${meeting.day().longDate()}, with the agenda, minutes, and recording.`
+      : `Agenda, join details, minutes, and recording for the merger committee meeting on ${meeting.day().longDate()}.`
+  }
   updatedOn={meeting.updatedOn}
 >
   <script
     slot="head"
     type="application/ld+json"
-    set:html={JSON.stringify(meeting.schemaOrgEvent({ siteUrl: Astro.site!.toString(), committee })).replace(/</g, '\\u003c')}
+    set:html={JSON.stringify(meeting.schemaOrgEvent({ siteUrl: Astro.site!.toString(), committee, now })).replace(/</g, '\\u003c')}
   />
   <p class="muted"><a href="/meetings/">Public meetings</a></p>
   <h1>{meeting.title()}</h1>
   <p>{meeting.kindName()} of the Burlington, South Burlington, and Winooski merger committee.</p>
-  {
-    committee.proportionalRepresentation.wasDecidedAt({ meeting }) && (
-      <p>The committee decided that {committee.proportionalRepresentation.summary()}.</p>
-    )
-  }
 
   <section aria-labelledby="join">
     <div class="panel">
       <h2 id="join">{hasStarted ? 'When and where it met' : 'How to attend'}</h2>
-      <MeetingJoinDetails meeting={meeting} />
+      <MeetingJoinDetails meeting={meeting} now={now} />
       {!hasStarted && <p><a class="button" href={meeting.calendarFilePath()}>Add to calendar</a></p>}
     </div>
     {meeting.notes.map((note) => <p>{note}</p>)}

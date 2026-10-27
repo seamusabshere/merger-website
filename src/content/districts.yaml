@@ -2,6 +2,7 @@
 - id: burlington
   name: Burlington School District
   legalName: Burlington School District
+  abbreviation: BSD
   city: Burlington
   website: https://www.bsdvt.org/
   boardMeetingsPage: https://bsdvt.community.highbond.com/Portal/MeetingTypeList.aspx
@@ -23,6 +24,7 @@
 - id: south-burlington
   name: South Burlington School District
   legalName: South Burlington School District
+  abbreviation: SBSD
   city: South Burlington
   website: https://www.sbschools.net/
   boardMeetingsPage: https://www.sbschools.net/page/school-board-recordings
@@ -44,6 +46,7 @@
 - id: winooski
   name: Winooski School District
   legalName: Winooski Incorporated School District (Winooski ID)
+  abbreviation: WSD
   city: Winooski
   website: https://www.wsdvt.org/
   act170Page: https://www.wsdvt.org/project/act170/
