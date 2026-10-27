@@ -167,7 +167,9 @@ const documentFileSchema = z.object({
   format: z.enum(['pdf', 'web-page', 'google-doc', 'video']),
   sizeBytes: z.number().int().optional(),
   accessibility: z.enum(['checked-accessible', 'not-accessible', 'not-checked']),
-  url: z.url(),
+  url: z.string().refine((value) => (value.startsWith('/') && !value.startsWith('//') && !/\s/.test(value)) || URL.canParse(value), {
+    message: 'Write a full URL, or a path on this site starting with /, like "/documents/agenda.pdf".',
+  }),
 });
 
 export const documentSchema = z.object({

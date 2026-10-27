@@ -220,7 +220,7 @@ By hand, before any change to layout or components:
 
 **Add a meeting.** Copy a file in `src/content/meetings/`, name it by the meeting date, and fill in the time with its UTC offset, the place, and the video and phone details. Leave out what you do not know; the page says it is coming.
 
-**Post an agenda.** Export the Google Doc to PDF. Add that PDF as a record in `src/content/documents/`, with its size and whether you checked it for accessibility. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
+**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/2026-10-20-agenda.pdf`), its size, and whether you checked it for accessibility. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
 
 **Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. Never delete posted minutes within one year of the meeting.
 
