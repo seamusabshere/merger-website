@@ -28,6 +28,11 @@ const recording = meeting.recording;
   <p class="muted"><a href="/meetings/">Public meetings</a></p>
   <h1>{meeting.title()}</h1>
   <p>{meeting.kindName()} of the Burlington, South Burlington, and Winooski merger committee.</p>
+  {
+    committee.proportionalRepresentation.wasDecidedAt({ meeting }) && (
+      <p>The committee decided that {committee.proportionalRepresentation.summary()}.</p>
+    )
+  }
 
   <section aria-labelledby="join">
     <div class="panel">

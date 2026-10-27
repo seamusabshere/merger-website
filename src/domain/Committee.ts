@@ -16,13 +16,77 @@ export class MeetingMonth {
   }
 }
 
+export class DistrictVotes {
+  readonly district: District;
+  readonly count: number;
+
+  constructor({ district, count }: { district: District; count: number }) {
+    this.district = district;
+    this.count = count;
+  }
+
+  label(): string {
+    return this.count === 1 ? '1 vote' : `${this.count} votes`;
+  }
+
+  clause(): string {
+    return `${this.district.city} has ${this.label()}`;
+  }
+}
+
+export class ProportionalRepresentation {
+  readonly decidedAt: Meeting;
+  readonly districtVotes: DistrictVotes[];
+
+  constructor({ decidedAt, districtVotes, districts }: { decidedAt: Meeting; districtVotes: DistrictVotes[]; districts: District[] }) {
+    const votedDistrictIds = new Set(districtVotes.map((districtVotes) => districtVotes.district.id));
+    const missingDistricts = districts.filter((district) => !votedDistrictIds.has(district.id));
+    if (missingDistricts.length > 0 || votedDistrictIds.size !== districts.length) {
+      const missing = missingDistricts.map((district) => district.id).join(', ');
+      throw new Error(`Proportional representation must name every district once. Missing: ${missing || 'none'}.`);
+    }
+    this.decidedAt = decidedAt;
+    this.districtVotes = districtVotes;
+  }
+
+  forDistrict({ district }: { district: District }): DistrictVotes {
+    const districtVotes = this.districtVotes.find((votes) => votes.district === district);
+    if (!districtVotes) throw new Error(`No vote count for ${district.name}.`);
+    return districtVotes;
+  }
+
+  wasDecidedAt({ meeting }: { meeting: Meeting }): boolean {
+    return this.decidedAt === meeting;
+  }
+
+  summary(): string {
+    const clauses = this.districtVotes.map((districtVotes) => districtVotes.clause());
+    const lastClause = clauses.at(-1) ?? '';
+    const leadingClauses = clauses.slice(0, -1);
+    if (leadingClauses.length === 0) return lastClause;
+    return `${leadingClauses.join(', ')}, and ${lastClause}`;
+  }
+}
+
 export class DistrictDelegation {
   readonly district: District;
+  readonly votes: DistrictVotes;
   readonly members: Member[];
   readonly alternates: Member[];
 
-  constructor({ district, members, alternates }: { district: District; members: Member[]; alternates: Member[] }) {
+  constructor({
+    district,
+    votes,
+    members,
+    alternates,
+  }: {
+    district: District;
+    votes: DistrictVotes;
+    members: Member[];
+    alternates: Member[];
+  }) {
     this.district = district;
+    this.votes = votes;
     this.members = members;
     this.alternates = alternates;
   }
@@ -36,8 +100,8 @@ export class Committee {
   readonly name: string;
   readonly officialName: string;
   readonly stateGroup: string;
-  readonly isAdvisoryBody: boolean | null;
   readonly membersUpdatedOn: VermontCalendarDay;
+  readonly proportionalRepresentation: ProportionalRepresentation;
   readonly facilitator: Facilitator;
   readonly districts: District[];
   readonly members: Member[];
@@ -60,7 +124,6 @@ export class Committee {
     this.name = committeeData.name;
     this.officialName = committeeData.officialName;
     this.stateGroup = committeeData.stateGroup;
-    this.isAdvisoryBody = committeeData.isAdvisoryBody;
     this.membersUpdatedOn = VermontCalendarDay.parse({ isoDate: committeeData.membersUpdatedOn });
     this.facilitator = new Facilitator({
       name: committeeData.facilitator.name,
@@ -91,6 +154,23 @@ export class Committee {
     this.meetings = meetingsData
       .map(({ id, data }) => new Meeting({ id, data, documentsById, membersById }))
       .sort((a, b) => a.startsAt.instant.getTime() - b.startsAt.instant.getTime());
+    const meetingsById = new Map(this.meetings.map((meeting) => [meeting.id, meeting]));
+
+    this.proportionalRepresentation = new ProportionalRepresentation({
+      decidedAt: lookUp({
+        map: meetingsById,
+        id: committeeData.proportionalRepresentation.decidedAtMeetingId,
+        kind: 'meeting',
+      }),
+      districtVotes: committeeData.proportionalRepresentation.votes.map(
+        (vote) =>
+          new DistrictVotes({
+            district: lookUp({ map: districtsById, id: vote.districtId, kind: 'district' }),
+            count: vote.count,
+          }),
+      ),
+      districts: this.districts,
+    });
   }
 
   meetingById({ id }: { id: string }): Meeting {
@@ -106,6 +186,7 @@ export class Committee {
       (district) =>
         new DistrictDelegation({
           district,
+          votes: this.proportionalRepresentation.forDistrict({ district }),
           members: this.members.filter((member) => member.district === district && !member.isAlternate()),
           alternates: this.members.filter((member) => member.district === district && member.isAlternate()),
         }),
@@ -156,14 +237,19 @@ export class Committee {
     return latestDay({ days: [this.meetingsUpdatedOn(), this.documentsUpdatedOn(), this.membersUpdatedOn] });
   }
 
-  remoteOnlyMeetingsNote(): string {
-    if (this.isAdvisoryBody === null) {
-      return 'It is not yet settled whether the committee counts as an advisory body under Vermont law. Until it is, every meeting has a physical place you can attend.';
+  officialWebsiteStatement(): string {
+    const cities = this.districts.map((district) => district.city);
+    const lastCity = cities.at(-1) ?? '';
+    const leadingCities = cities.slice(0, -1);
+    const cityList = leadingCities.length === 0 ? lastCity : `${leadingCities.join(', ')}, and ${lastCity}`;
+    return `Official website of the Act 170 Merger Committee for ${cityList}`;
+  }
+
+  howYouKnow(): string {
+    if (this.districts.every((district) => district.pageThatLinksHere.published)) {
+      return "Each school district's website links to this page. That is how you know this is the committee's official website.";
     }
-    if (this.isAdvisoryBody) {
-      return 'As an advisory body, the committee may meet online only, but must still offer a way to join by phone.';
-    }
-    return 'The committee is not an advisory body, so every meeting has a physical place you can attend.';
+    return "Each school district's website will link to this page. That is how you know this is the committee's official website.";
   }
 }
 

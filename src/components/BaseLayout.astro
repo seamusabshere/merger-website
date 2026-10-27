@@ -1,6 +1,8 @@
 ---
 import '../styles/site.css';
+import OfficialBanner from './OfficialBanner.astro';
 import type { VermontCalendarDay } from '../domain/VermontTime.ts';
+import { AstroContent } from '../persistence/AstroContent.ts';
 
 interface Props {
   title: string;
@@ -9,6 +11,7 @@ interface Props {
 }
 
 const { title, description, updatedOn } = Astro.props;
+const committee = await AstroContent.loadCommittee();
 const currentPath = Astro.url.pathname;
 const siteName = 'Burlington, South Burlington, and Winooski Merger Study';
 
@@ -39,6 +42,11 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
+    <OfficialBanner
+      statement={committee.officialWebsiteStatement()}
+      howYouKnow={committee.howYouKnow()}
+      districts={committee.districts}
+    />
     <header class="site-header">
       <div class="wrap">
         <a class="site-name" href="/">
@@ -73,9 +81,13 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
           Winooski school districts. The committee studies whether to merge. It has not decided.
         </p>
         <ul aria-label="School district websites">
-          <li><a href="https://www.bsdvt.org/">Burlington School District</a></li>
-          <li><a href="https://www.sbschools.net/">South Burlington School District</a></li>
-          <li><a href="https://www.wsdvt.org/">Winooski School District</a></li>
+          {
+            committee.districts.map((district) => (
+              <li>
+                <a href={district.website}>{district.name}</a>
+              </li>
+            ))
+          }
         </ul>
         <p><a href="/accessibility/">Accessibility</a> · <a href="/contact/">Contact us</a></p>
       </div>

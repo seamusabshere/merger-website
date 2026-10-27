@@ -18,6 +18,38 @@ export class AverageDailyMembership {
   }
 }
 
+export class DistrictLogo {
+  readonly path: string;
+  readonly width: number;
+  readonly height: number;
+
+  constructor({ path, width, height }: { path: string; width: number; height: number }) {
+    this.path = path;
+    this.width = width;
+    this.height = height;
+  }
+}
+
+export class PageThatLinksHere {
+  readonly url: string;
+  readonly published: boolean;
+
+  constructor({ url, published }: { url: string; published: boolean }) {
+    this.url = url;
+    this.published = published;
+  }
+
+  linkText({ districtName }: { districtName: string }): string {
+    if (this.published) return `${districtName} page that links here`;
+    return `Placeholder: ${districtName} page that will link here`;
+  }
+
+  explanation(): string {
+    if (this.published) return "The district's website links to this page.";
+    return "The district's website will link to this page.";
+  }
+}
+
 export class District {
   readonly id: string;
   readonly name: string;
@@ -27,6 +59,8 @@ export class District {
   readonly act170Page: string | undefined;
   readonly boardMeetingsPage: string;
   readonly phone: string;
+  readonly logo: DistrictLogo;
+  readonly pageThatLinksHere: PageThatLinksHere;
   readonly averageDailyMembership: AverageDailyMembership;
 
   constructor({ data }: { data: DistrictData }) {
@@ -38,6 +72,8 @@ export class District {
     this.act170Page = data.act170Page;
     this.boardMeetingsPage = data.boardMeetingsPage;
     this.phone = data.phone;
+    this.logo = new DistrictLogo({ path: data.logo.path, width: data.logo.width, height: data.logo.height });
+    this.pageThatLinksHere = new PageThatLinksHere({ url: data.pageThatLinksHere.url, published: data.pageThatLinksHere.published });
     this.averageDailyMembership = new AverageDailyMembership({
       students: data.averageDailyMembership.students,
       fiscalYear: data.averageDailyMembership.fiscalYear,

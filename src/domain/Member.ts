@@ -1,6 +1,5 @@
 import type { District } from './District.ts';
 import type { MemberData } from './schemas.ts';
-import { VermontCalendarDay } from './VermontTime.ts';
 
 export class Member {
   readonly id: string;
@@ -9,9 +8,6 @@ export class Member {
   readonly seat: 'member' | 'alternate';
   readonly boardRole: string | undefined;
   readonly email: string | undefined;
-  readonly appointedOn: VermontCalendarDay | undefined;
-  readonly appointmentSourceTitle: string | undefined;
-  readonly appointmentSourceUrl: string | undefined;
 
   constructor({ data, district }: { data: MemberData; district: District }) {
     this.id = data.id;
@@ -20,9 +16,6 @@ export class Member {
     this.seat = data.seat;
     this.boardRole = data.boardRole;
     this.email = data.email;
-    this.appointedOn = data.appointedOn ? VermontCalendarDay.parse({ isoDate: data.appointedOn }) : undefined;
-    this.appointmentSourceTitle = data.appointmentSource?.title;
-    this.appointmentSourceUrl = data.appointmentSource?.url;
   }
 
   isAlternate(): boolean {

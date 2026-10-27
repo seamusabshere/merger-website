@@ -1,0 +1,65 @@
+---
+import type { District } from '../domain/District.ts';
+
+interface Props {
+  statement: string;
+  howYouKnow: string;
+  districts: District[];
+}
+
+const { statement, howYouKnow, districts } = Astro.props;
+---
+
+<section class="official-banner" aria-label="Official website">
+  <div class="official-banner-bar">
+    <p class="official-banner-label">
+      <span class="official-banner-logos">
+        {
+          districts.map((district) => (
+            <img
+              class="official-banner-logo"
+              src={district.logo.path}
+              width={district.logo.width}
+              height={district.logo.height}
+              alt=""
+            />
+          ))
+        }
+      </span>
+      {statement}
+    </p>
+    <details class="how-you-know">
+      <summary>Here's how you know</summary>
+      <div class="how-you-know-panel">
+        <div class="how-you-know-inner">
+          <p>{howYouKnow}</p>
+          <ul class="how-you-know-list">
+            {
+              districts.map((district) => (
+                <li>
+                  <div class="district-logo-slot">
+                    <img
+                      class="district-logo"
+                      src={district.logo.path}
+                      width={district.logo.width}
+                      height={district.logo.height}
+                      alt=""
+                    />
+                  </div>
+                  <p>
+                    <strong>{district.name}</strong>
+                    <br />
+                    {district.pageThatLinksHere.explanation()}{' '}
+                    <a href={district.pageThatLinksHere.url}>
+                      {district.pageThatLinksHere.linkText({ districtName: district.name })}
+                    </a>
+                  </p>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>

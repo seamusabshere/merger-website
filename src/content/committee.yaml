@@ -2,9 +2,16 @@
   name: Burlington, South Burlington, and Winooski Merger Committee
   officialName: Chittenden Central CESA Merger Committee (Group 18)
   stateGroup: Group 18
-  # Decides only whether the committee may meet online only. See README, "Open questions".
-  isAdvisoryBody: null
   membersUpdatedOn: "2026-10-27"
+  proportionalRepresentation:
+    decidedAtMeetingId: "2026-10-20"
+    votes:
+      - districtId: burlington
+        count: 3
+      - districtId: south-burlington
+        count: 2
+      - districtId: winooski
+        count: 1
   facilitator:
     name: Craig Aarons-Martin
     title: Regional facilitator, Chittenden Central region

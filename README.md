@@ -26,7 +26,7 @@ The site has three jobs, in this order:
 
 ## Status: the committee's official website
 
-This is the official website of the Act 170 merger study committee for Burlington, South Burlington, and Winooski. Every page says so in the footer.
+This is the official website of the Act 170 merger study committee for Burlington, South Burlington, and Winooski. Every page says so in the banner at the top and in the footer.
 
 Vermont's Open Meeting Law (1 V.S.A. § 312) attaches posting duties to "a website, if one exists, that the public body maintains or designates as the official website of the body." So this site carries legal deadlines:
 
@@ -69,12 +69,11 @@ From 1 V.S.A. § 312, as amended through 2026. Read the statute when in doubt; i
 | Public comment | A reasonable chance to speak at each meeting |
 | Request for access | A resident, member, or reporter may ask in writing, 2 business days ahead, for a physical location or phone or video access to one regular meeting (§ 312(j)) |
 
-The committee records every meeting. The statute requires a local public body to record only if it is not an "advisory body," meaning a body with no supervision, control, or jurisdiction over legislative, quasi-judicial, tax, or budgetary matters (1 V.S.A. § 310). Whether this committee counts as advisory does not change what the site does, because it records either way. It does decide whether the committee may meet remote-only, so `Committee` holds it as a fact rather than templates assuming it.
-
 The ADA web rule (28 CFR 35.200) requires WCAG 2.1 AA. A school district is not a "special district government" under the rule. It uses its city's population. Burlington, South Burlington, and Winooski each have fewer than 50,000 people, so the deadline is April 26, 2028. Build to the standard now regardless.
 
 ## Stack
 
+- **pnpm** installs dependencies. The version is `packageManager` in `package.json`. GitHub Actions installs from `pnpm-lock.yaml`. The deploy action detects that lockfile and uses the same pnpm version.
 - **Astro**, static output only. No server, no client framework. Ship HTML and CSS. Add JavaScript only for a feature that works without it first.
 - **Content collections** with Zod schemas hold the content in `src/content/`.
 - **GitHub Pages**, deployed by GitHub Actions with `withastro/action` (`.github/workflows/deploy.yml`). Pages say "upcoming" or "past" as of build time, so the workflow also rebuilds every hour.
@@ -90,6 +89,17 @@ When the site deploys through GitHub Actions, GitHub ignores the `CNAME` file in
 
 Do not commit video or large binaries. GitHub rejects files over 100 MB and limits a Pages site to 1 GB. Recordings live on a video host; the site links to them.
 
+## Run locally
+
+You need Node 24 or newer and pnpm 11.23.0.
+
+```sh
+pnpm install
+pnpm dev
+```
+
+Open <http://localhost:4321>. Saving a page, a content file, or a component reloads the browser.
+
 ## Domain model
 
 Content files are storage. `src/persistence/AstroContent.ts` loads them at build time into domain classes in `src/domain/`; `src/persistence/FileContent.ts` does the same outside Astro, for scripts. Pages and components work only with these classes, never with raw collection entries. Each class holds its data and the rules about it. Schemas live in `src/domain/schemas.ts` and are shared by both loaders.
@@ -98,10 +108,12 @@ Times are `VermontTime` (an instant, shown in America/New_York) and dates are `V
 
 | Class | Holds | Knows how to |
 | --- | --- | --- |
-| `Committee` | Name, whether it is an advisory body (`null` until settled), `Facilitator`, districts, members, meetings, documents | Find the next meeting, group past meetings by month, list overdue duties, say whether it may meet online only |
-| `District` | Name, city, website, phone, student count with source | Sort alphabetically |
-| `DistrictDelegation` | A `District` and its members and alternates | Name the district's contact |
-| `Member` | Name, appointing `District`, member or alternate, board role, appointment date and source | Show name and role |
+| `Committee` | Name, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation` | Find the next meeting, group past meetings by month, list overdue duties |
+| `ProportionalRepresentation` | The meeting that set each district's votes, and a `DistrictVotes` for each district | Say how many votes each district has |
+| `DistrictVotes` | A `District` and its vote count | Say "3 votes" or "1 vote" |
+| `District` | Name, city, website, phone, logo, the page on the district site that links here, student count with source | Sort alphabetically |
+| `DistrictDelegation` | A `District`, its votes, and its members and alternates | Name the district's contact |
+| `Member` | Name, appointing `District`, member or alternate, board role | Show name and role |
 | `Facilitator` | Name, title, organization, email, phone, source | Give a phone link |
 | `Meeting` | Kind (regular, special, emergency), start time, `PhysicalLocation`, `ElectronicAccess`, `Agenda`, `Minutes`, `Recording` | Compute `agendaDeadline`, `minutesDeadline`, `minutesKeepUntil`; report what is overdue |
 | `PhysicalLocation` | Name, address, access notes (entrance, parking, elevator) | Render an address |
@@ -139,6 +151,7 @@ src/
 scripts/
   check-deadlines.ts             # fails if an agenda or minutes is past its legal deadline
 public/
+  logos/                         # district logos, one file per district id
   documents/                     # small PDFs and slides only
 ```
 
@@ -176,22 +189,22 @@ Routes: English at `/`, other languages at `/<language code>/` (for example `/ne
 ## Design
 
 - One column for reading, about 65 characters wide. Body text at least 18px. Sizes in `rem` so user zoom works.
-- Type: Atkinson Hyperlegible Next for body text, self-hosted. It keeps easily confused letters distinct. Check that each planned language's script is covered; use a fallback that covers it if not.
+- Type: Libre Franklin for body text, self-hosted. It is the typeface vermont.gov uses. It covers Latin, Vietnamese, and Cyrillic. For another script, the browser falls back to the system font.
 - Color: one strong accent, contrast at least 4.5:1 for text and 3:1 for controls. Color is never the only signal. Treat the three districts the same: same size, same weight, alphabetical order.
 - Links look like links: underlined in body text.
 - Visible focus on every control. Targets at least 24 by 24 CSS pixels.
 - No carousels, autoplay, parallax, or motion that ignores `prefers-reduced-motion`.
 - Navigation wraps on small screens. No hamburger menu unless the links stop fitting.
-- Do not use the USWDS "official website of the United States government" banner. This is not a federal site. Borrowing USWDS patterns (skip link, landmarks, form patterns) is fine.
+- Every page opens with a banner: the three district logos, small, then "Official website of the Act 170 Merger Committee" for the three districts, then "Here's how you know." Opening that shows the logos again, larger, and a link to the page on each district site that links back here. Those links live on `pageThatLinksHere` in `districts.yaml`. While `published` is false, the link text says it is a placeholder. When a district publishes the page, set `url` to that page and `published` to true. This is not the federal ".gov" banner. The proof is the three district websites. Borrowing other USWDS patterns (skip link, landmarks, form patterns) is fine.
 - The home page reads like a public notice: the next meeting first, then the question under study, then the latest records.
 
 ## Accessibility testing
 
 Automated checks catch some problems, not all. `.github/workflows/checks.yml` runs on every pull request, on every push to `main`, and every hour:
 
-- `npm run check` (`astro check`)
-- `npm run build`
-- `npm run check:deadlines`: loads every `Meeting` and fails if an agenda or minutes are past their deadline. It also prints how many hours are left for upcoming agendas.
+- `pnpm check` (`astro check`)
+- `pnpm build`
+- `pnpm check:deadlines`: loads every `Meeting` and fails if an agenda or minutes are past their deadline. It also prints how many hours are left for upcoming agendas.
 
 Planned: HTML validation (`html-validate`), axe-core on every built page with zero violations, an internal link check, and a reading level report for English pages.
 
@@ -206,7 +219,7 @@ By hand, before any change to layout or components:
 
 **Add a meeting.** Copy a file in `src/content/meetings/`, name it by the meeting date, and fill in the time with its UTC offset, the place, and the video and phone details. Leave out what you do not know; the page says it is coming.
 
-**Post an agenda.** Fill in `agenda` in the meeting file, set `postedAt`, and merge before the deadline. `npm run check:deadlines` says how much time is left.
+**Post an agenda.** Fill in `agenda` in the meeting file, set `postedAt`, and merge before the deadline. `pnpm check:deadlines` says how much time is left.
 
 **Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. Never delete posted minutes within one year of the meeting.
 
@@ -214,13 +227,14 @@ By hand, before any change to layout or components:
 
 **Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Add each file with its type, size in bytes, and whether we checked it for accessibility. Link it from a meeting with `documentIds`.
 
-**Change members.** Edit `members.yaml`, cite the board minutes that made the appointment, and update `membersUpdatedOn` in `committee.yaml`.
+**Change members.** Edit `members.yaml` and update `membersUpdatedOn` in `committee.yaml`.
+
+**When a district page links here.** In `districts.yaml`, set that district's `pageThatLinksHere.url` to the page and `published` to `true`.
 
 **Correct a mistake.** Fix it and add a dated note to the page that says what changed. Do not erase errors in the public record silently.
 
 ## Open questions
 
-- Is the committee an advisory body under 1 V.S.A. § 310? This decides only whether it may meet remote-only.
 - The October 20, 2026 notice says agendas, minutes, and recordings "will be housed on the websites of participating districts." The committee should vote to designate this site as its official website, so it is clear which site carries the posting deadlines.
 - Who receives written comments, access requests, and records requests? The contact page sends them to the facilitator or a district contact until the committee decides.
 - Who posts agendas and minutes, and who backs them up when that person is away?

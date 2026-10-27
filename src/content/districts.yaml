@@ -1,3 +1,4 @@
+# pageThatLinksHere.url is a placeholder until that district publishes the page that links back to this site. Then set published to true.
 - id: burlington
   name: Burlington School District
   legalName: Burlington School District
@@ -5,6 +6,13 @@
   website: https://www.bsdvt.org/
   boardMeetingsPage: https://bsdvt.community.highbond.com/Portal/MeetingTypeList.aspx
   phone: 802-865-5332
+  logo:
+    path: /logos/burlington.png
+    width: 106
+    height: 74
+  pageThatLinksHere:
+    url: https://www.bsdvt.org/act-170-merger-committee
+    published: false
   averageDailyMembership:
     students: 3385
     fiscalYear: fiscal year 2025
@@ -19,6 +27,13 @@
   website: https://www.sbschools.net/
   boardMeetingsPage: https://www.sbschools.net/page/school-board-recordings
   phone: 802-652-7250
+  logo:
+    path: /logos/south-burlington.png
+    width: 512
+    height: 512
+  pageThatLinksHere:
+    url: https://www.sbschools.net/act-170-merger-committee
+    published: false
   averageDailyMembership:
     students: 2512
     fiscalYear: fiscal year 2025
@@ -34,6 +49,13 @@
   act170Page: https://www.wsdvt.org/project/act170/
   boardMeetingsPage: https://www.wsdvt.org/school-board/board-agenda/
   phone: 802-655-0485
+  logo:
+    path: /logos/winooski.png
+    width: 316
+    height: 316
+  pageThatLinksHere:
+    url: https://www.wsdvt.org/act-170-merger-committee
+    published: false
   averageDailyMembership:
     students: 785
     fiscalYear: fiscal year 2025

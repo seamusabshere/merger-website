@@ -19,8 +19,16 @@ export const committeeSchema = z.object({
   name: z.string(),
   officialName: z.string(),
   stateGroup: z.string(),
-  isAdvisoryBody: z.boolean().nullable(),
   membersUpdatedOn: calendarDay,
+  proportionalRepresentation: z.object({
+    decidedAtMeetingId: z.string(),
+    votes: z.array(
+      z.object({
+        districtId: z.string(),
+        count: z.number().int().positive(),
+      }),
+    ),
+  }),
   facilitator: z.object({
     name: z.string(),
     title: z.string(),
@@ -41,6 +49,15 @@ export const districtSchema = z.object({
   act170Page: z.url().optional(),
   boardMeetingsPage: z.url(),
   phone: z.string(),
+  logo: z.object({
+    path: z.string(),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+  }),
+  pageThatLinksHere: z.object({
+    url: z.url(),
+    published: z.boolean(),
+  }),
   averageDailyMembership: z.object({
     students: z.number().int(),
     fiscalYear: z.string(),
@@ -55,8 +72,6 @@ export const memberSchema = z.object({
   seat: z.enum(['member', 'alternate']),
   boardRole: z.string().optional(),
   email: z.email().optional(),
-  appointedOn: calendarDay.optional(),
-  appointmentSource: sourceLink.optional(),
 });
 
 const physicalLocationSchema = z.object({

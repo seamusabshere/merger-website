@@ -13,33 +13,29 @@ const facilitator = committee.facilitator;
 >
   <h1>Committee members</h1>
   <p class="lede">
-    Every member is a sitting school board member, named by their own board. Act 170 requires at least one member
-    from each district.
+    Every member is an active School Board member.
   </p>
   <p>
-    The committee has not yet settled how many votes each district has. That was on the agenda for its first meeting,
-    on <a href="/meetings/2026-10-20/">October 20, 2026</a>.
+    Based on Act 170, 
+    the committee decided that {committee.proportionalRepresentation.summary()}.
   </p>
 
   {
     committee.delegations().map((delegation) => (
       <section aria-labelledby={`district-${delegation.district.id}`}>
         <h2 id={`district-${delegation.district.id}`}>{delegation.district.name}</h2>
+        <p>
+          {delegation.district.averageDailyMembership.describe()}, {delegation.votes.label()} on the committee.{' '}
+          <a href={delegation.district.averageDailyMembership.sourceUrl}>
+            Source<span class="visually-hidden"> for the {delegation.district.name} student count</span>
+          </a>
+        </p>
         <ul class="plain-list">
           {delegation.members.map((member) => (
             <li>
               <span class="item-title">{member.name}</span>
               <br />
               {member.roleDescription()}
-              {member.appointedOn && <> Appointed {member.appointedOn.shortDate()}.</>}
-              {member.appointmentSourceUrl && (
-                <>
-                  {' '}
-                  <a href={member.appointmentSourceUrl}>
-                        Source<span class="visually-hidden"> for {member.name}'s appointment</span>
-                      </a>
-                </>
-              )}
             </li>
           ))}
         </ul>
@@ -52,26 +48,11 @@ const facilitator = committee.facilitator;
                   <span class="item-title">{member.name}</span>
                   <br />
                   {member.roleDescription()}
-                  {member.appointedOn && <> Appointed {member.appointedOn.shortDate()}.</>}
-                  {member.appointmentSourceUrl && (
-                    <>
-                      {' '}
-                      <a href={member.appointmentSourceUrl}>
-                        Source<span class="visually-hidden"> for {member.name}'s appointment</span>
-                      </a>
-                    </>
-                  )}
                 </li>
               ))}
             </ul>
           </>
         )}
-        <p class="muted">
-          {delegation.district.averageDailyMembership.describe()}.{' '}
-          <a href={delegation.district.averageDailyMembership.sourceUrl}>
-            Source<span class="visually-hidden"> for the {delegation.district.name} student count</span>
-          </a>
-        </p>
       </section>
     ))
   }
