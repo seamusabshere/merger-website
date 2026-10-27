@@ -53,6 +53,14 @@ The committee's records are public. Most are on our [Public Records](/records/) 
 
 Source: [1 V.S.A. chapter 5, subchapter 3](https://legislature.vermont.gov/statutes/fullchapter/01/005)
 
+## What to include
+
+- **A comment for a meeting:** your name, your town, the meeting date, and your comment. Send it before the meeting.
+- **A request for phone, video, or in-person access:** the meeting date. Send it at least 2 business days before the meeting.
+- **A request for a record:** what you are looking for and how you want to get it.
+- **Another format or language:** the page or file, and what format or language you need.
+- **A problem with this website:** the page and what went wrong.
+
 ## Follow your own school board
 
 Each school board talks about the study at its own meetings, and some take public input there too.

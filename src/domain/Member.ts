@@ -28,25 +28,16 @@ export class Member {
     return this.chairsTheCommittee;
   }
 
+  chairsTheDistrictBoard(): boolean {
+    return this.boardRole?.startsWith('Chair of the') === true;
+  }
+
   surname(): string {
     return this.name.split(' ').at(-1)!;
   }
 
   compareBySurname({ other }: { other: Member }): number {
     return this.surname().localeCompare(other.surname()) || this.name.localeCompare(other.name);
-  }
-
-  roleOnCommittee(): string {
-    if (this.isChair()) return 'Chair of the merger committee';
-    if (this.isAlternate()) return 'Alternate';
-    return 'Member';
-  }
-
-  roleDescription(): string {
-    return [this.roleOnCommittee(), this.boardRole]
-      .filter((role) => role !== undefined)
-      .map((role) => `${role}.`)
-      .join(' ');
   }
 
   contactRole(): string {

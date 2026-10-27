@@ -8,7 +8,7 @@ const facilitator = committee.facilitator;
 
 <BaseLayout
   title="Committee members"
-  description="The school board members from Burlington, South Burlington, and Winooski who serve on the Act 170 merger committee."
+  description="The school board members from Burlington, South Burlington, and Winooski who serve on the Act 170 merger committee, and their district email addresses."
   updatedOn={committee.membersUpdatedOn}
 >
   <h1>Committee members</h1>
@@ -30,27 +30,47 @@ const facilitator = committee.facilitator;
             Source<span class="visually-hidden"> for the {delegation.district.name} student count</span>
           </a>
         </p>
-        <ul class="plain-list">
-          {delegation.members.map((member) => (
-            <li>
-              <span class="item-title">{member.name}</span>
-              <br />
-              {member.roleDescription()}
-            </li>
-          ))}
-        </ul>
+        <table>
+          <caption class="visually-hidden">{delegation.district.name} committee members</caption>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {delegation.members.map((member) => (
+              <tr>
+                <th scope="row">{member.name}</th>
+                <td>
+                  {member.email && <a href={`mailto:${member.email}`}>{member.email}</a>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {delegation.alternates.length > 0 && (
           <>
             <h3>Alternates</h3>
-            <ul class="plain-list">
-              {delegation.alternates.map((member) => (
-                <li>
-                  <span class="item-title">{member.name}</span>
-                  <br />
-                  {member.roleDescription()}
-                </li>
-              ))}
-            </ul>
+            <table>
+              <caption class="visually-hidden">{delegation.district.name} alternates</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {delegation.alternates.map((member) => (
+                  <tr>
+                    <th scope="row">{member.name}</th>
+                    <td>
+                      {member.email && <a href={`mailto:${member.email}`}>{member.email}</a>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </>
         )}
       </section>

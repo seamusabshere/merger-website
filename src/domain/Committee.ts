@@ -92,7 +92,7 @@ export class DistrictDelegation {
   }
 
   contactMember(): Member | undefined {
-    return [...this.members, ...this.alternates].find((member) => member.email !== undefined);
+    return [...this.members, ...this.alternates].find((member) => member.chairsTheDistrictBoard());
   }
 }
 

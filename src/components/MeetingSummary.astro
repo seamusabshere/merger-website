@@ -9,7 +9,6 @@ interface Props {
 }
 
 const { meeting, now, headingLevel: Heading } = Astro.props;
-const agendaDeadline = meeting.agendaDeadline();
 const hasStarted = meeting.hasStarted({ now });
 ---
 
@@ -23,8 +22,6 @@ const hasStarted = meeting.hasStarted({ now });
     {
       meeting.hasPostedAgenda() ? (
         <a href={`${meeting.path()}#agenda`}>Agenda</a>
-      ) : agendaDeadline && !hasStarted ? (
-        <>Agenda coming by {agendaDeadline.dateAndTime()}</>
       ) : (
         <>Agenda not posted here</>
       )

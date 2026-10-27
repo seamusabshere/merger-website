@@ -7,7 +7,6 @@ import { AstroContent } from '../persistence/AstroContent.ts';
 const committee = await AstroContent.loadCommittee();
 const now = VermontTime.now();
 const nextMeeting = committee.nextMeeting({ now });
-const agendaDeadline = nextMeeting?.agendaDeadline();
 ---
 
 <BaseLayout
@@ -29,13 +28,11 @@ const agendaDeadline = nextMeeting?.agendaDeadline();
         nextMeeting ? (
           <>
             <MeetingJoinDetails meeting={nextMeeting} />
-            <p>
-              {nextMeeting.hasPostedAgenda() ? (
+            {nextMeeting.hasPostedAgenda() && (
+              <p>
                 <a href={`${nextMeeting.path()}#agenda`}>Read the agenda</a>
-              ) : agendaDeadline ? (
-                <>The agenda will be posted by {agendaDeadline.dateAndTime()}.</>
-              ) : null}
-            </p>
+              </p>
+            )}
             <p>
               <a class="button" href={nextMeeting.path()}>
                 Meeting details
