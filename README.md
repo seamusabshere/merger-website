@@ -161,7 +161,7 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 
 ## Pages
 
-- **Home** (`/`): the next meeting with join details, a note that the committee has not decided, what it studies, and the key dates.
+- **Home** (`/`): the next meeting with join details, then a plain account of the study. The state requires the study and voters decide. The page names the questions the committee is working through, what "necessary" and "advisable" mean, and the dates through July 1, 2029.
 - **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Once the meeting has ended, the video and phone rows both name the platform, such as Google Meet or Zoom, and leave off the link, the phone number, and the PIN. A meeting with no end time counts as ended at the end of that calendar day. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`) until it starts. Anything not yet known or posted, such as a location, link, agenda, minutes, or recording, shows "TBD".
 - **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files the committee wrote. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with a plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format.
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
@@ -173,7 +173,7 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 - **Contact us** (`/contact/`): the facilitator and one contact per district. Use only official work addresses that the person has agreed to publish.
 - **Questions** (planned): answers in HTML, dated, revised in place with the revision date shown.
 
-Do not describe Winooski's "four questions" (educational opportunity, governance, money and operations, long-term sustainability) as words from the law. They are Winooski's summary. The law's required report contents are in Act 170 Sec. 13(b)(4).
+Do not describe the home page's four questions (educational opportunity, governance, money and operations, long-term sustainability) as words from the law. They are the committee's plain-language summary. The law's required report contents are in Act 170 Sec. 13(b)(4).
 
 Every page shows a "last updated" date.
 

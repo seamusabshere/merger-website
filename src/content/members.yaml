@@ -4,23 +4,11 @@
   seat: member
   email: lcampriello@bsdvt.org
 
-- id: gary-golden
-  name: Gary Golden
-  districtId: burlington
-  seat: member
-  email: ggolden@bsdvt.org
-
 - id: kendra-sowers
   name: Kendra Sowers
   districtId: burlington
   seat: member
   email: ksowers@bsdvt.org
-
-- id: jean-waltz
-  name: Jean Waltz
-  districtId: burlington
-  seat: member
-  email: jwaltz@bsdvt.org
 
 - id: clare-wool
   name: Clare Wool
