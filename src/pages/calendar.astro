@@ -24,35 +24,29 @@ const now = VermontTime.now();
     <a href="/participate/">How to attend, speak, or ask for phone, video, or in-person access</a>
   </p>
 
-  {
-    committee
-      .calendar()
-      .upcoming({ now })
-      .months()
-      .map((monthOfEntries) => (
-        <section aria-labelledby={monthOfEntries.headingId()}>
-          <h2 id={monthOfEntries.headingId()}>{monthOfEntries.month.name()}</h2>
-          <ol class="calendar-entries">
-            {monthOfEntries.entries.map((entry) => (
-              <li class="calendar-entry">
-                <p class="calendar-entry-when">
-                  <time datetime={entry.day().isoDate()}>{entry.day().longDate()}</time>
-                  {entry.calendarTime() && <span class="muted">{entry.calendarTime()}</span>}
-                </p>
-                <h3>{entry.calendarTitle()}</h3>
-                <p class="calendar-entry-kind">{entry.calendarKind()}</p>
-                {entry.calendarDetails().map((detail) => (
-                  <p>{detail}</p>
-                ))}
-                {entry.calendarLink() && (
-                  <p>
-                    <a href={entry.calendarLink()!.href}>{entry.calendarLink()!.text}</a>
-                  </p>
-                )}
-              </li>
+  <ol class="calendar-entries">
+    {
+      committee
+        .calendar()
+        .upcoming({ now })
+        .entries.map((entry) => (
+          <li class="calendar-entry">
+            <p class="calendar-entry-when">
+              <time datetime={entry.day().isoDate()}>{entry.day().longDate()}</time>
+              {entry.calendarTime() && <span class="muted">{entry.calendarTime()}</span>}
+            </p>
+            <h2>{entry.calendarTitle()}</h2>
+            <p class="calendar-entry-kind">{entry.calendarKind()}</p>
+            {entry.calendarDetails().map((detail) => (
+              <p>{detail}</p>
             ))}
-          </ol>
-        </section>
-      ))
-  }
+            {entry.calendarLink() && (
+              <p>
+                <a href={entry.calendarLink()!.href}>{entry.calendarLink()!.text}</a>
+              </p>
+            )}
+          </li>
+        ))
+    }
+  </ol>
 </BaseLayout>

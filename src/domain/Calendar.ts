@@ -1,4 +1,4 @@
-import type { VermontCalendarDay, VermontCalendarMonth, VermontTime } from './VermontTime.ts';
+import type { VermontCalendarDay, VermontTime } from './VermontTime.ts';
 
 export class CalendarLink {
   readonly href: string;
@@ -21,20 +21,6 @@ export interface CalendarEntry {
   calendarLink(): CalendarLink | undefined;
 }
 
-export class CalendarMonthOfEntries {
-  readonly month: VermontCalendarMonth;
-  readonly entries: CalendarEntry[];
-
-  constructor({ month, entries }: { month: VermontCalendarMonth; entries: CalendarEntry[] }) {
-    this.month = month;
-    this.entries = entries;
-  }
-
-  headingId(): string {
-    return `month-${this.month.isoMonth()}`;
-  }
-}
-
 export class Calendar {
   readonly entries: CalendarEntry[];
 
@@ -44,19 +30,5 @@ export class Calendar {
 
   upcoming({ now }: { now: VermontTime }): Calendar {
     return new Calendar({ entries: this.entries.filter((entry) => !entry.isOver({ now })) });
-  }
-
-  months(): CalendarMonthOfEntries[] {
-    const months: CalendarMonthOfEntries[] = [];
-    for (const entry of this.entries) {
-      const month = entry.day().calendarMonth();
-      const latest = months.at(-1);
-      if (latest && latest.month.compare({ other: month }) === 0) {
-        latest.entries.push(entry);
-      } else {
-        months.push(new CalendarMonthOfEntries({ month, entries: [entry] }));
-      }
-    }
-    return months;
   }
 }
