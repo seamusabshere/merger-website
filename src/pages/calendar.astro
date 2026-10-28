@@ -13,15 +13,6 @@ const now = VermontTime.now();
   updatedOn={committee.calendarUpdatedOn()}
 >
   <h1>Calendar</h1>
-  <p class="lede">Upcoming meetings and deadlines.</p>
-  <p>
-    {committee.regularMeetingSchedule.sentence()}
-  </p>
-  <p>
-    <a href="/meetings/">Agendas, minutes, and recordings of past meetings</a>
-    <br />
-    <a href="/participate/">How to attend, speak, or ask for phone, video, or in-person access</a>
-  </p>
 
   <ol class="calendar-entries">
     {
