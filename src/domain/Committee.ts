@@ -1,4 +1,4 @@
-import { Calendar } from './Calendar.ts';
+import { Deadlines } from './Deadlines.ts';
 import { District } from './District.ts';
 import { Document } from './Document.ts';
 import { Meeting } from './Meeting.ts';
@@ -199,10 +199,14 @@ export class Committee {
     return this.expectedMeetings().filter((expectedMeeting) => expectedMeeting.isOver({ now }));
   }
 
-  calendar(): Calendar {
-    return new Calendar({
-      entries: [...this.meetings, ...this.expectedMeetings(), ...this.stateDeadlines],
-    });
+  deadlines(): Deadlines {
+    return new Deadlines({ stateDeadlines: this.stateDeadlines });
+  }
+
+  upcomingPublicMeetings({ now }: { now: VermontTime }): (Meeting | ExpectedMeeting)[] {
+    return [...this.upcomingMeetings({ now }), ...this.expectedMeetings().filter((expectedMeeting) => !expectedMeeting.isOver({ now }))].sort(
+      (a, b) => a.startsAt.instant.getTime() - b.startsAt.instant.getTime(),
+    );
   }
 
   meetingById({ id }: { id: string }): Meeting {
@@ -242,6 +246,7 @@ export class Committee {
       (meeting) =>
         meeting.documents.includes(document) ||
         meeting.agenda?.document === document ||
+        meeting.minutes?.document === document ||
         (meeting.agenda?.items.some((item) => item.documents.includes(document)) ?? false),
     );
   }
@@ -265,25 +270,23 @@ export class Committee {
   }
 
   meetingsUpdatedOn(): VermontCalendarDay {
-    return latestDay({ days: this.meetings.map((meeting) => meeting.updatedOn) });
+    return latestDay({
+      days: [this.regularMeetingSchedule.updatedOn, ...this.meetings.map((meeting) => meeting.updatedOn)],
+    });
   }
 
   documentsUpdatedOn(): VermontCalendarDay {
     return latestDay({ days: this.documents.map((document) => document.updatedOn) });
   }
 
-  calendarUpdatedOn(): VermontCalendarDay {
-    return latestDay({
-      days: [
-        this.meetingsUpdatedOn(),
-        this.regularMeetingSchedule.updatedOn,
-        ...this.stateDeadlines.map((stateDeadline) => stateDeadline.updatedOn),
-      ],
-    });
+  deadlinesUpdatedOn(): VermontCalendarDay {
+    return latestDay({ days: this.stateDeadlines.map((stateDeadline) => stateDeadline.updatedOn) });
   }
 
   updatedOn(): VermontCalendarDay {
-    return latestDay({ days: [this.calendarUpdatedOn(), this.documentsUpdatedOn(), this.membersUpdatedOn] });
+    return latestDay({
+      days: [this.meetingsUpdatedOn(), this.deadlinesUpdatedOn(), this.documentsUpdatedOn(), this.membersUpdatedOn],
+    });
   }
 
   cityList(): string {
@@ -301,19 +304,6 @@ export class Committee {
       alternateName: this.officialName,
       url: siteUrl,
     };
-  }
-
-  howYouKnow(): string {
-    const proof = "That is how you know this is the committee's official website.";
-    const linking = this.districts.filter((district) => district.pageThatLinksHere.published);
-    const pending = this.districts.filter((district) => !district.pageThatLinksHere.published);
-    if (pending.length === 0) {
-      return `Each school district's website links to this page. ${proof}`;
-    }
-    if (linking.length === 0) {
-      return `Each school district's website will link to this page. ${proof}`;
-    }
-    return `${englishList({ items: linking.map((district) => `${district.name}'s website`) })} ${linking.length === 1 ? 'links' : 'link'} to this page. ${englishList({ items: pending.map((district) => `${district.name}'s website`) })} will too. ${proof}`;
   }
 }
 

@@ -1,8 +1,7 @@
-import { CalendarLink, type CalendarEntry } from './Calendar.ts';
 import type { StateDeadlineData } from './schemas.ts';
 import { VermontCalendarDay, type VermontTime } from './VermontTime.ts';
 
-export class StateDeadline implements CalendarEntry {
+export class StateDeadline {
   readonly id: string;
   readonly on: VermontCalendarDay;
   readonly timing: StateDeadlineData['timing'];
@@ -27,35 +26,7 @@ export class StateDeadline implements CalendarEntry {
     return this.timing === 'on-or-before' ? `By ${this.on.shortDate()}` : this.on.shortDate();
   }
 
-  day(): VermontCalendarDay {
-    return this.on;
-  }
-
-  sortsAt(): VermontTime {
-    return this.on.startsAt();
-  }
-
   isOver({ now }: { now: VermontTime }): boolean {
     return !now.isBefore({ other: this.on.endsAt() });
-  }
-
-  calendarKind(): string {
-    return 'Set by Act 170';
-  }
-
-  calendarTitle(): string {
-    return this.title;
-  }
-
-  calendarTime(): string | undefined {
-    return this.timing === 'on-or-before' ? 'On or before this date' : undefined;
-  }
-
-  calendarDetails(): string[] {
-    return [this.description];
-  }
-
-  calendarLink(): CalendarLink {
-    return new CalendarLink({ href: this.citationUrl, text: this.citationTitle });
   }
 }

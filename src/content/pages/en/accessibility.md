@@ -1,7 +1,7 @@
 ---
 title: Accessibility
 description: Our accessibility goal, what we know does not work yet, and how to report a problem.
-updatedOn: "2026-10-27"
+updatedOn: "2026-10-28"
 ---
 
 Everyone should be able to use this website, including people who use screen readers, screen magnifiers, a keyboard only, or voice control.
@@ -12,7 +12,7 @@ We build this site to meet the Web Content Accessibility Guidelines (WCAG) 2.1, 
 
 What that means on this site:
 
-- Minutes and document summaries are written on the page. An agenda is usually a PDF exported from a Google Doc, and the meeting page links to that file.
+- Minutes and agendas are the files the committee posts. The meeting page links to those files. A record page includes a summary when one is written.
 - Text is at least 18 pixels and grows when you zoom.
 - Every link and button works with a keyboard and shows where you are.
 - Colors have strong contrast, and color is never the only way we show something.
@@ -22,7 +22,7 @@ What that means on this site:
 ## What does not work yet
 
 - **Files from other agencies.** Many records on this site are PDFs that state agencies and school districts wrote. Some may not work well with screen readers. Ask us for another format and we will get you one.
-- **Recordings.** We do not yet know whether every recording will have captions. Each meeting page says so once the recording is up. Ask us for a transcript if you need one.
+- **Recordings.** We do not yet know whether every recording will have captions. When we know, the meeting page says so. Ask us for a transcript if you need one.
 - **Other languages.** The site is in English only for now. We plan to translate the most important pages first, with help from the districts' language staff.
 
 ## Report a problem

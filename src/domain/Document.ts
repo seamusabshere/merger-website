@@ -64,7 +64,7 @@ export class Document {
     this.createdByTheCommittee = data.createdByTheCommittee;
     this.publishedOn = data.publishedOn ? VermontCalendarDay.parse({ isoDate: data.publishedOn }) : undefined;
     this.updatedOn = VermontCalendarDay.parse({ isoDate: data.updatedOn });
-    this.summaryParagraphs = data.summary
+    this.summaryParagraphs = (data.summary ?? '')
       .split(/\n\s*\n/)
       .map((paragraph) => paragraph.replace(/\s+/g, ' ').trim())
       .filter(Boolean);

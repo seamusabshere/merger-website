@@ -38,16 +38,6 @@ export class PageThatLinksHere {
     this.url = url;
     this.published = published;
   }
-
-  linkText({ districtName }: { districtName: string }): string {
-    if (this.published) return `${districtName} page that links here`;
-    return `Placeholder: ${districtName} page that will link here`;
-  }
-
-  explanation(): string {
-    if (this.published) return "The district's website links to this page.";
-    return "The district's website will link to this page.";
-  }
 }
 
 export class District {

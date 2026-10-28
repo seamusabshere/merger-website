@@ -4,11 +4,10 @@ import type { District } from '../domain/District.ts';
 interface Props {
   cityList: string;
   districtAbbreviationList: string;
-  howYouKnow: string;
   districts: District[];
 }
 
-const { cityList, districtAbbreviationList, howYouKnow, districts } = Astro.props;
+const { cityList, districtAbbreviationList, districts } = Astro.props;
 ---
 
 <section class="official-banner" aria-label="Official website">
@@ -33,7 +32,6 @@ const { cityList, districtAbbreviationList, howYouKnow, districts } = Astro.prop
       <summary>Here's how you know</summary>
       <div class="how-you-know-panel">
         <div class="how-you-know-inner">
-          <p>{howYouKnow}</p>
           <ul class="how-you-know-list">
             {
               districts.map((district) => (
@@ -50,10 +48,7 @@ const { cityList, districtAbbreviationList, howYouKnow, districts } = Astro.prop
                   <p>
                     <strong>{district.name}</strong>
                     <br />
-                    {district.pageThatLinksHere.explanation()}{' '}
-                    <a href={district.pageThatLinksHere.url}>
-                      {district.pageThatLinksHere.linkText({ districtName: district.name })}
-                    </a>
+                    The <a href={district.pageThatLinksHere.url}>district's official website</a> links here.
                   </p>
                 </li>
               ))

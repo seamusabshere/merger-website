@@ -1,4 +1,3 @@
-import type { CalendarEntry, CalendarLink } from './Calendar.ts';
 import type { Meeting } from './Meeting.ts';
 import type { RegularMeetingScheduleData } from './schemas.ts';
 import { VermontCalendarDay, VermontCalendarMonth, VermontClockTime, type VermontTime, type Weekday } from './VermontTime.ts';
@@ -69,17 +68,14 @@ export class RegularMeetingSchedule {
   expectedMeetings({ meetings }: { meetings: Meeting[] }): ExpectedMeeting[] {
     return this.months()
       .filter((month) => !meetings.some((meeting) => meeting.kind === 'regular' && month.includes({ day: meeting.day() })))
-      .map((month) => new ExpectedMeeting({ schedule: this, startsAt: this.startsAt.on({ day: this.meetingDayIn({ month }) }) }));
+      .map((month) => new ExpectedMeeting({ startsAt: this.startsAt.on({ day: this.meetingDayIn({ month }) }) }));
   }
 }
 
-export class ExpectedMeeting implements CalendarEntry {
-  readonly schedule: RegularMeetingSchedule;
+export class ExpectedMeeting {
   readonly startsAt: VermontTime;
-  readonly kind = 'regular';
 
-  constructor({ schedule, startsAt }: { schedule: RegularMeetingSchedule; startsAt: VermontTime }) {
-    this.schedule = schedule;
+  constructor({ startsAt }: { startsAt: VermontTime }) {
     this.startsAt = startsAt;
   }
 
@@ -91,33 +87,15 @@ export class ExpectedMeeting implements CalendarEntry {
     return `Expected committee meeting, ${this.day().longDate()}`;
   }
 
-  sortsAt(): VermontTime {
-    return this.startsAt;
+  timeRange(): string {
+    return `${this.startsAt.clockTime()} ${this.startsAt.timeZoneAbbreviation()}`;
+  }
+
+  notice(): string {
+    return 'The notice for this meeting is not out yet. It will give the place and how to join by video or phone.';
   }
 
   isOver({ now }: { now: VermontTime }): boolean {
     return !now.isBefore({ other: this.day().endsAt() });
-  }
-
-  calendarKind(): string {
-    return 'Expected regular meeting';
-  }
-
-  calendarTitle(): string {
-    return 'Committee meeting';
-  }
-
-  calendarTime(): string {
-    return `${this.startsAt.clockTime()} ${this.startsAt.timeZoneAbbreviation()}`;
-  }
-
-  calendarDetails(): string[] {
-    return [
-      `${this.schedule.sentence()} The notice for this meeting is not out yet. It will give the place and how to join by video or phone.`,
-    ];
-  }
-
-  calendarLink(): CalendarLink | undefined {
-    return undefined;
   }
 }

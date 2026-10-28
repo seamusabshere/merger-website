@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import { AstroContent } from '../persistence/AstroContent.ts';
+
+const committee = await AstroContent.loadCommittee();
+const deadlines = committee.deadlines().stateDeadlines;
+---
+
+<BaseLayout
+  title="Deadlines"
+  description="Dates set by Act 170 for the Burlington, South Burlington, and Winooski merger study."
+  updatedOn={committee.deadlinesUpdatedOn()}
+>
+  <h1>Deadlines</h1>
+  <p class="lede">Dates set by Act 170.</p>
+  {
+    deadlines.length === 0 ? (
+      <p>No dates are listed.</p>
+    ) : (
+      <ol class="deadline-entries">
+        {deadlines.map((stateDeadline) => (
+          <li class="deadline-entry">
+            <p class="deadline-entry-when">
+              <time datetime={stateDeadline.on.isoDate()}>{stateDeadline.on.shortDate()}</time>
+            </p>
+            <h2>{stateDeadline.title}</h2>
+            <p class="deadline-entry-kind">Set by Act 170</p>
+            <p>{stateDeadline.description}</p>
+            <p>
+              <a href={stateDeadline.citationUrl}>{stateDeadline.citationTitle}</a>
+            </p>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</BaseLayout>

@@ -57,8 +57,8 @@
     width: 316
     height: 316
   pageThatLinksHere:
-    url: https://www.wsdvt.org/act-170-merger-committee
-    published: false
+    url: https://www.wsdvt.org/project/act170/
+    published: true
   averageDailyMembership:
     students: 785
     fiscalYear: fiscal year 2025

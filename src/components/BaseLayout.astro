@@ -18,7 +18,7 @@ const siteName = 'Burlington, South Burlington, and Winooski Merger Study';
 
 const navigation = [
   { href: '/', label: 'Home' },
-  { href: '/calendar/', label: 'Calendar' },
+  { href: '/deadlines/', label: 'Deadlines' },
   { href: '/meetings/', label: 'Public meetings' },
   { href: '/records/', label: 'Public records' },
   { href: '/participate/', label: 'How to participate' },
@@ -57,7 +57,6 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
     <OfficialBanner
       cityList={committee.cityList()}
       districtAbbreviationList={committee.districtAbbreviationList()}
-      howYouKnow={committee.howYouKnow()}
       districts={committee.districts}
     />
     <header class="site-header">

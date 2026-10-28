@@ -6,7 +6,7 @@ import { AstroContent } from '../../persistence/AstroContent.ts';
 
 const committee = await AstroContent.loadCommittee();
 const now = VermontTime.now();
-const upcomingMeetings = committee.upcomingMeetings({ now });
+const upcomingMeetings = committee.upcomingPublicMeetings({ now });
 const pastMeetings = committee.pastMeetings({ now });
 ---
 
@@ -16,11 +16,12 @@ const pastMeetings = committee.pastMeetings({ now });
   updatedOn={committee.meetingsUpdatedOn()}
 >
   <h1>Public meetings</h1>
-  <p class="lede">
-    Every meeting is open to the public, in person and by video or phone.
+  <p class="lede">Every meeting is open to the public, in person and by video or phone.</p>
+  <p>
+    {committee.regularMeetingSchedule.sentence()} A meeting whose place is not set yet says TBD.
   </p>
   <p><a href="/participate/">How to attend and speak</a></p>
-  <p><a href="/calendar/">Calendar of expected meetings and state deadlines</a></p>
+  <p><a href="/deadlines/">Deadlines set by state law</a></p>
 
   <h2>Upcoming meetings</h2>
   <MeetingTable

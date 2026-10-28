@@ -1,3 +1,43 @@
+- id: facilitators-hired
+  on: "2026-09-01"
+  timing: on-or-before
+  updatedOn: "2026-10-28"
+  title: Facilitators are in place
+  description: The Vermont Learning Collaborative hires or contracts for seven regional facilitators and one lead facilitator. The facilitators organize the merger committees and run their meetings.
+  citation:
+    title: Act 170, Sec. 13(a)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
+- id: boards-name-members
+  on: "2026-09-15"
+  timing: on-or-before
+  updatedOn: "2026-10-28"
+  title: School boards name committee members
+  description: Each school board names at least one of its current members to its merger committee. Only a sitting school board member may serve. If that person leaves the board, the board names someone new.
+  citation:
+    title: Act 170, Sec. 13(b)(1)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
+- id: districts-grouped
+  on: "2026-10-15"
+  timing: on-or-before
+  updatedOn: "2026-10-28"
+  title: Facilitators set the merger groups
+  description: Each regional facilitator groups school districts into merger committees and consults the school boards before the groups are final. Section 14 of the law suggests the groups.
+  citation:
+    title: Act 170, Sec. 13(b)(2)(A)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
+- id: first-meeting
+  on: "2026-10-15"
+  timing: on-or-before
+  updatedOn: "2026-10-28"
+  title: Each merger committee holds its first meeting
+  description: Every merger committee meets for the first time.
+  citation:
+    title: Act 170, Sec. 13(b)(2)(B)
+    url: https://legislature.vermont.gov/Documents/2026/Docs/ACTS/ACT170/ACT170%20As%20Enacted.pdf
+
 - id: legislature-status-report
   on: "2027-02-01"
   timing: on-or-before

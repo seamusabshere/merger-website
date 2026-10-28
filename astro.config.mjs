@@ -5,5 +5,8 @@ export default defineConfig({
   site: 'https://burlington-south-burlington-winooski-merger-study.org',
   output: 'static',
   trailingSlash: 'always',
+  redirects: {
+    '/calendar/': '/deadlines/',
+  },
   integrations: [sitemap()],
 });

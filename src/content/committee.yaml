@@ -4,7 +4,7 @@
   stateGroup: Group 18
   membersUpdatedOn: "2026-10-27"
   chairMemberId: nicole-mace
-  # The calendar shows an expected meeting for each month in this range that has no regular meeting file yet.
+  # Public meetings shows an expected meeting for each month in this range that has no regular meeting file yet.
   # The schedule runs through the month before the final report is due on September 1, 2027.
   regularMeetingSchedule:
     updatedOn: "2026-10-27"

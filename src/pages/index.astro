@@ -44,7 +44,9 @@ const nextMeeting = committee.nextMeeting({ now });
             </p>
           </>
         ) : (
-          <p>No meeting is scheduled yet. See <a href="/meetings/">past meetings</a>.</p>
+          <p>
+            No meeting is scheduled yet. See <a href="/meetings/">public meetings</a>.
+          </p>
         )
       }
     </div>
@@ -100,7 +102,8 @@ const nextMeeting = committee.nextMeeting({ now });
       }
     </ul>
     <p>
-      <a href="/calendar/">See the calendar</a> for every meeting and the other dates.
+      See <a href="/meetings/">public meetings</a> for every meeting, and <a href="/deadlines/">deadlines</a> for the other
+      dates.
     </p>
   </section>
 

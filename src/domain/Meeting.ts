@@ -1,4 +1,3 @@
-import { CalendarLink, type CalendarEntry } from './Calendar.ts';
 import type { Committee } from './Committee.ts';
 import type { Document } from './Document.ts';
 import type { Member } from './Member.ts';
@@ -14,7 +13,7 @@ const KIND_NAMES: Record<MeetingData['kind'], string> = {
   emergency: 'Emergency meeting',
 };
 
-export class Meeting implements CalendarEntry {
+export class Meeting {
   readonly id: string;
   readonly kind: MeetingData['kind'];
   readonly startsAt: VermontTime;
@@ -128,39 +127,6 @@ export class Meeting implements CalendarEntry {
 
   overdueDuties({ now }: { now: VermontTime }): PostingDeadline[] {
     return this.postingDeadlines().filter((postingDeadline) => postingDeadline.isOverdue({ now }));
-  }
-
-  sortsAt(): VermontTime {
-    return this.startsAt;
-  }
-
-  isOver({ now }: { now: VermontTime }): boolean {
-    return this.hasEnded({ now });
-  }
-
-  calendarKind(): string {
-    return this.kindName();
-  }
-
-  calendarTitle(): string {
-    return 'Committee meeting';
-  }
-
-  calendarTime(): string {
-    return this.timeRange();
-  }
-
-  calendarDetails(): string[] {
-    return [
-      this.physicalLocation
-        ? `${this.physicalLocation.name}, ${this.physicalLocation.city}`
-        : 'Place: TBD',
-      this.electronicAccess ? `Also on ${this.electronicAccess.platform}.` : undefined,
-    ].filter((detail): detail is string => detail !== undefined);
-  }
-
-  calendarLink(): CalendarLink {
-    return new CalendarLink({ href: this.path(), text: 'Meeting details' });
   }
 
   schemaOrgEvent({

@@ -10,7 +10,9 @@ Sections marked **planned** describe what is not built yet.
 
 Act 170 of 2026 (H.955, signed June 18, 2026) put the Burlington, South Burlington, and Winooski school districts in one merger committee (Chittenden Central, Group 18). The committee studies whether forming one unified union school district is advisable and makes a recommendation. It does not decide. Key dates, from Act 170 Sec. 13:
 
-- By October 15, 2026: each merger committee holds its first meeting. Ours met on October 20, 2026.
+- By September 1, 2026: the Vermont Learning Collaborative hires seven regional facilitators and one lead facilitator.
+- By September 15, 2026: each school board names at least one current member to its merger committee.
+- By October 15, 2026: facilitators set the groups, and each merger committee holds its first meeting. Ours met on October 20, 2026.
 - By September 1, 2027: the final report goes to the three school boards, the Secretary of Education, and the State Board of Education.
 - By December 1, 2027: the Secretary recommends on any proposed merger. By December 15, 2027: the State Board issues findings.
 - March 7, 2028 (Town Meeting Day), if a merger is proposed: voters in each district the plan names "necessary" or "advisable" vote. The new district forms only if every "necessary" district votes yes; an "advisable" district joins only if its own voters say yes (16 V.S.A. § 713(b)).
@@ -51,7 +53,7 @@ A missed deadline here is a breach of the law, not a website bug. Treat it that 
 2. **Accessible.** WCAG 2.1 AA is the legal floor (ADA Title II). Meet WCAG 2.2 AA where it costs little.
 3. **Neutral.** The committee has not decided, and the site does not argue for or against a merger. Show the evidence and the arguments on each side, with the source of each.
 4. **Plain language.** Aim for an 8th-grade reading level. Define terms like "union school district" when they first appear.
-5. **Minutes and summaries on the page.** Minutes and document summaries are HTML. An agenda is the file the committee posts, usually a Google Doc exported to PDF. The meeting page links to that file. Writing the agenda out as HTML is optional, and not every agenda will be.
+5. **The posted file is the record.** An agenda or the minutes are the file the committee posts, usually a PDF. The meeting page links to that file. Writing the agenda or the minutes out on the page is optional. A summary of another record is optional too. Write one only when it can be checked.
 6. **Attractive.** Get there through type, spacing, and layout. Never trade accessibility for looks.
 
 ## Legal duties the site must support
@@ -101,6 +103,8 @@ pnpm dev
 
 Open <http://localhost:4321>. Saving a page, a content file, or a component reloads the browser.
 
+If more than one agent session is working in this repo, check whether something is already listening on port 4321 before you run `pnpm dev`. If it is, use that server. It reloads when files change, so the other session can use it too.
+
 `pnpm install` installs a pre-commit hook that runs `pnpm check`. The hook uses the `pnpm` found at that time. If you move `pnpm`, run `pnpm run prepare` again.
 
 ## Domain model
@@ -111,13 +115,13 @@ Times are `VermontTime` (an instant, shown in America/New_York), dates are `Verm
 
 | Class | Holds | Knows how to |
 | --- | --- | --- |
-| `Committee` | Name, chair, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation`, `RegularMeetingSchedule`, `StateDeadline`s | Find the next meeting, list past meetings, list overdue duties, name its chair, build its `Calendar` |
+| `Committee` | Name, chair, `Facilitator`, districts, members, meetings, documents, `ProportionalRepresentation`, `RegularMeetingSchedule`, `StateDeadline`s | Find the next meeting, list upcoming public meetings (including expected meetings), list past meetings, list overdue duties, name its chair, build its `Deadlines` |
 | `RegularMeetingSchedule` | The week and weekday (like the first Monday), the start time, the first and last month, cancelled months, the date it last changed | Describe itself, list an `ExpectedMeeting` for each month with no regular meeting on file |
-| `ExpectedMeeting` | A start time from the schedule | Say it has no notice yet |
+| `ExpectedMeeting` | A start time from the schedule | Say the notice is not out yet |
 | `OpenMeetingLaw` | The posting rules of 1 V.S.A. § 312 | Compute agenda and minutes deadlines for any meeting kind |
-| `PostingDeadline` | A `Meeting`, agenda or minutes, the deadline, the posted record if any | Say whether it is overdue. Used by `pnpm check:deadlines`, not by the public calendar |
+| `PostingDeadline` | A `Meeting`, agenda or minutes, the deadline, the posted record if any | Say whether it is overdue. Used by `pnpm check:deadlines`, not shown on the site |
 | `StateDeadline` | A date, whether it is "on" or "on or before", what happens, the section of Act 170, the date it last changed | Label its date ("By September 1, 2027"), link to its source |
-| `Calendar` | Meetings, expected meetings, and state deadlines, in time order | Drop what is over |
+| `Deadlines` | State deadlines, in time order | Drop what is over. The public page lists every date, including ones that have passed |
 | `ProportionalRepresentation` | The meeting that set each district's votes, and a `DistrictVotes` for each district | Say how many votes each district has |
 | `DistrictVotes` | A `District` and its vote count | Say "3 votes" or "1 vote" |
 | `District` | Name, city, website, phone, logo, the page on the district site that links here, student count with source | Sort alphabetically |
@@ -133,7 +137,7 @@ Times are `VermontTime` (an instant, shown in America/New_York), dates are `Verm
 | `Motion` | Text, mover, seconder, result, `Vote` | Render itself |
 | `Vote` | Result, and each member's vote if by roll call | Render a roll call table |
 | `Recording` | URL, host, posted time, captions available | Say how long it must stay up |
-| `Document` | Title, summary, date, `DocumentFile`s | Give the page that describes the file |
+| `Document` | Title, optional summary, date, `DocumentFile`s | Give the page that describes the file |
 | `DocumentFile` | Language, format, size, whether accessible, URL | Label the link with type and size |
 | `Page` | Title, description, last updated date, rendered body | Plain prose pages |
 | `Question` (planned) | Question, answer, date answered, date revised | Show when the answer last changed |
@@ -148,10 +152,10 @@ src/
   content/
     committee.yaml               # the committee, its facilitator, and its regular meeting schedule
     districts.yaml
-    state-deadlines.yaml         # upcoming dates set by Act 170 Sec. 13
+    state-deadlines.yaml         # dates set by Act 170 Sec. 13
     members.yaml
     meetings/2026-11-02.yaml     # one file per meeting, named by date
-    documents/<slug>.yaml        # one file per record: summary and files
+    documents/<slug>.yaml        # one file per record
     pages/en/<slug>.md           # prose pages: Act 170, CESA, history, participate, accessibility
     questions/<slug>.md          # planned
   domain/                        # classes listed above, and schemas.ts
@@ -169,10 +173,10 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 
 ## Pages
 
-- **Home** (`/`): the next meeting with join details, then a plain account of the study. The state requires the study and voters decide. The page names the questions the committee is working through, the meeting schedule, the final report deadline and the vote date (both from `state-deadlines.yaml`), and what "necessary" and "advisable" mean. It links to the calendar for every other date.
-- **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. One page per meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Once the meeting has ended, the video and phone rows both name the platform, such as Google Meet or Zoom, and leave off the link, the phone number, and the PIN. A meeting with no end time counts as ended at the end of that calendar day. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`) until it starts. Anything not yet known or posted, such as a location, link, agenda, minutes, or recording, shows "TBD".
-- **Calendar** (`/calendar/`): everything still to come, in time order, with no month headings. It lists meetings on file, an "expected" meeting for each month of the regular schedule that has no meeting file yet, and the dates in `state-deadlines.yaml`. An entry leaves the page once it is over. An expected meeting never shows a place or a join link; it says the notice is not out yet. The calendar is for the public. Do not list when an agenda or minutes are due.
-- **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files the committee wrote. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with a plain summary, the original files labeled by type and size, which meetings used it, and how to ask for another format.
+- **Home** (`/`): the next meeting with join details, then a plain account of the study. The state requires the study and voters decide. The page names the questions the committee is working through, the meeting schedule, the final report deadline and the vote date (both from `state-deadlines.yaml`), and what "necessary" and "advisable" mean. It links to public meetings for every meeting, and to deadlines for the other dates.
+- **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. The upcoming table includes each meeting on file that has not started, and an expected meeting for each month of the regular schedule that has no meeting file yet. An expected meeting has no page. It says the notice is not out yet, and it leaves the table once that day is over. One page per noticed meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Once the meeting has ended, the video and phone rows both name the platform, such as Google Meet or Zoom, and leave off the link, the phone number, and the PIN. A meeting with no end time counts as ended at the end of that calendar day. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`) until it starts. Anything not yet known or posted, such as a location, link, agenda, minutes, or recording, shows "TBD".
+- **Deadlines** (`/deadlines/`): every date in `state-deadlines.yaml`, in time order, with no month headings, including dates that have passed. `/calendar/` redirects here. This page does not list meetings. Do not list when an agenda or minutes are due.
+- **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files from the committee, including files its facilitator made for it. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with the original files labeled by type and size, which meetings used it, and how to ask for another format. A summary is shown when one is written.
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
 - **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.
 - **Act 170 of 2026** (`/act-170/`): what the law asks of the committee, what the report must contain, the timeline, how a vote works, and what the law does not do.
@@ -207,7 +211,7 @@ Routes: English at `/`, other languages at `/<language code>/` (for example `/ne
 - Visible focus on every control. Targets at least 24 by 24 CSS pixels.
 - No carousels, autoplay, parallax, or motion that ignores `prefers-reduced-motion`.
 - Navigation wraps on small screens. No hamburger menu unless the links stop fitting.
-- Every page opens with a banner: the three district logos, small, then "Official website of the Act 170 Merger Committee" for the three districts, then "Here's how you know." Opening that shows the logos again, larger, and a link to the page on each district site that links back here. Those links live on `pageThatLinksHere` in `districts.yaml`. While `published` is false, the link text says it is a placeholder. When a district publishes the page, set `url` to that page and `published` to true. This is not the federal ".gov" banner. The proof is the three district websites. Borrowing other USWDS patterns (skip link, landmarks, form patterns) is fine.
+- Every page opens with a banner: the three district logos, small, then "Official website of the Act 170 Merger Committee" for the three districts, then "Here's how you know." Opening that shows the logos again, larger, and, for each district, "The district's official website links here." The link is the page on that district's site that links back here, from `pageThatLinksHere` in `districts.yaml`. When a district publishes the page, set `url` to that page and `published` to true. This is not the federal ".gov" banner. The proof is the three district websites. Borrowing other USWDS patterns (skip link, landmarks, form patterns) is fine.
 - The home page reads like a public notice: the next meeting first, then how to take part, then the question under study.
 
 ## Accessibility testing
@@ -234,19 +238,19 @@ By hand, before any change to layout or components:
 
 **Change the regular schedule.** Edit `regularMeetingSchedule` in `committee.yaml` and update its `updatedOn`. A regular meeting file in a month replaces that month's expected meeting, even on another day, so moving a meeting needs only the new meeting file. To cancel a month's meeting, add the month (like `"2027-07"`) to `cancelledMonths`.
 
-**Change a state deadline.** Edit `state-deadlines.yaml` and update that entry's `updatedOn`. The home page and calendar read from it. The Act 170 page and the key dates at the top of this file are written out by hand, so change them too.
+**Change a state deadline.** Edit `state-deadlines.yaml` and update that entry's `updatedOn`. The home page and deadlines page read from it. The Act 170 page and the key dates at the top of this file are written out by hand, so change them too.
 
-**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/2026-10-20-agenda.pdf`) and its size. Set `createdByTheCommittee` to `true`. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Do not also put it in `documentIds`. The records page leaves agendas off. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
+**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/agenda-2026-10-20.pdf`) and its size. Set `createdByTheCommittee` to `true`. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Do not also put it in `documentIds`. The records page leaves agendas off. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
 
 **Do not say a file is unchecked.** Do not write "We have not checked this file for accessibility," or anything like it, on a page, in a summary, or in a commit message. If nobody has checked a file, set `accessibility` to `not-checked` and leave the page quiet. Write a note only when you know a file does not work (`not-accessible`).
 
 **Do not put the committee's posting chores on the site.** The site is for the public, not a to-do list for the committee. Do not list when an agenda or minutes are due, and do not write "Past due," "overdue," or "missed deadline." People post when they can. `pnpm check:deadlines` is a local reminder for them. It is not copy for the website.
 
-**Post minutes.** Add `minutes` to the meeting file with status `draft`. Members present and roll call votes use member ids from `members.yaml`. When the committee approves them, change the status to `approved`, set `approvedOn`, and edit the text. If the minutes are also a file under `src/content/documents/`, set `createdByTheCommittee` to `true` and set `minutes.documentId` to that record. The records page leaves minutes off. Never delete posted minutes within one year of the meeting.
+**Post minutes.** Put the minutes file in `public/documents/` as `minutes-YYYY-MM-DD.pdf`, or `minutes-YYYY-MM-DD-draft.pdf` while it is a draft, and add it under `src/content/documents/`. In the meeting file, add `minutes` with status `draft`, `postedAt`, and `documentId`. Set `createdByTheCommittee` to `true`. The records page leaves minutes off. When the committee approves them, change the status to `approved` and set `approvedOn`. Members present and roll call votes, written on the page, use member ids from `members.yaml`. Never delete posted minutes within one year of the meeting.
 
-**Post a recording.** Add `recording` to the meeting file with its host and caption status.
+**Post a recording.** Add `recording` to the meeting file with its host. Set `captions` when you know whether the video has them.
 
-**Add a record.** Add a file to `src/content/documents/`. Write the summary in plain language first. Set `createdByTheCommittee` to `true` only when the committee wrote it. Add each file with its type and size in bytes. Link it from a meeting with `documentIds`. The public records page lists committee files, and skips agendas and minutes.
+**Add a record.** Add a file to `src/content/documents/`. Set `createdByTheCommittee` to `true` when the committee or its facilitator made the file for this committee. Statewide materials stay `false`. Add each file with its type and size in bytes. A summary is optional. Link it from a meeting with `documentIds`. The public records page lists committee files, and skips agendas and minutes.
 
 **Change members.** Edit `members.yaml` and update `membersUpdatedOn` in `committee.yaml`. The committee's chair is `chairMemberId` in `committee.yaml`, and it must be one member's id.
 
@@ -260,7 +264,7 @@ By hand, before any change to layout or components:
 - Who receives written comments, access requests, and records requests? The contact page sends them to the facilitator or a district contact until the committee decides.
 - Who posts agendas and minutes, and who backs them up when that person is away?
 - Which languages first, and who translates?
-- Where are recordings hosted, and do they have captions?
+- The October 20, 2026 recording is on Vimeo. We do not yet know if it has captions, or where later recordings will be hosted.
 
 ## Sources
 

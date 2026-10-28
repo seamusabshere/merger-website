@@ -1,8 +1,9 @@
 ---
-import type { Meeting } from '../domain/Meeting.ts';
+import { Meeting } from '../domain/Meeting.ts';
+import { ExpectedMeeting } from '../domain/RegularMeetingSchedule.ts';
 
 interface Props {
-  meetings: Meeting[];
+  meetings: (Meeting | ExpectedMeeting)[];
   caption: string;
   emptyMessage: string;
   showMinutesAndRecording: boolean;
@@ -36,69 +37,81 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
             <td colspan={showMinutesAndRecording ? 5 : 3}>{emptyMessage}</td>
           </tr>
         ) : (
-          meetings.map((meeting) => (
-            <tr>
-              <th scope="row">
-                <a href={meeting.path()}>{meeting.day().longDate()}</a>
-                <br />
-                {meeting.timeRange()}
-                {meeting.kind !== 'regular' && (
+          meetings.map((meeting) =>
+            meeting instanceof ExpectedMeeting ? (
+              <tr>
+                <th scope="row">
+                  <time datetime={meeting.day().isoDate()}>{meeting.day().longDate()}</time>
+                  <br />
+                  {meeting.timeRange()}
+                </th>
+                <td>{meeting.notice()}</td>
+                <td>TBD</td>
+              </tr>
+            ) : (
+              <tr>
+                <th scope="row">
+                  <a href={meeting.path()}>{meeting.day().longDate()}</a>
+                  <br />
+                  {meeting.timeRange()}
+                  {meeting.kind !== 'regular' && (
+                    <>
+                      <br />
+                      <span class="muted">{meeting.kindName()}</span>
+                    </>
+                  )}
+                </th>
+                <td>
+                  {meeting.physicalLocation ? (
+                    <>
+                      {meeting.physicalLocation.name}, {meeting.physicalLocation.city}
+                    </>
+                  ) : (
+                    <>TBD</>
+                  )}
+                  {meeting.electronicAccess && (
+                    <>
+                      <br />
+                      On {meeting.electronicAccess.platform}
+                    </>
+                  )}
+                </td>
+                <td>
+                  {meeting.hasPostedAgenda() ? (
+                    <a href={`${meeting.path()}#agenda`}>
+                      Final<span class="visually-hidden"> agenda for {meeting.day().longDate()}</span>
+                    </a>
+                  ) : (
+                    <>TBD</>
+                  )}
+                </td>
+                {showMinutesAndRecording && (
                   <>
-                    <br />
-                    <span class="muted">{meeting.kindName()}</span>
+                    <td>
+                      {meeting.minutes ? (
+                        <a href={`${meeting.path()}#minutes`}>
+                          {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
+                          <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
+                        </a>
+                      ) : (
+                        <>TBD</>
+                      )}
+                    </td>
+                    <td>
+                      {meeting.recording ? (
+                        <a href={meeting.recording.url}>
+                          {meeting.recording.host}
+                          <span class="visually-hidden"> recording of {meeting.day().longDate()}</span>
+                        </a>
+                      ) : (
+                        <>TBD</>
+                      )}
+                    </td>
                   </>
                 )}
-              </th>
-              <td>
-                {meeting.physicalLocation ? (
-                  <>
-                    {meeting.physicalLocation.name}, {meeting.physicalLocation.city}
-                  </>
-                ) : (
-                  <>TBD</>
-                )}
-                {meeting.electronicAccess && (
-                  <>
-                    <br />
-                    On {meeting.electronicAccess.platform}
-                  </>
-                )}
-              </td>
-              <td>
-                {meeting.hasPostedAgenda() ? (
-                  <a href={`${meeting.path()}#agenda`}>
-                    Posted<span class="visually-hidden"> agenda for {meeting.day().longDate()}</span>
-                  </a>
-                ) : (
-                  <>TBD</>
-                )}
-              </td>
-              {showMinutesAndRecording && (
-                <>
-                  <td>
-                    {meeting.minutes ? (
-                      <a href={`${meeting.path()}#minutes`}>
-                        {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
-                        <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
-                      </a>
-                    ) : (
-                      <>TBD</>
-                    )}
-                  </td>
-                  <td>
-                    {meeting.recording ? (
-                      <a href={meeting.recording.url}>
-                        {meeting.recording.host}
-                        <span class="visually-hidden"> recording of {meeting.day().longDate()}</span>
-                      </a>
-                    ) : (
-                      <>TBD</>
-                    )}
-                  </td>
-                </>
-              )}
-            </tr>
-          ))
+              </tr>
+            ),
+          )
         )
       }
     </tbody>

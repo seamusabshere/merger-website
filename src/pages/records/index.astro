@@ -14,9 +14,6 @@ const recordsFromOtherSources = committee.recordsFromOtherSources();
   updatedOn={committee.documentsUpdatedOn()}
 >
   <h1>Public records</h1>
-  <p class="lede">
-    Files for this study, newest first. Agendas and minutes are on each <a href="/meetings/">meeting's page</a>.
-  </p>
   <p>
     If you cannot read a file, <a href="/contact/">ask us for another format</a>.
   </p>
@@ -40,7 +37,7 @@ const recordsFromOtherSources = committee.recordsFromOtherSources();
       <h2 class="visually-hidden">Created by the committee</h2>
       <RecordFileTable
         documents={records}
-        caption="Files the committee wrote"
+        caption="Files from the committee"
         emptyMessage="The committee has not posted any files yet."
       />
     </div>

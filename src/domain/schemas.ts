@@ -152,7 +152,7 @@ const minutesSchema = z.object({
   approvedOn: calendarDay.optional(),
   documentId: z.string().optional(),
   sourceUrl: z.url().optional(),
-  membersPresentIds: z.array(z.string()),
+  membersPresentIds: z.array(z.string()).default([]),
   otherParticipants: z.array(z.string()).default([]),
   discussion: z.array(z.object({ topic: z.string(), summary: z.string() })).default([]),
   motions: z.array(motionSchema).default([]),
@@ -162,7 +162,7 @@ const recordingSchema = z.object({
   url: z.url(),
   host: z.string(),
   postedAt: isoInstant,
-  captions: z.enum(['human', 'automatic', 'none']),
+  captions: z.enum(['human', 'automatic', 'none']).optional(),
 });
 
 export const meetingSchema = z.object({
@@ -196,7 +196,7 @@ export const documentSchema = z.object({
   createdByTheCommittee: z.boolean(),
   publishedOn: calendarDay.optional(),
   updatedOn: calendarDay,
-  summary: z.string(),
+  summary: z.string().optional(),
   files: z.array(documentFileSchema).min(1),
 });
 

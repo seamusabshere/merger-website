@@ -252,7 +252,7 @@ export class Minutes {
   }
 }
 
-const CAPTION_NOTES: Record<RecordingData['captions'], string> = {
+const CAPTION_NOTES: Record<NonNullable<RecordingData['captions']>, string> = {
   human: 'Captions written by a person.',
   automatic: 'Captions made by computer. They may contain errors.',
   none: 'No captions yet. Ask us for a transcript.',
@@ -262,7 +262,7 @@ export class Recording {
   readonly url: string;
   readonly host: string;
   readonly postedAt: VermontTime;
-  readonly captions: RecordingData['captions'];
+  readonly captions: RecordingData['captions'] | undefined;
 
   constructor({ data }: { data: RecordingData }) {
     this.url = data.url;
@@ -271,7 +271,8 @@ export class Recording {
     this.captions = data.captions;
   }
 
-  captionNote(): string {
+  captionNote(): string | undefined {
+    if (this.captions === undefined) return undefined;
     return CAPTION_NOTES[this.captions];
   }
 

@@ -102,14 +102,27 @@ const recording = meeting.recording;
           <>
             <p class={minutes.isDraft() ? 'notice' : 'muted'}>{minutes.statusNote()}</p>
             <p class="muted">Posted {minutes.postedAt.dateAndTime()}.</p>
-            <h3>Members present</h3>
-            <ul>
-              {minutes.membersPresent.map((member) => (
-                <li>
-                  {member.name}, {member.district.name}
-                </li>
-              ))}
-            </ul>
+            {minutes.document && (
+              <ul class="plain-list">
+                {minutes.document.files.map((file) => (
+                  <li>
+                    <DocumentFileLink file={file} />
+                  </li>
+                ))}
+              </ul>
+            )}
+            {minutes.membersPresent.length > 0 && (
+              <>
+                <h3>Members present</h3>
+                <ul>
+                  {minutes.membersPresent.map((member) => (
+                    <li>
+                      {member.name}, {member.district.name}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
             {minutes.otherParticipants.length > 0 && (
               <>
                 <h3>Others who took part</h3>
@@ -131,45 +144,45 @@ const recording = meeting.recording;
                 ))}
               </>
             )}
-            <h3>Motions and votes</h3>
-            {minutes.motions.length > 0 ? (
-              <ol>
-                {minutes.motions.map((motion) => (
-                  <li>
-                    <p>
-                      {motion.text}
-                      <br />
-                      <strong>{motion.resultWord()}.</strong>
-                      {motion.movedBy && <> Moved by {motion.movedBy.name}.</>}
-                      {motion.secondedBy && <> Seconded by {motion.secondedBy.name}.</>}
-                      {motion.vote && <> {motion.vote.describe()}.</>}
-                    </p>
-                    {motion.vote?.isRollCall() && (
-                      <table>
-                        <caption class="muted">Roll call</caption>
-                        <thead>
-                          <tr>
-                            <th scope="col">Member</th>
-                            <th scope="col">District</th>
-                            <th scope="col">Vote</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {motion.vote.rollCall.map((entry) => (
+            {minutes.motions.length > 0 && (
+              <>
+                <h3>Motions and votes</h3>
+                <ol>
+                  {minutes.motions.map((motion) => (
+                    <li>
+                      <p>
+                        {motion.text}
+                        <br />
+                        <strong>{motion.resultWord()}.</strong>
+                        {motion.movedBy && <> Moved by {motion.movedBy.name}.</>}
+                        {motion.secondedBy && <> Seconded by {motion.secondedBy.name}.</>}
+                        {motion.vote && <> {motion.vote.describe()}.</>}
+                      </p>
+                      {motion.vote?.isRollCall() && (
+                        <table>
+                          <caption class="muted">Roll call</caption>
+                          <thead>
                             <tr>
-                              <td>{entry.member.name}</td>
-                              <td>{entry.member.district.name}</td>
-                              <td>{entry.voteWord()}</td>
+                              <th scope="col">Member</th>
+                              <th scope="col">District</th>
+                              <th scope="col">Vote</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <p>No motions.</p>
+                          </thead>
+                          <tbody>
+                            {motion.vote.rollCall.map((entry) => (
+                              <tr>
+                                <td>{entry.member.name}</td>
+                                <td>{entry.member.district.name}</td>
+                                <td>{entry.voteWord()}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </>
             )}
             {minutes.sourceUrl && (
               <p>
@@ -193,7 +206,7 @@ const recording = meeting.recording;
             <p>
               <a href={recording.url}>Watch the recording on {recording.host}</a>
             </p>
-            <p class="muted">{recording.captionNote()}</p>
+            {recording.captionNote() && <p class="muted">{recording.captionNote()}</p>}
           </>
         ) : (
           <p>TBD</p>
