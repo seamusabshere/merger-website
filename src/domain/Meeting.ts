@@ -1,6 +1,5 @@
 import type { Committee } from './Committee.ts';
 import type { Document } from './Document.ts';
-import type { Member } from './Member.ts';
 import { Agenda, ElectronicAccess, lookUp, Minutes, PhysicalLocation, Recording } from './MeetingParts.ts';
 import { OpenMeetingLaw } from './OpenMeetingLaw.ts';
 import { PostedRecord, PostingDeadline } from './PostingDeadline.ts';
@@ -25,19 +24,8 @@ export class Meeting {
   readonly minutes: Minutes | undefined;
   readonly recording: Recording | undefined;
   readonly documents: Document[];
-  readonly notes: string[];
 
-  constructor({
-    id,
-    data,
-    documentsById,
-    membersById,
-  }: {
-    id: string;
-    data: MeetingData;
-    documentsById: Map<string, Document>;
-    membersById: Map<string, Member>;
-  }) {
+  constructor({ id, data, documentsById }: { id: string; data: MeetingData; documentsById: Map<string, Document> }) {
     this.id = id;
     this.kind = data.kind;
     this.startsAt = VermontTime.parse({ isoInstant: data.startsAt });
@@ -46,10 +34,9 @@ export class Meeting {
     this.physicalLocation = data.physicalLocation ? new PhysicalLocation({ data: data.physicalLocation }) : undefined;
     this.electronicAccess = data.electronicAccess ? new ElectronicAccess({ data: data.electronicAccess }) : undefined;
     this.agenda = data.agenda ? new Agenda({ data: data.agenda, documentsById }) : undefined;
-    this.minutes = data.minutes ? new Minutes({ data: data.minutes, membersById, documentsById }) : undefined;
+    this.minutes = data.minutes ? new Minutes({ data: data.minutes, documentsById }) : undefined;
     this.recording = data.recording ? new Recording({ data: data.recording }) : undefined;
     this.documents = data.documentIds.map((documentId) => lookUp({ map: documentsById, id: documentId, kind: 'document' }));
-    this.notes = data.notes;
   }
 
   kindName(): string {

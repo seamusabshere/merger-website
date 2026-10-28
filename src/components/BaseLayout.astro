@@ -38,6 +38,14 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WSHT3F890T"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WSHT3F890T');
+    </script>
     <title>{currentPath === '/' ? siteName : `${title} | ${siteName}`}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(currentPath, Astro.site)} />
@@ -86,7 +94,7 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
     <main id="main" tabindex="-1">
       <div class="wrap">
         <slot />
-        <p class="updated">Last updated {updatedOn.shortDate()}.</p>
+        <p class="updated">Last updated <time datetime={updatedOn.isoDate()}>{updatedOn.shortDate()}</time>.</p>
       </div>
     </main>
     <footer class="site-footer">

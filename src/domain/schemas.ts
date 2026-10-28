@@ -111,40 +111,10 @@ const electronicAccessSchema = z.object({
   phonePin: z.string().optional(),
 });
 
-const agendaItemSchema = z.object({
-  title: z.string(),
-  description: z.string().optional(),
-  subitems: z.array(z.string()).default([]),
-  proposedExecutiveSession: z.object({ natureOfBusiness: z.string() }).optional(),
-  documentIds: z.array(z.string()).default([]),
-});
-
 const agendaSchema = z.object({
   postedAt: isoInstant.optional(),
   documentId: z.string(),
-  items: z.array(agendaItemSchema).default([]),
-});
-
-const rollCallEntrySchema = z.object({
-  memberId: z.string(),
-  vote: z.enum(['yes', 'no', 'abstain', 'absent']),
-});
-
-const voteSchema = z.object({
-  method: z.enum(['voice', 'roll-call', 'unanimous-consent', 'consensus']),
-  yes: z.number().int().optional(),
-  no: z.number().int().optional(),
-  abstain: z.number().int().optional(),
-  rollCall: z.array(rollCallEntrySchema).default([]),
-});
-
-const motionSchema = z.object({
-  text: z.string(),
-  movedByMemberId: z.string().optional(),
-  secondedByMemberId: z.string().optional(),
-  result: z.enum(['passed', 'failed', 'withdrawn', 'tabled']),
-  vote: voteSchema.optional(),
-});
+}).strict();
 
 const minutesSchema = z.object({
   status: z.enum(['draft', 'approved']),
@@ -152,11 +122,7 @@ const minutesSchema = z.object({
   approvedOn: calendarDay.optional(),
   documentId: z.string().optional(),
   sourceUrl: z.url().optional(),
-  membersPresentIds: z.array(z.string()).default([]),
-  otherParticipants: z.array(z.string()).default([]),
-  discussion: z.array(z.object({ topic: z.string(), summary: z.string() })).default([]),
-  motions: z.array(motionSchema).default([]),
-});
+}).strict();
 
 const recordingSchema = z.object({
   url: z.url(),
@@ -176,8 +142,7 @@ export const meetingSchema = z.object({
   minutes: minutesSchema.optional(),
   recording: recordingSchema.optional(),
   documentIds: z.array(z.string()).default([]),
-  notes: z.array(z.string()).default([]),
-});
+}).strict();
 
 const documentFileSchema = z.object({
   label: z.string(),
@@ -196,9 +161,8 @@ export const documentSchema = z.object({
   createdByTheCommittee: z.boolean(),
   publishedOn: calendarDay.optional(),
   updatedOn: calendarDay,
-  summary: z.string().optional(),
   files: z.array(documentFileSchema).min(1),
-});
+}).strict();
 
 export const stateDeadlineSchema = z.object({
   id: z.string(),
@@ -225,10 +189,7 @@ export type MeetingData = z.infer<typeof meetingSchema>;
 export type PhysicalLocationData = z.infer<typeof physicalLocationSchema>;
 export type ElectronicAccessData = z.infer<typeof electronicAccessSchema>;
 export type AgendaData = z.infer<typeof agendaSchema>;
-export type AgendaItemData = z.infer<typeof agendaItemSchema>;
 export type MinutesData = z.infer<typeof minutesSchema>;
-export type MotionData = z.infer<typeof motionSchema>;
-export type VoteData = z.infer<typeof voteSchema>;
 export type RecordingData = z.infer<typeof recordingSchema>;
 export type DocumentData = z.infer<typeof documentSchema>;
 export type DocumentFileData = z.infer<typeof documentFileSchema>;

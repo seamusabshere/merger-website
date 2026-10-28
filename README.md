@@ -70,8 +70,9 @@ The ADA web rule (28 CFR 35.200) requires WCAG 2.1 AA. A school district is not 
 - **Content collections** with Zod schemas hold the content in `src/content/`.
 - **GitHub Pages**, deployed by GitHub Actions with `withastro/action` (`.github/workflows/deploy.yml`). Pages say "upcoming" or "past" as of build time, so the workflow also rebuilds every hour.
 - **No CMS.** Someone posts an agenda by opening a pull request.
-- **No analytics, cookies, or third-party scripts.** Recordings are links to a video host.
+- **Google Analytics** is the only third-party script. The tag is in `BaseLayout.astro`, measurement ID `G-WSHT3F890T`. Do not add any other analytics, cookies, or third-party scripts. Recordings are links to a video host.
 - **Pagefind** for search, added once the archive is big enough to need it.
+- **Sitemap** from `@astrojs/sitemap`. Each entry's `lastmod` is the page's own "Last updated" date. `BuiltPage` (`src/persistence/BuiltPage.ts`) reads it from the `<time>` element in the built HTML, so the sitemap and the page cannot disagree. Every page passes its own `title` and `description` to `BaseLayout`. A record page's description is its title, publisher, and date. Give a record a title that stands alone, like "Draft minutes of the October 20, 2026 meeting", not "Draft minutes".
 
 ### Domain and deploy
 
@@ -119,12 +120,9 @@ Times are `VermontTime` (an instant, shown in America/New_York), dates are `Verm
 | `PhysicalLocation` | Name, address, access notes (entrance, parking, elevator) | Render an address |
 | `ElectronicAccess` | Meeting link, phone number, meeting ID, passcode | Render join instructions that work without the link |
 | `Agenda` | The posted file (a `Document`, usually a PDF) and the time it was posted | Point to the posted file |
-| `AgendaItem` | Title, description, whether it is a proposed executive session, linked `Document`s | Name a proposed executive session the way the law requires |
-| `Minutes` | Status (draft or approved), members present, other participants, `Motion`s, posted time | Show draft status plainly |
-| `Motion` | Text, mover, seconder, result, `Vote` | Render itself |
-| `Vote` | Result, and each member's vote if by roll call | Render a roll call table |
+| `Minutes` | Status (draft or approved), the date approved, the posted file (a `Document`), posted time | Show draft status plainly |
 | `Recording` | URL, host, posted time, captions available | Say how long it must stay up |
-| `Document` | Title, optional summary, date, `DocumentFile`s | Give the page that describes the file |
+| `Document` | Title, publisher, date, `DocumentFile`s. No summary: the schema rejects one | Give the page that describes the file |
 | `DocumentFile` | Language, format, size, whether accessible, URL | Label the link with type and size |
 | `Page` | Title, description, last updated date, rendered body | Plain prose pages |
 | `Question` (planned) | Question, answer, date answered, date revised | Show when the answer last changed |

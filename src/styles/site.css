@@ -645,18 +645,6 @@ a[href^='mailto:'] {
   overflow-wrap: anywhere;
 }
 
-.agenda {
-  padding-inline-start: 1.75rem;
-}
-
-.agenda > li + li {
-  margin-block-start: var(--space-3);
-}
-
-.agenda ul {
-  margin-block: var(--space-1) 0;
-}
-
 .file-type {
   color: var(--color-muted);
   white-space: nowrap;

@@ -23,8 +23,8 @@ Vermont's Open Meeting Law (1 V.S.A. § 312) is how this committee works. The of
 Do not:
 
 - Write a summary in chat
-- Fill in a document `summary`
-- Write agenda items, minutes discussion, or a meeting note that restates an agenda or the minutes
+- Add a `summary` field to a document. The schema rejects it
+- Add agenda items, meeting notes, attendance, motions, or votes to a meeting file. The schema rejects them
 - Describe what a file says in a commit message
 
 Do not say a file is unchecked. Do not write "We have not checked this file for accessibility," or anything like it, on a page, in a summary, or in a commit message. If nobody has checked a file, set `accessibility` to `not-checked` and leave the page quiet. Write a note only when you know a file does not work (`not-accessible`).
@@ -45,7 +45,7 @@ Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a
 
 Add a CMS only when a person who does not use git must post on deadline.
 
-No analytics, cookies, or third-party scripts. Link to video hosts; do not embed their players.
+The only third-party script is the Google tag in `BaseLayout.astro` (measurement ID `G-WSHT3F890T`). Do not add any other analytics, cookies, or third-party scripts. Link to video hosts; do not embed their players.
 
 Do not set `base` in `astro.config.mjs`. The custom domain serves the site from `/`.
 

@@ -54,7 +54,6 @@ export class Document {
   readonly createdByTheCommittee: boolean;
   readonly publishedOn: VermontCalendarDay | undefined;
   readonly updatedOn: VermontCalendarDay;
-  readonly summaryParagraphs: string[];
   readonly files: DocumentFile[];
 
   constructor({ id, data }: { id: string; data: DocumentData }) {
@@ -64,10 +63,6 @@ export class Document {
     this.createdByTheCommittee = data.createdByTheCommittee;
     this.publishedOn = data.publishedOn ? VermontCalendarDay.parse({ isoDate: data.publishedOn }) : undefined;
     this.updatedOn = VermontCalendarDay.parse({ isoDate: data.updatedOn });
-    this.summaryParagraphs = (data.summary ?? '')
-      .split(/\n\s*\n/)
-      .map((paragraph) => paragraph.replace(/\s+/g, ' ').trim())
-      .filter(Boolean);
     this.files = data.files.map((file) => new DocumentFile({ data: file }));
   }
 
@@ -85,6 +80,11 @@ export class Document {
 
   publishedDescription(): string {
     return this.publishedOn ? this.publishedOn.shortDate() : 'Date not given';
+  }
+
+  pageDescription(): string {
+    const source = this.publishedOn ? `${this.publisher}, ${this.publishedOn.shortDate()}` : this.publisher;
+    return `${this.title}. ${source}. Read the original file.`;
   }
 
   fileName({ file }: { file: DocumentFile }): string {

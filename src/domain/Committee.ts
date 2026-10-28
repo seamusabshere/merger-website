@@ -153,15 +153,13 @@ export class Committee {
       );
     }
     this.chair = chairs[0]!;
-    const membersById = new Map(this.members.map((member) => [member.id, member]));
-
     this.documents = documentsData
       .map(({ id, data }) => new Document({ id, data }))
       .sort((a, b) => a.compareNewestFirst({ other: b }));
     const documentsById = new Map(this.documents.map((document) => [document.id, document]));
 
     this.meetings = meetingsData
-      .map(({ id, data }) => new Meeting({ id, data, documentsById, membersById }))
+      .map(({ id, data }) => new Meeting({ id, data, documentsById }))
       .sort((a, b) => a.startsAt.instant.getTime() - b.startsAt.instant.getTime());
     const meetingsById = new Map(this.meetings.map((meeting) => [meeting.id, meeting]));
 
@@ -246,8 +244,7 @@ export class Committee {
       (meeting) =>
         meeting.documents.includes(document) ||
         meeting.agenda?.document === document ||
-        meeting.minutes?.document === document ||
-        (meeting.agenda?.items.some((item) => item.documents.includes(document)) ?? false),
+        meeting.minutes?.document === document,
     );
   }
 

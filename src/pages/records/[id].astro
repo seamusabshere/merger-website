@@ -15,7 +15,7 @@ const meetings = committee.meetingsUsing({ document });
 
 <BaseLayout
   title={document.title}
-  description={document.summaryParagraphs[0] ?? document.title}
+  description={document.pageDescription()}
   updatedOn={document.updatedOn}
 >
   <p class="muted"><a href="/records/">Public records</a></p>
@@ -26,16 +26,6 @@ const meetings = committee.meetingsUsing({ document });
     <dt>Date</dt>
     <dd>{document.publishedDescription()}</dd>
   </dl>
-
-  {
-    document.summaryParagraphs.length > 0 && (
-      <>
-        <h2>Summary</h2>
-        {document.summaryParagraphs.map((paragraph) => <p>{paragraph}</p>)}
-        <p class="muted">We wrote this summary. The original is the official version.</p>
-      </>
-    )
-  }
 
   <h2>Read the original</h2>
   <ul class="plain-list">
