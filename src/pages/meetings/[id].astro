@@ -53,7 +53,6 @@ const recording = meeting.recording;
     {
       agenda ? (
         <>
-          {agenda.postedAt && <p class="muted">Posted {agenda.postedAt.dateAndTime()}.</p>}
           <ul class="plain-list">
             {agenda.document.files.map((file) => (
               <li>
@@ -101,7 +100,6 @@ const recording = meeting.recording;
         {minutes ? (
           <>
             <p class={minutes.isDraft() ? 'notice' : 'muted'}>{minutes.statusNote()}</p>
-            <p class="muted">Posted {minutes.postedAt.dateAndTime()}.</p>
             {minutes.document && (
               <ul class="plain-list">
                 {minutes.document.files.map((file) => (

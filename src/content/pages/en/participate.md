@@ -18,16 +18,7 @@ The committee records every meeting. Recordings are linked from each meeting pag
 
 ## Speak at a meeting
 
-Each meeting has one time set aside for public input. At the October 20, 2026 meeting, these were the rules:
-
-- You may speak in person or online.
-- Start by giving your full name and the town where you live.
-- You have 2 minutes.
-- Speak about items on that meeting's agenda.
-- The committee listens but does not debate with speakers. It may answer briefly when a quick answer is needed.
-- Personal attacks, ridicule, and profane language are not allowed.
-
-The rules for each meeting are in its notice, linked from the meeting page.
+Each meeting has one time set aside for public input. The rules for that meeting are in its notice, linked from the meeting page.
 
 ## Send a written comment
 

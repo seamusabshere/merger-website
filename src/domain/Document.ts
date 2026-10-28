@@ -75,6 +75,10 @@ export class Document {
     return `/records/${this.id}/`;
   }
 
+  pdfFile(): DocumentFile | undefined {
+    return this.files.find((file) => file.format === 'pdf');
+  }
+
   hasFileNeedingAnotherFormat(): boolean {
     return this.files.some((file) => file.accessibility !== 'checked-accessible' && file.format !== 'web-page');
   }

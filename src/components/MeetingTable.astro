@@ -64,7 +64,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                 <td>
                   {meeting.physicalLocation ? (
                     <>
-                      {meeting.physicalLocation.name}, {meeting.physicalLocation.city}
+                      {meeting.physicalLocation.name}
                     </>
                   ) : (
                     <>TBD</>
@@ -78,7 +78,13 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                 </td>
                 <td>
                   {meeting.hasPostedAgenda() ? (
-                    <a href={`${meeting.path()}#agenda`}>
+                    <a
+                      href={
+                        showMinutesAndRecording
+                          ? (meeting.agenda?.document.pdfFile()?.url ?? `${meeting.path()}#agenda`)
+                          : `${meeting.path()}#agenda`
+                      }
+                    >
                       Final<span class="visually-hidden"> agenda for {meeting.day().longDate()}</span>
                     </a>
                   ) : (
@@ -89,7 +95,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                   <>
                     <td>
                       {meeting.minutes ? (
-                        <a href={`${meeting.path()}#minutes`}>
+                        <a href={meeting.minutes.document?.pdfFile()?.url ?? `${meeting.path()}#minutes`}>
                           {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
                           <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
                         </a>

@@ -12,7 +12,7 @@ We build this site to meet the Web Content Accessibility Guidelines (WCAG) 2.1, 
 
 What that means on this site:
 
-- Minutes and agendas are the files the committee posts. The meeting page links to those files. A record page includes a summary when one is written.
+- Minutes and agendas are the files the committee posts. The meeting page links to those files. We do not summarize them.
 - Text is at least 18 pixels and grows when you zoom.
 - Every link and button works with a keyboard and shows where you are.
 - Colors have strong contrast, and color is never the only way we show something.

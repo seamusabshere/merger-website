@@ -2,7 +2,7 @@
 
 Source for <https://burlington-south-burlington-winooski-merger-study.org>.
 
-This README is the plan for how the site works. Read it before changing anything. If you change how the site works, update this file in the same commit. It describes the current design, not the history of how we got here.
+This README is the plan for how the site works. Rules for changing the repository are in [AGENTS.md](AGENTS.md). If you change how the site works, update this file in the same commit. It describes the current design, not the history of how we got here.
 
 Sections marked **planned** describe what is not built yet.
 
@@ -17,9 +17,9 @@ Act 170 of 2026 (H.955, signed June 18, 2026) put the Burlington, South Burlingt
 - By December 1, 2027: the Secretary recommends on any proposed merger. By December 15, 2027: the State Board issues findings.
 - March 7, 2028 (Town Meeting Day), if a merger is proposed: voters in each district the plan names "necessary" or "advisable" vote. The new district forms only if every "necessary" district votes yes; an "advisable" district joins only if its own voters say yes (16 V.S.A. § 713(b)).
 
-If voters approve, the articles of agreement set the date the new district takes over. Act 170 Sec. 13 sets no such date. The Act 170 page says July 1, 2029; find a source for that date or remove it.
+If voters approve, the articles of agreement set the date the new district takes over. Act 170 Sec. 13 sets no such date. The Act 170 page says July 1, 2029.
 
-The law is new and dates may move. Check the [Agency of Education's page](https://education.vermont.gov/schools/school-governance/education-transformation) before changing them.
+The law is new and dates may move. The current list is on the [Agency of Education's page](https://education.vermont.gov/schools/school-governance/education-transformation).
 
 The site has three jobs, in this order:
 
@@ -37,8 +37,6 @@ Vermont's Open Meeting Law (1 V.S.A. § 312) attaches posting duties to "a websi
 - Minutes must be on this site within 5 calendar days of the meeting.
 - Minutes must stay on this site for at least 1 year. Approved minutes may replace drafts.
 
-A missed deadline here is a breach of the law, not a website bug. Treat it that way.
-
 ## Who it is for
 
 - Parents and guardians in three districts, many reading on a phone.
@@ -47,18 +45,9 @@ A missed deadline here is a breach of the law, not a website bug. Treat it that 
 - Reporters and committee members looking for a specific record.
 - People using screen readers, magnifiers, keyboards, or voice control.
 
-## Rules, in priority order
-
-1. **Accurate and current.** A wrong meeting time is worse than no site. Every date carries its time zone (America/New_York).
-2. **Accessible.** WCAG 2.1 AA is the legal floor (ADA Title II). Meet WCAG 2.2 AA where it costs little.
-3. **Neutral.** The committee has not decided, and the site does not argue for or against a merger. Show the evidence and the arguments on each side, with the source of each.
-4. **Plain language.** Aim for an 8th-grade reading level. Define terms like "union school district" when they first appear.
-5. **The posted file is the record.** An agenda or the minutes are the file the committee posts, usually a PDF. The meeting page links to that file. Writing the agenda or the minutes out on the page is optional. A summary of another record is optional too. Write one only when it can be checked.
-6. **Attractive.** Get there through type, spacing, and layout. Never trade accessibility for looks.
-
 ## Legal duties the site must support
 
-From 1 V.S.A. § 312, as amended through 2026. Read the statute when in doubt; it changes.
+From 1 V.S.A. § 312, as amended through 2026.
 
 | Item | Rule |
 | --- | --- |
@@ -72,25 +61,25 @@ From 1 V.S.A. § 312, as amended through 2026. Read the statute when in doubt; i
 | Public comment | A reasonable chance to speak at each meeting |
 | Request for access | A resident, member, or reporter may ask in writing, 2 business days ahead, for a physical location or phone or video access to one regular meeting (§ 312(j)) |
 
-The ADA web rule (28 CFR 35.200) requires WCAG 2.1 AA. A school district is not a "special district government" under the rule. It uses its city's population. Burlington, South Burlington, and Winooski each have fewer than 50,000 people, so the deadline is April 26, 2028. Build to the standard now regardless.
+The ADA web rule (28 CFR 35.200) requires WCAG 2.1 AA. A school district is not a "special district government" under the rule. It uses its city's population. Burlington, South Burlington, and Winooski each have fewer than 50,000 people, so the deadline is April 26, 2028.
 
 ## Stack
 
 - **pnpm** installs dependencies. The version is `packageManager` in `package.json`. GitHub Actions installs from `pnpm-lock.yaml`. The deploy action detects that lockfile and uses the same pnpm version.
-- **Astro**, static output only. No server, no client framework. Ship HTML and CSS. Add JavaScript only for a feature that works without it first.
+- **Astro**, static output only. No server, no client framework. Ship HTML and CSS.
 - **Content collections** with Zod schemas hold the content in `src/content/`.
 - **GitHub Pages**, deployed by GitHub Actions with `withastro/action` (`.github/workflows/deploy.yml`). Pages say "upcoming" or "past" as of build time, so the workflow also rebuilds every hour.
-- **No CMS** to start. Someone posts an agenda by opening a pull request. Add a CMS only when a person who does not use git must post on deadline.
-- **No analytics, cookies, or third-party scripts.** Link to video hosts; do not embed their players.
+- **No CMS.** Someone posts an agenda by opening a pull request.
+- **No analytics, cookies, or third-party scripts.** Recordings are links to a video host.
 - **Pagefind** for search, added once the archive is big enough to need it.
 
 ### Domain and deploy
 
-Set `site` in `astro.config.mjs` to `https://burlington-south-burlington-winooski-merger-study.org`. Do not set `base`; the custom domain serves the site from `/`.
+`site` in `astro.config.mjs` is `https://burlington-south-burlington-winooski-merger-study.org`. The custom domain serves the site from `/`.
 
-Pages publishes with the GitHub Actions workflow in `.github/workflows/deploy.yml`. The custom domain and HTTPS live in repository Settings, then Pages. Do not add a `CNAME` file, and do not set the Pages source back to a branch. A branch source makes GitHub run Jekyll on this repo, and Jekyll fails on the `---` lines in `.astro` files.
+Pages publishes with the GitHub Actions workflow in `.github/workflows/deploy.yml`. The custom domain and HTTPS live in repository Settings, then Pages.
 
-Do not commit video or large binaries. GitHub rejects files over 100 MB and limits a Pages site to 1 GB. Recordings live on a video host; the site links to them.
+Recordings live on a video host. The site links to them. GitHub rejects files over 100 MB and limits a Pages site to 1 GB.
 
 ## Run locally
 
@@ -103,13 +92,11 @@ pnpm dev
 
 Open <http://localhost:4321>. Saving a page, a content file, or a component reloads the browser.
 
-If more than one agent session is working in this repo, check whether something is already listening on port 4321 before you run `pnpm dev`. If it is, use that server. It reloads when files change, so the other session can use it too.
-
 `pnpm install` installs a pre-commit hook that runs `pnpm check`. The hook uses the `pnpm` found at that time. If you move `pnpm`, run `pnpm run prepare` again.
 
 ## Domain model
 
-Content files are storage. `src/persistence/AstroContent.ts` loads them at build time into domain classes in `src/domain/`; `src/persistence/FileContent.ts` does the same outside Astro, for scripts. Pages and components work only with these classes, never with raw collection entries. Each class holds its data and the rules about it. Schemas live in `src/domain/schemas.ts` and are shared by both loaders.
+Content files are storage. `src/persistence/AstroContent.ts` loads them at build time into domain classes in `src/domain/`; `src/persistence/FileContent.ts` does the same outside Astro, for scripts. Pages and components work with these classes. Each class holds its data and the rules about it. Schemas live in `src/domain/schemas.ts` and are shared by both loaders.
 
 Times are `VermontTime` (an instant, shown in America/New_York), dates are `VermontCalendarDay`, months are `VermontCalendarMonth`, and a time of day with no date (like 4:00 p.m.) is `VermontClockTime`. Write times in content files with their UTC offset: `-04:00` in summer, `-05:00` in winter. Deadlines count real hours, so the agenda deadline for a meeting just after the November clock change lands an hour later on the clock.
 
@@ -131,7 +118,7 @@ Times are `VermontTime` (an instant, shown in America/New_York), dates are `Verm
 | `Meeting` | Kind (regular, special, emergency), start time, `PhysicalLocation`, `ElectronicAccess`, `Agenda`, `Minutes`, `Recording` | Compute `agendaDeadline`, `minutesDeadline`, `minutesKeepUntil`; say whether it has ended; report what is overdue |
 | `PhysicalLocation` | Name, address, access notes (entrance, parking, elevator) | Render an address |
 | `ElectronicAccess` | Meeting link, phone number, meeting ID, passcode | Render join instructions that work without the link |
-| `Agenda` | The posted file (a `Document`, usually a PDF), the time it was posted, and `AgendaItem`s only when someone has also written the agenda on the page | Point to the posted file |
+| `Agenda` | The posted file (a `Document`, usually a PDF) and the time it was posted | Point to the posted file |
 | `AgendaItem` | Title, description, whether it is a proposed executive session, linked `Document`s | Name a proposed executive session the way the law requires |
 | `Minutes` | Status (draft or approved), members present, other participants, `Motion`s, posted time | Show draft status plainly |
 | `Motion` | Text, mover, seconder, result, `Vote` | Render itself |
@@ -142,8 +129,6 @@ Times are `VermontTime` (an instant, shown in America/New_York), dates are `Verm
 | `Page` | Title, description, last updated date, rendered body | Plain prose pages |
 | `Question` (planned) | Question, answer, date answered, date revised | Show when the answer last changed |
 | `Translation` (planned) | Language, translator (person or machine), date, source version | Tell the reader if it is out of date |
-
-Function arguments use named options objects, not positional arguments. A function whose main argument is one of these classes belongs on that class as a method.
 
 ## Content layout
 
@@ -169,24 +154,20 @@ public/
   documents/                     # small PDFs and slides only
 ```
 
-Quote every date and time in YAML (`"2026-11-02"`), so no parser turns it into a different type.
-
 ## Pages
 
 - **Home** (`/`): the next meeting with join details, then a plain account of the study. The state requires the study and voters decide. The page names the questions the committee is working through, the meeting schedule, the final report deadline and the vote date (both from `state-deadlines.yaml`), and what "necessary" and "advisable" mean. It links to public meetings for every meeting, and to deadlines for the other dates.
 - **Public meetings** (`/meetings/`): a table of upcoming meetings, then a table of past meetings. The upcoming table includes each meeting on file that has not started, and an expected meeting for each month of the regular schedule that has no meeting file yet. An expected meeting has no page. It says the notice is not out yet, and it leaves the table once that day is over. One page per noticed meeting (`/meetings/<date>/`) with join details, agenda, minutes, recording, and records. Once the meeting has ended, the video and phone rows both name the platform, such as Google Meet or Zoom, and leave off the link, the phone number, and the PIN. A meeting with no end time counts as ended at the end of that calendar day. Each meeting offers an `.ics` calendar file (`/meetings/<date>.ics`) until it starts. Anything not yet known or posted, such as a location, link, agenda, minutes, or recording, shows "TBD".
-- **Deadlines** (`/deadlines/`): every date in `state-deadlines.yaml`, in time order, with no month headings, including dates that have passed. `/calendar/` redirects here. This page does not list meetings. Do not list when an agenda or minutes are due.
-- **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files from the committee, including files its facilitator made for it. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with the original files labeled by type and size, which meetings used it, and how to ask for another format. A summary is shown when one is written.
+- **Deadlines** (`/deadlines/`): every date in `state-deadlines.yaml`, in time order, with no month headings, including dates that have passed. `/calendar/` redirects here. This page does not list meetings.
+- **Public records** (`/records/`): a file table with two tabs. The first tab, shown by default, lists files from the committee, including files its facilitator made for it. The second lists useful public records from other sources. Agendas and minutes are left off. They are on the meeting page. Each file still has its own page, with the original files labeled by type and size, which meetings used it, and how to ask for another format.
 - **How to participate** (`/participate/`): how to attend, speak, send a written comment, ask for access, another format, or a record.
 - **History of school mergers** (`/history/`): from 1892 to Act 170, every claim with a source.
 - **Act 170 of 2026** (`/act-170/`): what the law asks of the committee, what the report must contain, the timeline, how a vote works, and what the law does not do.
 - **Difference from the CESA** (`/cesa/`): why the committee's official name includes "Chittenden Central CESA", and how the committee differs from the CESA in members, votes, job, and lifespan.
 - **Committee members** (`/members/`): members and alternates by district, who appointed them and when, with sources, and the facilitator.
 - **Accessibility** (`/accessibility/`): our target, known gaps, and how to report a problem.
-- **Contact us** (`/contact/`): the facilitator and one contact per district. Use only official work addresses that the person has agreed to publish.
+- **Contact us** (`/contact/`): the facilitator and one contact per district.
 - **Questions** (planned): answers in HTML, dated, revised in place with the revision date shown.
-
-Do not describe the home page's four questions (educational opportunity, governance, money and operations, long-term sustainability) as words from the law. They are the committee's plain-language summary. The law's required report contents are in Act 170 Sec. 13(b)(4).
 
 Every page shows a "last updated" date.
 
@@ -198,21 +179,13 @@ English is the source. Translate in this order:
 2. Question answers and document summaries, as the committee is able.
 3. Agendas and minutes stay in English unless the committee provides translations. Each meeting page says, in each supported language, how to get help.
 
-Choose the first languages with the districts' multilingual liaisons, not from census tables. Arabic is right-to-left. Use logical CSS properties (`margin-inline-start`, not `margin-left`) everywhere, and set `lang` and `dir` on every page. A translated page names its translator and the English version it came from, and says so when the English has changed since.
+Choose the first languages with the districts' multilingual liaisons, not from census tables. Arabic is right-to-left. A translated page names its translator and the English version it came from, and says so when the English has changed since.
 
 Routes: English at `/`, other languages at `/<language code>/` (for example `/ne/`, `/so/`, `/sw/`, `/ar/`).
 
 ## Design
 
-- One column for reading, about 65 characters wide. Body text at least 18px. Sizes in `rem` so user zoom works.
-- Type: Libre Franklin for body text, self-hosted. It is the typeface vermont.gov uses. It covers Latin, Vietnamese, and Cyrillic. For another script, the browser falls back to the system font.
-- Color: one strong accent, contrast at least 4.5:1 for text and 3:1 for controls. Color is never the only signal. Treat the three districts the same: same size, same weight, alphabetical order.
-- Links look like links: underlined in body text.
-- Visible focus on every control. Targets at least 24 by 24 CSS pixels.
-- No carousels, autoplay, parallax, or motion that ignores `prefers-reduced-motion`.
-- Navigation wraps on small screens. No hamburger menu unless the links stop fitting.
-- Every page opens with a banner: the three district logos, small, then "Official website of the Act 170 Merger Committee" for the three districts, then "Here's how you know." Opening that shows the logos again, larger, and, for each district, "The district's official website links here." The link is the page on that district's site that links back here, from `pageThatLinksHere` in `districts.yaml`. When a district publishes the page, set `url` to that page and `published` to true. This is not the federal ".gov" banner. The proof is the three district websites. Borrowing other USWDS patterns (skip link, landmarks, form patterns) is fine.
-- The home page reads like a public notice: the next meeting first, then how to take part, then the question under study.
+Design rules are in [AGENTS.md](AGENTS.md).
 
 ## Accessibility testing
 
@@ -221,16 +194,11 @@ Automated checks catch some problems, not all. `.github/workflows/checks.yml` ru
 - `pnpm check` (`astro check`). The pre-commit hook runs this same command.
 - `pnpm build`
 
-`pnpm check:deadlines` loads every `Meeting`, prints how many hours are left for upcoming agendas, and exits with an error if an agenda or minutes are past their deadline, or if an expected meeting has passed with no meeting file (add the file, or add the month to `cancelledMonths`). It is a local reminder. A missed deadline is a breach of the law, not a failed build, so continuous integration does not run it.
+`pnpm check:deadlines` loads every `Meeting`, prints how many hours are left for upcoming agendas, and exits with an error if an agenda or minutes are past their deadline, or if an expected meeting has passed with no meeting file (add the file, or add the month to `cancelledMonths`). It is a local reminder. Continuous integration does not run it.
 
 Planned: HTML validation (`html-validate`), axe-core on every built page with zero violations, an internal link check, and a reading level report for English pages.
 
-By hand, before any change to layout or components:
-
-- Use the page with only a keyboard. Focus is visible and in order.
-- Read it with VoiceOver (macOS, iOS) and NVDA (Windows). Headings and landmarks make sense.
-- Zoom to 200% and to a 320px-wide window. Nothing is cut off or scrolls sideways.
-- Check an Arabic page if one exists.
+Before a change to layout or components, do the checks in [AGENTS.md](AGENTS.md).
 
 ## Common updates
 
@@ -240,23 +208,17 @@ By hand, before any change to layout or components:
 
 **Change a state deadline.** Edit `state-deadlines.yaml` and update that entry's `updatedOn`. The home page and deadlines page read from it. The Act 170 page and the key dates at the top of this file are written out by hand, so change them too.
 
-**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/agenda-2026-10-20.pdf`) and its size. Set `createdByTheCommittee` to `true`. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Do not also put it in `documentIds`. The records page leaves agendas off. Merge before the deadline. `pnpm check:deadlines` says how much time is left. Writing the items out in the meeting file is optional.
+**Post an agenda.** Export the Google Doc to PDF and put it in `public/documents/`. Add that PDF as a record in `src/content/documents/`, with its path (like `/documents/agenda-2026-10-20.pdf`) and its size. Set `createdByTheCommittee` to `true`. In the meeting file, set `agenda.documentId` to that record and set `postedAt`. Do not also put it in `documentIds`. The records page leaves agendas off. Merge before the deadline. `pnpm check:deadlines` says how much time is left.
 
-**Do not say a file is unchecked.** Do not write "We have not checked this file for accessibility," or anything like it, on a page, in a summary, or in a commit message. If nobody has checked a file, set `accessibility` to `not-checked` and leave the page quiet. Write a note only when you know a file does not work (`not-accessible`).
-
-**Do not put the committee's posting chores on the site.** The site is for the public, not a to-do list for the committee. Do not list when an agenda or minutes are due, and do not write "Past due," "overdue," or "missed deadline." People post when they can. `pnpm check:deadlines` is a local reminder for them. It is not copy for the website.
-
-**Post minutes.** Put the minutes file in `public/documents/` as `minutes-YYYY-MM-DD.pdf`, or `minutes-YYYY-MM-DD-draft.pdf` while it is a draft, and add it under `src/content/documents/`. In the meeting file, add `minutes` with status `draft`, `postedAt`, and `documentId`. Set `createdByTheCommittee` to `true`. The records page leaves minutes off. When the committee approves them, change the status to `approved` and set `approvedOn`. Members present and roll call votes, written on the page, use member ids from `members.yaml`. Never delete posted minutes within one year of the meeting.
+**Post minutes.** Put the minutes file in `public/documents/` as `minutes-YYYY-MM-DD.pdf`, or `minutes-YYYY-MM-DD-draft.pdf` while it is a draft, and add it under `src/content/documents/`. In the meeting file, add `minutes` with status `draft`, `postedAt`, and `documentId`. Set `createdByTheCommittee` to `true`. The records page leaves minutes off. When the committee approves them, change the status to `approved` and set `approvedOn`. Never delete posted minutes within one year of the meeting.
 
 **Post a recording.** Add `recording` to the meeting file with its host. Set `captions` when you know whether the video has them.
 
-**Add a record.** Add a file to `src/content/documents/`. Set `createdByTheCommittee` to `true` when the committee or its facilitator made the file for this committee. Statewide materials stay `false`. Add each file with its type and size in bytes. A summary is optional. Link it from a meeting with `documentIds`. The public records page lists committee files, and skips agendas and minutes.
+**Add a record.** Add a file to `src/content/documents/`. Set `createdByTheCommittee` to `true` when the committee or its facilitator made the file for this committee. Statewide materials stay `false`. Add each file with its type and size in bytes. Link it from a meeting with `documentIds`. The public records page lists committee files, and skips agendas and minutes.
 
 **Change members.** Edit `members.yaml` and update `membersUpdatedOn` in `committee.yaml`. The committee's chair is `chairMemberId` in `committee.yaml`, and it must be one member's id.
 
 **When a district page links here.** In `districts.yaml`, set that district's `pageThatLinksHere.url` to the page and `published` to `true`.
-
-**Correct a mistake.** Fix it and add a dated note to the page that says what changed. Do not erase errors in the public record silently.
 
 ## Open questions
 
