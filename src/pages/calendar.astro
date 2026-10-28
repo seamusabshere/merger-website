@@ -13,13 +13,12 @@ const now = VermontTime.now();
   updatedOn={committee.calendarUpdatedOn()}
 >
   <h1>Calendar</h1>
-  <p class="lede">Upcoming meetings, and the dates state law sets for the study.</p>
+  <p class="lede">Upcoming meetings and deadlines.</p>
   <p>
-    {committee.regularMeetingSchedule.sentence()} A meeting marked "expected" follows that schedule, but its notice is
-    not out yet. The committee can move or cancel a meeting. The notice is final. All times are Eastern Time.
+    {committee.regularMeetingSchedule.sentence()}
   </p>
   <p>
-    <a href="/meetings/">Past meetings, with agendas, minutes, and recordings</a>
+    <a href="/meetings/">Agendas, minutes, and recordings of past meetings</a>
     <br />
     <a href="/participate/">How to attend, speak, or ask for phone, video, or in-person access</a>
   </p>
