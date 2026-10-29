@@ -29,9 +29,9 @@ const nextMeeting = committee.nextMeeting({ now });
         nextMeeting ? (
           <>
             <MeetingJoinDetails meeting={nextMeeting} now={now} />
-            {nextMeeting.hasPostedAgenda() && (
+            {nextMeeting.agenda && (
               <p>
-                <a href={`${nextMeeting.path()}#agenda`}>Read the agenda</a>
+                <a href={nextMeeting.agenda.fileUrl()}>Read the agenda</a>
               </p>
             )}
             <p>
@@ -88,7 +88,7 @@ const nextMeeting = committee.nextMeeting({ now });
   <section aria-labelledby="what-comes-next">
     <h2 id="what-comes-next">What comes next</h2>
     <p>
-      {committee.regularMeetingSchedule.sentence()} The place rotates between the three districts. Anyone may attend.
+      {committee.regularMeetingSchedule.sentence()} Anyone may attend. The meeting page says how to join, and whether there is a room.
     </p>
     <ul>
       {
@@ -119,8 +119,8 @@ const nextMeeting = committee.nextMeeting({ now });
   <section aria-labelledby="feedback">
     <h2 id="feedback">Have questions or feedback?</h2>
     <p>
-      Come to a committee meeting in person, by video, or by phone. Every meeting has time for public comment, and you
-      can send a written comment to be read aloud. <a href="/participate/">How to participate</a>.
+      Come to a committee meeting by video or phone, or in person when there is a room. Every meeting has time for
+      public comment, and you can send a written comment to be read aloud. <a href="/participate/">How to participate</a>.
     </p>
     <p>
       Each school board is also gathering input from its own community. Visit your district's website to learn more:{' '}

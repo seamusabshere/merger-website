@@ -68,6 +68,11 @@ If more than one agent session is working in this repo, check whether something 
 - Navigation wraps on small screens. No hamburger menu unless the links stop fitting.
 - Every page opens with a banner: the three district logos, small, then "Official website of the Act 170 Merger Committee" for the three districts, then "Here's how you know." Opening that shows the logos again, larger, and, for each district, "The district's official website links here." The link is the page on that district's site that links back here, from `pageThatLinksHere` in `districts.yaml`. When a district publishes the page, set `url` to that page and `published` to true. This is not the federal ".gov" banner. The proof is the three district websites. Borrowing other USWDS patterns (skip link, landmarks, form patterns) is fine.
 - The home page reads like a public notice: the next meeting first, then how to take part, then the question under study.
+- On the site, call this body "the committee." In a table, its name is "Committee." The header shows the full name, Chittenden Central CESA Merger Committee (Group 18). The difference-from-the-CESA-board page explains that name.
+- Do not put a date in a file's title. On the records list, the date is the meeting where the file was presented, or the date the file itself states when it was not presented at a meeting. The record page shows both. Link that meeting. Do not write the meeting date into the title.
+- The date of the document is a date the file itself states. Do not use a file timestamp, the day it was posted, or a date from the file name. If the file does not state a date, leave `publishedOn` off. The record page says Date unknown for that date.
+- A meeting with no room is "Virtual." Do not also call it "Online."
+- Link straight to the file or the video meeting. Someone who wants an agenda, the minutes, a recording, or a way to join does not open a page on this site first. The meeting page and the record page still exist for the rest of the details.
 - Use logical CSS properties (`margin-inline-start`, not `margin-left`) everywhere, and set `lang` and `dir` on every page.
 - Every page shows a "last updated" date.
 

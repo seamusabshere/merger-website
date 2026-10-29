@@ -1,16 +1,16 @@
 ---
 title: How to participate
 description: How to attend a merger committee meeting in person, by video, or by phone, how to speak or send a comment, and how to ask for records.
-updatedOn: "2026-10-27"
+updatedOn: "2026-10-29"
 ---
 
 Every committee meeting is open to the public. You do not need to sign up, and you do not need to live in any of the three cities.
 
 ## Attend a meeting
 
-Each meeting has a place you can go in person and a way to join by video or phone. The details are on each [meeting's page](/meetings/). Each meeting page also has a calendar file you can add to your phone or computer.
+Each [meeting's page](/meetings/) says how to attend. When a meeting has a room, the page gives the address. When a meeting is virtual, the page says Virtual. Every meeting has a way to join by video or phone. Each meeting page also has a calendar file you can add to your phone or computer.
 
-- **In person.** Go to the address on the meeting page.
+- **In person.** When the meeting page gives an address, go there. When it says Virtual, there is no meeting room.
 - **By video.** Use the link on the meeting page.
 - **By phone.** Call the number on the meeting page and enter the PIN. You can listen and speak by phone without a computer or the internet.
 

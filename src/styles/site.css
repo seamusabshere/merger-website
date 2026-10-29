@@ -560,7 +560,7 @@ main {
   padding: var(--space-3);
 }
 
-.record-tabs:has(#created-by-the-committee:checked) #created-by-the-committee-panel,
+.record-tabs:has(#published-by-the-committee:checked) #published-by-the-committee-panel,
 .record-tabs:has(#other-sources:checked) #other-sources-panel {
   display: block;
 }
@@ -569,9 +569,30 @@ main {
   margin-block-start: 0;
 }
 
+.record-panel .table-scroll {
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.record-panel :is(th, td):last-child {
+  white-space: nowrap;
+}
+
+@media (max-width: 30rem) {
+  .record-panel :is(th, td):last-child {
+    white-space: normal;
+  }
+}
+
 .plain-list {
   list-style: none;
   padding: 0;
+}
+
+td .plain-list,
+dd .plain-list {
+  margin: 0;
 }
 
 .plain-list > li + li {

@@ -16,9 +16,9 @@ const pastMeetings = committee.pastMeetings({ now });
   updatedOn={committee.meetingsUpdatedOn()}
 >
   <h1>Public meetings</h1>
-  <p class="lede">Every meeting is open to the public, in person and by video or phone.</p>
+  <p class="lede">Every meeting is open to the public.</p>
   <p>
-    {committee.regularMeetingSchedule.sentence()} A meeting whose place is not set yet says TBD.
+    {committee.regularMeetingSchedule.sentence()}
   </p>
   <p><a href="/participate/">How to attend and speak</a></p>
   <p><a href="/deadlines/">Deadlines set by state law</a></p>
@@ -29,6 +29,7 @@ const pastMeetings = committee.pastMeetings({ now });
     caption="Upcoming meetings"
     emptyMessage="No meetings are scheduled yet."
     showMinutesAndRecording={false}
+    now={now}
   />
 
   <h2>Past meetings</h2>
@@ -37,5 +38,6 @@ const pastMeetings = committee.pastMeetings({ now });
     caption="Past meetings"
     emptyMessage="The committee has not met yet."
     showMinutesAndRecording={true}
+    now={now}
   />
 </BaseLayout>

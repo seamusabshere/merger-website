@@ -250,12 +250,26 @@ export class Committee {
 
   records(): Document[] {
     const agendaAndMinutes = this.agendaAndMinutes();
-    return this.documents.filter((document) => document.createdByTheCommittee && !agendaAndMinutes.has(document));
+    return this.newestRecordsFirst({
+      documents: this.documents.filter((document) => document.createdByTheCommittee && !agendaAndMinutes.has(document)),
+    });
   }
 
   recordsFromOtherSources(): Document[] {
     const agendaAndMinutes = this.agendaAndMinutes();
-    return this.documents.filter((document) => !document.createdByTheCommittee && !agendaAndMinutes.has(document));
+    return this.newestRecordsFirst({
+      documents: this.documents.filter((document) => !document.createdByTheCommittee && !agendaAndMinutes.has(document)),
+    });
+  }
+
+  private newestRecordsFirst({ documents }: { documents: Document[] }): Document[] {
+    return [...documents].sort((document, other) =>
+      document.compareOnTheRecordsList({
+        other,
+        meetings: this.meetingsUsing({ document }),
+        otherMeetings: this.meetingsUsing({ document: other }),
+      }),
+    );
   }
 
   private agendaAndMinutes(): Set<Document> {

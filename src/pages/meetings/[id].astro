@@ -100,7 +100,7 @@ const recording = meeting.recording;
         {recording ? (
           <>
             <p>
-              <a href={recording.url}>Watch the recording on {recording.host}</a>
+              <a href={recording.url}>{recording.watchLinkText()}</a>
             </p>
             {recording.captionNote() && <p class="muted">{recording.captionNote()}</p>}
           </>

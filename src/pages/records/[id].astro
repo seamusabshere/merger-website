@@ -21,10 +21,28 @@ const meetings = committee.meetingsUsing({ document });
   <p class="muted"><a href="/records/">Public records</a></p>
   <h1>{document.title}</h1>
   <dl class="facts">
-    <dt>From</dt>
+    <dt>Author</dt>
     <dd>{document.publisher}</dd>
-    <dt>Date</dt>
+    <dt>Date of the document</dt>
     <dd>{document.publishedDescription()}</dd>
+    {
+      meetings.length > 0 && (
+        <>
+          <dt>Meeting</dt>
+          <dd>
+            <ul class="plain-list">
+              {meetings.map((meeting) => (
+                <li>
+                  <a href={meeting.path()}>
+                    <time datetime={meeting.day().isoDate()}>{meeting.day().shortDate()}</time>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </>
+      )
+    }
   </dl>
 
   <h2>Read the original</h2>
@@ -47,18 +65,4 @@ const meetings = committee.meetingsUsing({ document });
     )
   }
 
-  {
-    meetings.length > 0 && (
-      <>
-        <h2>Meetings that used this record</h2>
-        <ul>
-          {meetings.map((meeting) => (
-            <li>
-              <a href={meeting.path()}>{meeting.title()}</a>
-            </li>
-          ))}
-        </ul>
-      </>
-    )
-  }
 </BaseLayout>

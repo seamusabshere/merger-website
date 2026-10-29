@@ -25,19 +25,20 @@ const recordsFromOtherSources = committee.recordsFromOtherSources();
         class="record-tab-input"
         type="radio"
         name="record-source"
-        id="created-by-the-committee"
+        id="published-by-the-committee"
         checked
       />
-      <label for="created-by-the-committee">Created by the committee</label>
+      <label for="published-by-the-committee">Published by the committee</label>
       <input class="record-tab-input" type="radio" name="record-source" id="other-sources" />
       <label for="other-sources">Other sources</label>
     </div>
 
-    <div class="record-panel" id="created-by-the-committee-panel">
-      <h2 class="visually-hidden">Created by the committee</h2>
+    <div class="record-panel" id="published-by-the-committee-panel">
+      <h2 class="visually-hidden">Published by the committee</h2>
       <RecordFileTable
         documents={records}
-        caption="Files from the committee"
+        committee={committee}
+        caption="Files published by the committee"
         emptyMessage="The committee has not posted any files yet."
       />
     </div>
@@ -49,6 +50,7 @@ const recordsFromOtherSources = committee.recordsFromOtherSources();
       </p>
       <RecordFileTable
         documents={recordsFromOtherSources}
+        committee={committee}
         caption="Useful public records from other sources"
         emptyMessage="No files from other sources are posted yet."
       />

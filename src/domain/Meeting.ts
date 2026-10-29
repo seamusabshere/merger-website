@@ -18,6 +18,7 @@ export class Meeting {
   readonly startsAt: VermontTime;
   readonly endsAt: VermontTime | undefined;
   readonly updatedOn: VermontCalendarDay;
+  readonly onlineOnly: boolean;
   readonly physicalLocation: PhysicalLocation | undefined;
   readonly electronicAccess: ElectronicAccess | undefined;
   readonly agenda: Agenda | undefined;
@@ -31,6 +32,10 @@ export class Meeting {
     this.startsAt = VermontTime.parse({ isoInstant: data.startsAt });
     this.endsAt = data.endsAt ? VermontTime.parse({ isoInstant: data.endsAt }) : undefined;
     this.updatedOn = VermontCalendarDay.parse({ isoDate: data.updatedOn });
+    if (data.onlineOnly && data.physicalLocation) {
+      throw new Error(`Meeting "${id}" is virtual, so it cannot have a physical location.`);
+    }
+    this.onlineOnly = data.onlineOnly === true;
     this.physicalLocation = data.physicalLocation ? new PhysicalLocation({ data: data.physicalLocation }) : undefined;
     this.electronicAccess = data.electronicAccess ? new ElectronicAccess({ data: data.electronicAccess }) : undefined;
     this.agenda = data.agenda ? new Agenda({ data: data.agenda, documentsById }) : undefined;
@@ -171,7 +176,9 @@ export class Meeting {
     const pageUrl = new URL(this.path(), siteUrl).toString();
     const description = [
       'Burlington, South Burlington, and Winooski Act 170 merger committee.',
-      this.electronicAccess?.url ? `Join online: ${this.electronicAccess.url}` : undefined,
+      this.electronicAccess?.url
+        ? `${this.electronicAccess.joinLinkText()}: ${this.electronicAccess.url}`
+        : undefined,
       this.electronicAccess?.phoneNumber
         ? `Join by phone: ${this.electronicAccess.phoneNumber}${this.electronicAccess.phonePin ? `, PIN ${this.electronicAccess.phonePin}` : ''}`
         : undefined,
@@ -191,7 +198,11 @@ export class Meeting {
       `DTSTART:${this.startsAt.iCalendarUtc()}`,
       this.endsAt ? `DTEND:${this.endsAt.iCalendarUtc()}` : undefined,
       `SUMMARY:${escapeCalendarText({ text: 'Merger study committee meeting' })}`,
-      this.physicalLocation ? `LOCATION:${escapeCalendarText({ text: this.physicalLocation.singleLine() })}` : undefined,
+      this.physicalLocation
+        ? `LOCATION:${escapeCalendarText({ text: this.physicalLocation.singleLine() })}`
+        : this.onlineOnly && this.electronicAccess?.url
+          ? `LOCATION:${escapeCalendarText({ text: this.electronicAccess.url })}`
+          : undefined,
       `DESCRIPTION:${escapeCalendarText({ text: description })}`,
       `URL:${pageUrl}`,
       'END:VEVENT',

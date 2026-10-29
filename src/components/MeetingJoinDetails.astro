@@ -46,6 +46,8 @@ const hasEnded = meeting.hasEnded({ now });
             </ul>
           )}
         </>
+      ) : meeting.onlineOnly ? (
+        <>Virtual</>
       ) : (
         <>TBD</>
       )
@@ -61,7 +63,7 @@ const hasEnded = meeting.hasEnded({ now });
             access.platform
           ) : access.url ? (
             <>
-              <a href={access.url}>Join on {access.platform}</a>
+              <a href={access.url}>{access.joinLinkText()}</a>
               {access.meetingId && (
                 <>
                   <br />

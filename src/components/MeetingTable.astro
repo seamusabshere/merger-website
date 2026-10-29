@@ -1,15 +1,17 @@
 ---
 import { Meeting } from '../domain/Meeting.ts';
 import { ExpectedMeeting } from '../domain/RegularMeetingSchedule.ts';
+import type { VermontTime } from '../domain/VermontTime.ts';
 
 interface Props {
   meetings: (Meeting | ExpectedMeeting)[];
   caption: string;
   emptyMessage: string;
   showMinutesAndRecording: boolean;
+  now: VermontTime;
 }
 
-const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props;
+const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.props;
 ---
 
 <div class="table-scroll">
@@ -66,25 +68,28 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                     <>
                       {meeting.physicalLocation.name}
                     </>
+                  ) : meeting.onlineOnly ? (
+                    <>Virtual</>
                   ) : (
                     <>TBD</>
                   )}
                   {meeting.electronicAccess && (
                     <>
                       <br />
-                      On {meeting.electronicAccess.platform}
+                      {meeting.electronicAccess.url && !meeting.hasEnded({ now }) ? (
+                        <a href={meeting.electronicAccess.url}>
+                          {meeting.electronicAccess.joinLinkText()}
+                          <span class="visually-hidden"> for {meeting.day().longDate()}</span>
+                        </a>
+                      ) : (
+                        meeting.electronicAccess.platform
+                      )}
                     </>
                   )}
                 </td>
                 <td>
-                  {meeting.hasPostedAgenda() ? (
-                    <a
-                      href={
-                        showMinutesAndRecording
-                          ? (meeting.agenda?.document.pdfFile()?.url ?? `${meeting.path()}#agenda`)
-                          : `${meeting.path()}#agenda`
-                      }
-                    >
+                  {meeting.hasPostedAgenda() && meeting.agenda ? (
+                    <a href={meeting.agenda.fileUrl()}>
                       Final<span class="visually-hidden"> agenda for {meeting.day().longDate()}</span>
                     </a>
                   ) : (
@@ -106,8 +111,8 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording } = Astro.props
                     <td>
                       {meeting.recording ? (
                         <a href={meeting.recording.url}>
-                          {meeting.recording.host}
-                          <span class="visually-hidden"> recording of {meeting.day().longDate()}</span>
+                          {meeting.recording.watchLinkText()}
+                          <span class="visually-hidden"> for {meeting.day().longDate()}</span>
                         </a>
                       ) : (
                         <>TBD</>

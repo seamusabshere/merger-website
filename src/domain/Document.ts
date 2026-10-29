@@ -1,3 +1,4 @@
+import type { Meeting } from './Meeting.ts';
 import type { DocumentData, DocumentFileData } from './schemas.ts';
 import { VermontCalendarDay } from './VermontTime.ts';
 
@@ -5,6 +6,7 @@ const FORMAT_NAMES: Record<DocumentFileData['format'], string> = {
   pdf: 'PDF',
   'web-page': 'Web page',
   'google-doc': 'Google Doc',
+  spreadsheet: 'Spreadsheet',
   video: 'Video',
 };
 
@@ -79,7 +81,30 @@ export class Document {
   }
 
   publishedDescription(): string {
-    return this.publishedOn ? this.publishedOn.shortDate() : 'Date not given';
+    return this.publishedOn ? this.publishedOn.shortDate() : 'Date unknown';
+  }
+
+  recordsListDay({ meetings }: { meetings: Meeting[] }): VermontCalendarDay | undefined {
+    const latestMeeting = meetings.at(-1);
+    if (latestMeeting) return latestMeeting.day();
+    return this.publishedOn;
+  }
+
+  compareOnTheRecordsList({
+    other,
+    meetings,
+    otherMeetings,
+  }: {
+    other: Document;
+    meetings: Meeting[];
+    otherMeetings: Meeting[];
+  }): number {
+    const day = this.recordsListDay({ meetings });
+    const otherDay = other.recordsListDay({ meetings: otherMeetings });
+    if (day && otherDay) return otherDay.compare({ other: day }) || this.title.localeCompare(other.title);
+    if (day) return -1;
+    if (otherDay) return 1;
+    return this.title.localeCompare(other.title);
   }
 
   pageDescription(): string {

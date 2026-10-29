@@ -1,21 +1,24 @@
 ---
+import type { Committee } from '../domain/Committee.ts';
 import type { Document } from '../domain/Document.ts';
 
 interface Props {
   documents: Document[];
+  committee: Committee;
   caption: string;
   emptyMessage: string;
 }
 
-const { documents, caption, emptyMessage } = Astro.props;
+const { documents, committee, caption, emptyMessage } = Astro.props;
 ---
 
+<div class="table-scroll">
 <table>
   <caption class="visually-hidden">{caption}</caption>
   <thead>
     <tr>
       <th scope="col">File</th>
-      <th scope="col">From</th>
+      <th scope="col">Author</th>
       <th scope="col">Date</th>
     </tr>
   </thead>
@@ -27,7 +30,9 @@ const { documents, caption, emptyMessage } = Astro.props;
         </tr>
       ) : (
         documents.flatMap((document) =>
-          document.files.map((file) => (
+          document.files.map((file) => {
+            const meetings = committee.meetingsUsing({ document });
+            return (
             <tr>
               <th scope="row">
                 <a href={file.url} hreflang={file.language}>
@@ -42,11 +47,29 @@ const { documents, caption, emptyMessage } = Astro.props;
                 )}
               </th>
               <td>{document.publisher}</td>
-              <td>{document.publishedDescription()}</td>
+              <td>
+                {
+                  meetings.length > 0 ? (
+                    <ul class="plain-list">
+                      {[...meetings].reverse().map((meeting) => (
+                        <li>
+                          <a href={meeting.path()}>
+                            <time datetime={meeting.day().isoDate()}>{meeting.day().shortDate()}</time>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    document.publishedDescription()
+                  )
+                }
+              </td>
             </tr>
-          )),
+            );
+          }),
         )
       )
     }
   </tbody>
 </table>
+</div>

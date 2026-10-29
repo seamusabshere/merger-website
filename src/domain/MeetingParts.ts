@@ -61,6 +61,10 @@ export class ElectronicAccess {
     return this.url !== undefined || this.phoneNumber !== undefined;
   }
 
+  joinLinkText(): string {
+    return `Join on ${this.platform}`;
+  }
+
   telephoneHref(): string | undefined {
     if (!this.phoneNumber) return undefined;
     const digits = this.phoneNumber.replace(/\D/g, '');
@@ -76,6 +80,10 @@ export class Agenda {
   constructor({ data, documentsById }: { data: AgendaData; documentsById: Map<string, Document> }) {
     this.postedAt = data.postedAt ? VermontTime.parse({ isoInstant: data.postedAt }) : undefined;
     this.document = lookUp({ map: documentsById, id: data.documentId, kind: 'document' });
+  }
+
+  fileUrl(): string {
+    return this.document.pdfFile()?.url ?? this.document.files[0].url;
   }
 }
 
@@ -128,6 +136,10 @@ export class Recording {
   captionNote(): string | undefined {
     if (this.captions === undefined) return undefined;
     return CAPTION_NOTES[this.captions];
+  }
+
+  watchLinkText(): string {
+    return `Watch on ${this.host}`;
   }
 
   mustStayUpUntil({ minutes }: { minutes: Minutes }): VermontCalendarDay {

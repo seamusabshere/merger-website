@@ -136,6 +136,7 @@ export const meetingSchema = z.object({
   startsAt: isoInstant,
   endsAt: isoInstant.optional(),
   updatedOn: calendarDay,
+  onlineOnly: z.literal(true).optional(),
   physicalLocation: physicalLocationSchema.optional(),
   electronicAccess: electronicAccessSchema.optional(),
   agenda: agendaSchema.optional(),
@@ -147,7 +148,7 @@ export const meetingSchema = z.object({
 const documentFileSchema = z.object({
   label: z.string(),
   language: z.string(),
-  format: z.enum(['pdf', 'web-page', 'google-doc', 'video']),
+  format: z.enum(['pdf', 'web-page', 'google-doc', 'spreadsheet', 'video']),
   sizeBytes: z.number().int().optional(),
   accessibility: z.enum(['checked-accessible', 'not-accessible', 'not-checked']),
   url: z.string().refine((value) => (value.startsWith('/') && !value.startsWith('//') && !/\s/.test(value)) || URL.canParse(value), {

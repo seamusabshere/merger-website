@@ -24,7 +24,7 @@ const navigation = [
   { href: '/participate/', label: 'How to participate' },
   { href: '/history/', label: 'History of school mergers' },
   { href: '/act-170/', label: 'Act 170 of 2026' },
-  { href: '/cesa/', label: 'Difference from the CESA' },
+  { href: '/cesa/', label: 'Difference from CESA board' },
   { href: '/members/', label: 'Committee members' },
   { href: '/accessibility/', label: 'Accessibility' },
   { href: '/contact/', label: 'Contact us' },
@@ -71,7 +71,7 @@ const isCurrent = (href: string) => (href === '/' ? currentPath === '/' : curren
       <div class="wrap">
         <a class="site-name" href="/">
           {siteName}
-          <small>Act 170 merger committee</small>
+          <small>{committee.officialName}</small>
         </a>
         <nav class="site-nav" aria-label="Main">
           <details class="site-menu">
