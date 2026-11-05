@@ -18,17 +18,17 @@ electronicAccess:
 
 agenda:
   postedAt: "2026-10-27T10:18:00-04:00"
-  documentId: october-20-2026-meeting-notice
+  documentId: meeting-notice-2026-10-20
 
 documentIds:
-  - october-20-2026-facilitator-presentation
+  - facilitator-presentation-2026-10-20
   - act-170-good-faith-participation-standard
   - act-170-overview-presentation
 
 minutes:
   status: approved
   postedAt: "2026-10-28T10:00:00-04:00"
-  documentId: october-20-2026-minutes
+  documentId: minutes-2026-10-20
 
 recording:
   url: https://vimeo.com/1238046473

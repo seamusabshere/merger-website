@@ -8,6 +8,11 @@ export default defineConfig({
   trailingSlash: 'always',
   redirects: {
     '/calendar/': '/deadlines/',
+    '/records/october-20-2026-facilitator-presentation/': '/records/facilitator-presentation-2026-10-20/',
+    '/records/october-20-2026-meeting-notice/': '/records/meeting-notice-2026-10-20/',
+    '/records/october-20-2026-minutes/': '/records/minutes-2026-10-20/',
+    '/records/november-2-2026-draft-minutes/': '/records/minutes-2026-11-02-draft/',
+    '/records/november-2-2026-meeting-notice/': '/records/meeting-notice-2026-11-02/',
   },
   integrations: [
     sitemap({
