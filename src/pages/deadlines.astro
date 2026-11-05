@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
+import { VermontTime } from '../domain/VermontTime.ts';
 import { AstroContent } from '../persistence/AstroContent.ts';
 
 const committee = await AstroContent.loadCommittee();
+const now = VermontTime.now();
 const deadlines = committee.deadlines().stateDeadlines;
 ---
 
@@ -12,7 +14,7 @@ const deadlines = committee.deadlines().stateDeadlines;
   updatedOn={committee.deadlinesUpdatedOn()}
 >
   <h1>Deadlines</h1>
-  <p class="lede">Dates set by Act 170.</p>
+  <p class="lede">Dates set by Act 170. A check mark means that date has passed.</p>
   {
     deadlines.length === 0 ? (
       <p>No dates are listed.</p>
@@ -23,7 +25,17 @@ const deadlines = committee.deadlines().stateDeadlines;
             <p class="deadline-entry-when">
               <time datetime={stateDeadline.on.isoDate()}>{stateDeadline.on.shortDate()}</time>
             </p>
-            <h2>{stateDeadline.title}</h2>
+            <h2>
+              {stateDeadline.title}
+              {
+                stateDeadline.isOver({ now }) && (
+                  <span class="deadline-done">
+                    <span class="visually-hidden"> Done</span>
+                    <span aria-hidden="true">✅</span>
+                  </span>
+                )
+              }
+            </h2>
             <p class="deadline-entry-kind">Set by Act 170</p>
             <p>{stateDeadline.description}</p>
             <p>

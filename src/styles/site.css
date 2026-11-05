@@ -756,6 +756,10 @@ a[href^='mailto:'] {
   margin-block-end: var(--space-1);
 }
 
+.deadline-done {
+  margin-inline-start: 0.25em;
+}
+
 .deadline-entry-kind {
   font-size: 1rem;
   color: var(--color-muted);
