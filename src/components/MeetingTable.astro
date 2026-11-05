@@ -21,7 +21,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
     <thead>
       <tr>
         <th scope="col">When</th>
-        <th scope="col">Where</th>
+        {!showMinutesAndRecording && <th scope="col">Where</th>}
         <th scope="col">Agenda</th>
         {
           showMinutesAndRecording && (
@@ -37,7 +37,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
       {
         meetings.length === 0 ? (
           <tr>
-            <td colspan={showMinutesAndRecording ? 5 : 3}>{emptyMessage}</td>
+            <td colspan={showMinutesAndRecording ? 4 : 3}>{emptyMessage}</td>
           </tr>
         ) : (
           meetings.map((meeting) =>
@@ -48,7 +48,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
                   <br />
                   {meeting.timeRange()}
                 </th>
-                <td>{meeting.notice()}</td>
+                {!showMinutesAndRecording && <td>{meeting.notice()}</td>}
                 <td>TBD</td>
               </tr>
             ) : (
@@ -64,30 +64,32 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
                     </>
                   )}
                 </th>
-                <td>
-                  {meeting.physicalLocation ? (
-                    <>
-                      {meeting.physicalLocation.name}
-                    </>
-                  ) : meeting.onlineOnly ? (
-                    <>Virtual</>
-                  ) : (
-                    <>TBD</>
-                  )}
-                  {meeting.electronicAccess && (
-                    <>
-                      <br />
-                      {meeting.electronicAccess.url && !meeting.hasEnded({ now }) ? (
-                        <a href={meeting.electronicAccess.url}>
-                          {meeting.electronicAccess.joinLinkText()}
-                          <span class="visually-hidden"> for {meeting.day().longDate()}</span>
-                        </a>
-                      ) : (
-                        meeting.electronicAccess.platform
-                      )}
-                    </>
-                  )}
-                </td>
+                {!showMinutesAndRecording && (
+                  <td>
+                    {meeting.physicalLocation ? (
+                      <>
+                        {meeting.physicalLocation.name}
+                      </>
+                    ) : meeting.onlineOnly ? (
+                      <>Virtual</>
+                    ) : (
+                      <>TBD</>
+                    )}
+                    {meeting.electronicAccess && (
+                      <>
+                        <br />
+                        {meeting.electronicAccess.url && !meeting.hasEnded({ now }) ? (
+                          <a href={meeting.electronicAccess.url}>
+                            {meeting.electronicAccess.joinLinkText()}
+                            <span class="visually-hidden"> for {meeting.day().longDate()}</span>
+                          </a>
+                        ) : (
+                          meeting.electronicAccess.platform
+                        )}
+                      </>
+                    )}
+                  </td>
+                )}
                 <td>
                   {meeting.hasPostedAgenda() && meeting.agenda ? (
                     <a href={meeting.agenda.fileUrl()}>
@@ -102,7 +104,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
                     <td>
                       {meeting.minutes ? (
                         <a href={meeting.minutes.fileUrl() ?? `${meeting.path()}#minutes`}>
-                          {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
+                          {meeting.minutes.statusLabel()}
                           <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
                         </a>
                       ) : (
@@ -144,7 +146,6 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
                 <br />
                 {meeting.timeRange()}
               </p>
-              <p class="meeting-card-where">{meeting.notice()}</p>
               <dl class="meeting-card-files">
                 <dt>Agenda</dt>
                 <dd>TBD</dd>
@@ -165,28 +166,6 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
                   </>
                 )}
               </p>
-              <p class="meeting-card-where">
-                {meeting.physicalLocation ? (
-                  meeting.physicalLocation.name
-                ) : meeting.onlineOnly ? (
-                  'Virtual'
-                ) : (
-                  'TBD'
-                )}
-                {meeting.electronicAccess && (
-                  <>
-                    <br />
-                    {meeting.electronicAccess.url && !meeting.hasEnded({ now }) ? (
-                      <a href={meeting.electronicAccess.url}>
-                        {meeting.electronicAccess.joinLinkText()}
-                        <span class="visually-hidden"> for {meeting.day().longDate()}</span>
-                      </a>
-                    ) : (
-                      meeting.electronicAccess.platform
-                    )}
-                  </>
-                )}
-              </p>
               <dl class="meeting-card-files">
                 <dt>Agenda</dt>
                 <dd>
@@ -201,8 +180,8 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
                 <dt>Minutes</dt>
                 <dd>
                   {meeting.minutes ? (
-                    <a href={meeting.minutes.document?.pdfFile()?.url ?? `${meeting.path()}#minutes`}>
-                      {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
+                    <a href={meeting.minutes.fileUrl() ?? `${meeting.path()}#minutes`}>
+                      {meeting.minutes.statusLabel()}
                       <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
                     </a>
                   ) : (

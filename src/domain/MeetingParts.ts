@@ -106,6 +106,10 @@ export class Minutes {
     return this.status === 'draft';
   }
 
+  statusLabel(): string {
+    return this.isDraft() ? 'Draft' : 'Final';
+  }
+
   fileUrl(): string | undefined {
     if (!this.document) return this.sourceUrl;
     return this.document.pdfFile()?.url ?? this.document.files[0].url;
@@ -115,7 +119,7 @@ export class Minutes {
     if (this.isDraft()) {
       return 'Draft. The committee has not approved these minutes yet, and they may change.';
     }
-    return this.approvedOn ? `Approved by the committee on ${this.approvedOn.shortDate()}.` : 'Approved by the committee.';
+    return this.approvedOn ? `Final on ${this.approvedOn.shortDate()}.` : 'Final.';
   }
 }
 
