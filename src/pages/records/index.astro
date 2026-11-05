@@ -6,11 +6,12 @@ import { AstroContent } from '../../persistence/AstroContent.ts';
 const committee = await AstroContent.loadCommittee();
 const records = committee.records();
 const recordsFromOtherSources = committee.recordsFromOtherSources();
+const publicComments = committee.publicComments();
 ---
 
 <BaseLayout
   title="Public records"
-  description="Files for the Burlington, South Burlington, and Winooski merger study. Committee files are listed first. Agendas and minutes are on each meeting page."
+  description="Files for the Burlington, South Burlington, and Winooski merger study. Committee files are listed first. Public comments are on their own tab. Agendas and minutes are on each meeting page."
   updatedOn={committee.documentsUpdatedOn()}
 >
   <h1>Public records</h1>
@@ -28,18 +29,21 @@ const recordsFromOtherSources = committee.recordsFromOtherSources();
         id="published-by-the-committee"
         checked
       />
-      <label for="published-by-the-committee">Published by the committee</label>
+      <label for="published-by-the-committee">Committee</label>
       <input class="record-tab-input" type="radio" name="record-source" id="other-sources" />
       <label for="other-sources">Other sources</label>
+      <input class="record-tab-input" type="radio" name="record-source" id="public-comment" />
+      <label for="public-comment">Public comment</label>
     </div>
 
     <div class="record-panel" id="published-by-the-committee-panel">
-      <h2 class="visually-hidden">Published by the committee</h2>
+      <h2 class="visually-hidden">Committee</h2>
       <RecordFileTable
         documents={records}
         committee={committee}
         caption="Files published by the committee"
         emptyMessage="The committee has not posted any files yet."
+        columns="file-and-date"
       />
     </div>
 
@@ -53,6 +57,19 @@ const recordsFromOtherSources = committee.recordsFromOtherSources();
         committee={committee}
         caption="Useful public records from other sources"
         emptyMessage="No files from other sources are posted yet."
+        columns="file-author-and-date"
+      />
+    </div>
+
+    <div class="record-panel" id="public-comment-panel">
+      <h2 class="visually-hidden">Public comment</h2>
+      <p>Written comments people sent to the committee.</p>
+      <RecordFileTable
+        documents={publicComments}
+        committee={committee}
+        caption="Public comments"
+        emptyMessage="No public comments are posted yet."
+        columns="author-and-date"
       />
     </div>
   </fieldset>

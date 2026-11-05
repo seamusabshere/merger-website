@@ -561,7 +561,8 @@ main {
 }
 
 .record-tabs:has(#published-by-the-committee:checked) #published-by-the-committee-panel,
-.record-tabs:has(#other-sources:checked) #other-sources-panel {
+.record-tabs:has(#other-sources:checked) #other-sources-panel,
+.record-tabs:has(#public-comment:checked) #public-comment-panel {
   display: block;
 }
 
@@ -667,7 +668,9 @@ a[href^='mailto:'] {
 }
 
 .file-type {
+  display: block;
   color: var(--color-muted);
+  font-weight: 400;
   white-space: nowrap;
 }
 

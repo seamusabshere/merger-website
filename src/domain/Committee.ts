@@ -251,14 +251,20 @@ export class Committee {
   records(): Document[] {
     const agendaAndMinutes = this.agendaAndMinutes();
     return this.newestRecordsFirst({
-      documents: this.documents.filter((document) => document.createdByTheCommittee && !agendaAndMinutes.has(document)),
+      documents: this.documents.filter((document) => document.kind === 'committee' && !agendaAndMinutes.has(document)),
     });
   }
 
   recordsFromOtherSources(): Document[] {
     const agendaAndMinutes = this.agendaAndMinutes();
     return this.newestRecordsFirst({
-      documents: this.documents.filter((document) => !document.createdByTheCommittee && !agendaAndMinutes.has(document)),
+      documents: this.documents.filter((document) => document.kind === 'other' && !agendaAndMinutes.has(document)),
+    });
+  }
+
+  publicComments(): Document[] {
+    return this.newestRecordsFirst({
+      documents: this.documents.filter((document) => document.kind === 'public-comment'),
     });
   }
 

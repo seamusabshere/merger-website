@@ -53,7 +53,7 @@ export class Document {
   readonly id: string;
   readonly title: string;
   readonly publisher: string;
-  readonly createdByTheCommittee: boolean;
+  readonly kind: DocumentData['kind'];
   readonly publishedOn: VermontCalendarDay | undefined;
   readonly updatedOn: VermontCalendarDay;
   readonly files: DocumentFile[];
@@ -62,7 +62,7 @@ export class Document {
     this.id = id;
     this.title = data.title;
     this.publisher = data.publisher;
-    this.createdByTheCommittee = data.createdByTheCommittee;
+    this.kind = data.kind;
     this.publishedOn = data.publishedOn ? VermontCalendarDay.parse({ isoDate: data.publishedOn }) : undefined;
     this.updatedOn = VermontCalendarDay.parse({ isoDate: data.updatedOn });
     this.files = data.files.map((file) => new DocumentFile({ data: file }));
@@ -109,12 +109,8 @@ export class Document {
 
   pageDescription(): string {
     const source = this.publishedOn ? `${this.publisher}, ${this.publishedOn.shortDate()}` : this.publisher;
+    if (this.kind === 'public-comment') return `${source}. Read the original file.`;
     return `${this.title}. ${source}. Read the original file.`;
-  }
-
-  fileName({ file }: { file: DocumentFile }): string {
-    if (this.files.length === 1) return this.title;
-    return `${this.title} (${file.label})`;
   }
 
   compareNewestFirst({ other }: { other: Document }): number {

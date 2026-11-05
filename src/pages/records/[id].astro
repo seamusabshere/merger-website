@@ -21,8 +21,12 @@ const meetings = committee.meetingsUsing({ document });
   <p class="muted"><a href="/records/">Public records</a></p>
   <h1>{document.title}</h1>
   <dl class="facts">
-    <dt>Author</dt>
-    <dd>{document.publisher}</dd>
+    {document.kind !== 'public-comment' && (
+      <>
+        <dt>Author</dt>
+        <dd>{document.publisher}</dd>
+      </>
+    )}
     <dt>Date of the document</dt>
     <dd>{document.publishedDescription()}</dd>
     {

@@ -7,9 +7,13 @@ interface Props {
   committee: Committee;
   caption: string;
   emptyMessage: string;
+  columns: 'file-and-date' | 'file-author-and-date' | 'author-and-date';
 }
 
-const { documents, committee, caption, emptyMessage } = Astro.props;
+const { documents, committee, caption, emptyMessage, columns } = Astro.props;
+const showFile = columns !== 'author-and-date';
+const showAuthor = columns !== 'file-and-date';
+const columnCount = 1 + (showFile ? 1 : 0) + (showAuthor ? 1 : 0);
 ---
 
 <div class="table-scroll">
@@ -17,8 +21,8 @@ const { documents, committee, caption, emptyMessage } = Astro.props;
   <caption class="visually-hidden">{caption}</caption>
   <thead>
     <tr>
-      <th scope="col">File</th>
-      <th scope="col">Author</th>
+      {showFile && <th scope="col">File</th>}
+      {showAuthor && <th scope="col">Author</th>}
       <th scope="col">Date</th>
     </tr>
   </thead>
@@ -26,44 +30,60 @@ const { documents, committee, caption, emptyMessage } = Astro.props;
     {
       documents.length === 0 ? (
         <tr>
-          <td colspan="3">{emptyMessage}</td>
+          <td colspan={columnCount}>{emptyMessage}</td>
         </tr>
       ) : (
         documents.flatMap((document) =>
           document.files.map((file) => {
             const meetings = committee.meetingsUsing({ document });
+            const date = (
+              meetings.length > 0 ? (
+                <ul class="plain-list">
+                  {[...meetings].reverse().map((meeting) => (
+                    <li>
+                      <a href={meeting.path()}>
+                        <time datetime={meeting.day().isoDate()}>{meeting.day().shortDate()}</time>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                document.publishedDescription()
+              )
+            );
             return (
             <tr>
-              <th scope="row">
-                <a href={file.url} hreflang={file.language}>
-                  {document.fileName({ file })}
-                </a>{' '}
-                <span class="file-type">({file.typeAndSize()})</span>
-                {file.accessibilityNote() && (
-                  <>
-                    <br />
-                    <span class="muted">{file.accessibilityNote()}</span>
-                  </>
-                )}
-              </th>
-              <td>{document.publisher}</td>
-              <td>
-                {
-                  meetings.length > 0 ? (
-                    <ul class="plain-list">
-                      {[...meetings].reverse().map((meeting) => (
-                        <li>
-                          <a href={meeting.path()}>
-                            <time datetime={meeting.day().isoDate()}>{meeting.day().shortDate()}</time>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    document.publishedDescription()
-                  )
-                }
-              </td>
+              {showFile && (
+                <th scope="row">
+                  <a href={file.url} hreflang={file.language}>
+                    {document.title}
+                    {document.files.length > 1 && <span class="visually-hidden">, {file.typeAndSize()}</span>}
+                  </a>
+                  <span class="file-type" aria-hidden={document.files.length > 1 ? 'true' : undefined}>{file.typeAndSize()}</span>
+                  {file.accessibilityNote() && (
+                    <>
+                      <br />
+                      <span class="muted">{file.accessibilityNote()}</span>
+                    </>
+                  )}
+                </th>
+              )}
+              {showAuthor && showFile && <td>{document.publisher}</td>}
+              {showAuthor && !showFile && (
+                <th scope="row">
+                  <a href={file.url} hreflang={file.language}>
+                    {document.publisher}
+                  </a>
+                  <span class="file-type">{file.typeAndSize()}</span>
+                  {file.accessibilityNote() && (
+                    <>
+                      <br />
+                      <span class="muted">{file.accessibilityNote()}</span>
+                    </>
+                  )}
+                </th>
+              )}
+              <td>{date}</td>
             </tr>
             );
           }),

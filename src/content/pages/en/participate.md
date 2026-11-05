@@ -1,7 +1,7 @@
 ---
 title: How to participate
 description: How to attend a merger committee meeting in person, by video, or by phone, how to speak or send a comment, and how to ask for records.
-updatedOn: "2026-10-29"
+updatedOn: "2026-11-05"
 ---
 
 Every committee meeting is open to the public. You do not need to sign up, and you do not need to live in any of the three cities.
@@ -22,7 +22,7 @@ Each meeting has one time set aside for public input. The rules for that meeting
 
 ## Send a written comment
 
-If you cannot attend, you may send a written comment to be read aloud during public input. Send it to the facilitator or to your district's contact on our [contact page](/contact/) before the meeting. Include your name and town, and the meeting date.
+If you cannot attend, you may send a written comment to be read aloud during public input. Send it to the facilitator or to your district's contact on our [contact page](/contact/) before the meeting. Include your name and town, and the meeting date. Comments the committee posts are on the [Public records](/records/) page, under Public comment.
 
 ## Ask for in-person, phone, or video access
 

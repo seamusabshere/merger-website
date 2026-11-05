@@ -159,7 +159,7 @@ const documentFileSchema = z.object({
 export const documentSchema = z.object({
   title: z.string(),
   publisher: z.string(),
-  createdByTheCommittee: z.boolean(),
+  kind: z.enum(['committee', 'other', 'public-comment']),
   publishedOn: calendarDay.optional(),
   updatedOn: calendarDay,
   files: z.array(documentFileSchema).min(1),
