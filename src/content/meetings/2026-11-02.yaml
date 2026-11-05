@@ -29,7 +29,6 @@ documentIds:
   - open-questions-log-2026-11-05
 
 minutes:
-  status: approved
+  status: draft
   postedAt: "2026-11-05T08:53:00-05:00"
-  approvedOn: "2026-11-05"
-  documentId: november-2-2026-minutes
+  documentId: november-2-2026-draft-minutes

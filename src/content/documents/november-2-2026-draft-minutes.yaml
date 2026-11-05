@@ -1,12 +1,12 @@
-title: Minutes
+title: Draft minutes
 publisher: Committee
 kind: committee
 publishedOn: "2026-11-02"
 updatedOn: "2026-11-05"
 files:
-  - label: Minutes
+  - label: Draft minutes
     language: en
-    format: word
-    sizeBytes: 286969
+    format: pdf
+    sizeBytes: 589031
     accessibility: not-checked
-    url: /documents/minutes-2026-11-02.docx
+    url: /documents/minutes-2026-11-02-draft.pdf

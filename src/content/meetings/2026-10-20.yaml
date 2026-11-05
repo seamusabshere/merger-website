@@ -1,7 +1,7 @@
 kind: regular
 startsAt: "2026-10-20T16:00:00-04:00"
 endsAt: "2026-10-20T17:30:00-04:00"
-updatedOn: "2026-10-28"
+updatedOn: "2026-11-05"
 
 physicalLocation:
   name: Winooski School District campus
@@ -26,9 +26,9 @@ documentIds:
   - act-170-overview-presentation
 
 minutes:
-  status: draft
+  status: approved
   postedAt: "2026-10-28T10:00:00-04:00"
-  documentId: october-20-2026-draft-minutes
+  documentId: october-20-2026-minutes
 
 recording:
   url: https://vimeo.com/1238046473
