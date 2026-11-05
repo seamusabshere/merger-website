@@ -1,7 +1,7 @@
 kind: regular
 startsAt: "2026-11-02T16:00:00-05:00"
 endsAt: "2026-11-02T17:30:00-05:00"
-updatedOn: "2026-10-29"
+updatedOn: "2026-11-05"
 onlineOnly: true
 
 electronicAccess:
@@ -14,8 +14,22 @@ agenda:
   postedAt: "2026-10-29T12:48:00-04:00"
   documentId: november-2-2026-meeting-notice
 
+recording:
+  url: https://drive.google.com/file/d/1ODjCZQJ_HZNtmYULw-qHLuIVEG4wWLGb/view
+  host: Google Drive
+  postedAt: "2026-11-05T08:29:12-05:00"
+
 documentIds:
   - draft-committee-work-plan-2026-10-28
   - district-data-collection-template-2026-10-28
   - strength-based-regional-asset-mapping-protocol
   - aoe-merger-planning-memo-2026-10-23
+  - regional-asset-mapping-guidance-2026-11-02
+  - regional-asset-mapping-dashboard-2026-11-05
+  - open-questions-log-2026-11-05
+
+minutes:
+  status: approved
+  postedAt: "2026-11-05T08:53:00-05:00"
+  approvedOn: "2026-11-05"
+  documentId: november-2-2026-minutes

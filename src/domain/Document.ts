@@ -8,6 +8,8 @@ const FORMAT_NAMES: Record<DocumentFileData['format'], string> = {
   'google-doc': 'Google Doc',
   spreadsheet: 'Spreadsheet',
   video: 'Video',
+  powerpoint: 'PowerPoint',
+  word: 'Word document',
 };
 
 export class DocumentFile {

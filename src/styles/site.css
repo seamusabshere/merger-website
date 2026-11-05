@@ -646,6 +646,65 @@ dd .plain-list {
   background: var(--color-background);
 }
 
+.meeting-cards {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.meeting-card {
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.meeting-cards > li + li {
+  margin: 0;
+}
+
+.meeting-card-when {
+  margin-block: 0;
+  font-weight: 700;
+}
+
+.meeting-card-when .muted {
+  font-weight: 400;
+}
+
+.meeting-card-where {
+  margin-block: var(--space-1) var(--space-2);
+}
+
+.meeting-card-files {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: var(--space-3);
+  row-gap: var(--space-1);
+  margin: 0;
+}
+
+.meeting-card-files dt {
+  font-weight: 700;
+}
+
+.meeting-card-files dd {
+  margin: 0;
+}
+
+.meeting-card-host {
+  white-space: nowrap;
+}
+
+@container (max-width: 48rem) {
+  .meeting-table-wide-past {
+    display: none;
+  }
+
+  .meeting-cards {
+    display: block;
+  }
+}
+
 table {
   border-collapse: collapse;
   inline-size: 100%;

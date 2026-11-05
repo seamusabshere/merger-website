@@ -14,6 +14,7 @@ interface Props {
 const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.props;
 ---
 
+<div class:list={['meeting-table-wide', showMinutesAndRecording && 'meeting-table-wide-past']}>
 <div class="table-scroll">
   <table class:list={['meeting-table', showMinutesAndRecording ? 'meeting-table-past' : 'meeting-table-upcoming']}>
     <caption class="visually-hidden">{caption}</caption>
@@ -100,7 +101,7 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
                   <>
                     <td>
                       {meeting.minutes ? (
-                        <a href={meeting.minutes.document?.pdfFile()?.url ?? `${meeting.path()}#minutes`}>
+                        <a href={meeting.minutes.fileUrl() ?? `${meeting.path()}#minutes`}>
                           {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
                           <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
                         </a>
@@ -128,3 +129,101 @@ const { meetings, caption, emptyMessage, showMinutesAndRecording, now } = Astro.
     </tbody>
   </table>
 </div>
+</div>
+{
+  showMinutesAndRecording &&
+    (meetings.length === 0 ? (
+      <p class="meeting-cards">{emptyMessage}</p>
+    ) : (
+      <ol class="meeting-cards" aria-label={caption}>
+        {meetings.map((meeting) =>
+          meeting instanceof ExpectedMeeting ? (
+            <li class="meeting-card">
+              <p class="meeting-card-when">
+                <time datetime={meeting.day().isoDate()}>{meeting.day().longDate()}</time>
+                <br />
+                {meeting.timeRange()}
+              </p>
+              <p class="meeting-card-where">{meeting.notice()}</p>
+              <dl class="meeting-card-files">
+                <dt>Agenda</dt>
+                <dd>TBD</dd>
+              </dl>
+            </li>
+          ) : (
+            <li class="meeting-card">
+              <p class="meeting-card-when">
+                <a href={meeting.path()}>
+                  <time datetime={meeting.day().isoDate()}>{meeting.day().longDate()}</time>
+                </a>
+                <br />
+                {meeting.timeRange()}
+                {meeting.kind !== 'regular' && (
+                  <>
+                    <br />
+                    <span class="muted">{meeting.kindName()}</span>
+                  </>
+                )}
+              </p>
+              <p class="meeting-card-where">
+                {meeting.physicalLocation ? (
+                  meeting.physicalLocation.name
+                ) : meeting.onlineOnly ? (
+                  'Virtual'
+                ) : (
+                  'TBD'
+                )}
+                {meeting.electronicAccess && (
+                  <>
+                    <br />
+                    {meeting.electronicAccess.url && !meeting.hasEnded({ now }) ? (
+                      <a href={meeting.electronicAccess.url}>
+                        {meeting.electronicAccess.joinLinkText()}
+                        <span class="visually-hidden"> for {meeting.day().longDate()}</span>
+                      </a>
+                    ) : (
+                      meeting.electronicAccess.platform
+                    )}
+                  </>
+                )}
+              </p>
+              <dl class="meeting-card-files">
+                <dt>Agenda</dt>
+                <dd>
+                  {meeting.hasPostedAgenda() && meeting.agenda ? (
+                    <a href={meeting.agenda.fileUrl()}>
+                      Final<span class="visually-hidden"> agenda for {meeting.day().longDate()}</span>
+                    </a>
+                  ) : (
+                    'TBD'
+                  )}
+                </dd>
+                <dt>Minutes</dt>
+                <dd>
+                  {meeting.minutes ? (
+                    <a href={meeting.minutes.document?.pdfFile()?.url ?? `${meeting.path()}#minutes`}>
+                      {meeting.minutes.isDraft() ? 'Draft' : 'Approved'}
+                      <span class="visually-hidden"> minutes for {meeting.day().longDate()}</span>
+                    </a>
+                  ) : (
+                    'TBD'
+                  )}
+                </dd>
+                <dt>Recording</dt>
+                <dd>
+                    {meeting.recording ? (
+                      <a href={meeting.recording.url}>
+                        Watch on <span class="meeting-card-host">{meeting.recording.host}</span>
+                        <span class="visually-hidden"> for {meeting.day().longDate()}</span>
+                      </a>
+                    ) : (
+                      'TBD'
+                    )}
+                </dd>
+              </dl>
+            </li>
+          ),
+        )}
+      </ol>
+    ))
+}

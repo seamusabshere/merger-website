@@ -106,6 +106,11 @@ export class Minutes {
     return this.status === 'draft';
   }
 
+  fileUrl(): string | undefined {
+    if (!this.document) return this.sourceUrl;
+    return this.document.pdfFile()?.url ?? this.document.files[0].url;
+  }
+
   statusNote(): string {
     if (this.isDraft()) {
       return 'Draft. The committee has not approved these minutes yet, and they may change.';

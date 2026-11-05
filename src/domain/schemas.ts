@@ -148,7 +148,7 @@ export const meetingSchema = z.object({
 const documentFileSchema = z.object({
   label: z.string(),
   language: z.string(),
-  format: z.enum(['pdf', 'web-page', 'google-doc', 'spreadsheet', 'video']),
+  format: z.enum(['pdf', 'web-page', 'google-doc', 'spreadsheet', 'video', 'powerpoint', 'word']),
   sizeBytes: z.number().int().optional(),
   accessibility: z.enum(['checked-accessible', 'not-accessible', 'not-checked']),
   url: z.string().refine((value) => (value.startsWith('/') && !value.startsWith('//') && !/\s/.test(value)) || URL.canParse(value), {
